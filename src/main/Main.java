@@ -5,8 +5,7 @@ public class Main {
 		System.out.println("hej");
 		System.out.println("hej");
 		System.out.println("hej");
-		
-		
-		
+		System.out.println("hej");
+			
 	}
 }
