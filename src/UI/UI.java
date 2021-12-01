@@ -1,6 +1,8 @@
 package UI;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -26,6 +28,10 @@ public class UI {
 
     	   textArea.setEditable(false);
     	   textArea.setBounds(0, 0, 600, 200);
+
+    	   textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 44));
+//    	   textArea.setBackground(new Color(0,0,0,0));
+    	   textArea.setOpaque(false);
     	   btnClose.setBounds(0, 0, 50, 50);
     	   btnTest.setBounds(0, 0, 50, 50);
 
@@ -62,6 +68,7 @@ public class UI {
 
        public void bodyText(String text) {
     	   textArea.setText(text);
+//    	   textArea.setBackground(new Color(0,0,0,0));
        }
 }
 

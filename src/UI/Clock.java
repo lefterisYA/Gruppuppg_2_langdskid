@@ -1,9 +1,7 @@
 package UI;
 
 import java.util.Calendar;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.time.Instant;
 
 public class Clock {
 	final static private String[][] asciiDgts = {
@@ -85,67 +83,76 @@ public class Clock {
 				"    "
 			}
 	};
+//	final static private int dgtWdth = asciiDgts[0][0].length();
+	final static private int dgtHght = asciiDgts[0].length;
+//	final static private int colWdth = asciiDgts[10][0].length();
 	
-	static public void print(int hour, int mins, int secs) {
-		System.out.println(gnrtAsciiChars(hour, mins, secs));
+	private Calendar cdr; // = Calendar.getInstance(); // creates a new calendar instance
+	private final StringBuilder sb = new StringBuilder();
+
+	public Clock() {
+		cdr = Calendar.getInstance(); // creates a new calendar instance
+	}
+
+	public String getInAscii(int hour, int mins, int secs) {
+		return gnrtAsciiChars(new int[] {hour, mins, secs});
 	}
 	
-	static public void prntCurrTime() {
-		Calendar cdr = Calendar.getInstance(); // creates a new calendar instance
+	public String getCurrTimeInAscii() {
+		cdr.setTimeInMillis(System.currentTimeMillis());
 		int hour = cdr.get(Calendar.HOUR_OF_DAY);
 		int mins = cdr.get(Calendar.MINUTE);
 		int secs = cdr.get(Calendar.SECOND);
+		int hnds = cdr.get(Calendar.MILLISECOND) / 10;
 
-		System.out.println(gnrtAsciiChars(hour, mins, secs));
+		return gnrtAsciiChars(new int[] {hour, mins, secs, hnds});
 	}
 
-	static private String gnrtAsciiChars(int hour, int mins, int secs) {
-		String rtrnValu = "";
+	public String getCurrTime() {
+		cdr.setTimeInMillis(System.currentTimeMillis());
+		String hour = String.format("%02d", cdr.get(Calendar.HOUR_OF_DAY) );
+		String mins = String.format("%02d", cdr.get(Calendar.MINUTE) );
+		String secs = String.format("%02d", cdr.get(Calendar.SECOND) );
+		String hnds = String.format("%02d", cdr.get(Calendar.MILLISECOND) / 10 );
 
-		int[] sprtDgtsH = getSprtDgts(hour);
-		int[] sprtDgtsM = getSprtDgts(mins);
-		int[] sprtDgtsS = getSprtDgts(secs);
+		return hour + ":" + mins + ":" + secs  + ":" + hnds;
+	}
 
-		for ( int row=0; row<asciiDgts[0].length; row++ ) {
-			for ( int i=0; i<sprtDgtsH.length; i++ ) {
-				rtrnValu += asciiDgts[sprtDgtsH[i]][row];
+	private String gnrtAsciiChars(int[] digtGrps) {
+		sb.setLength(0); // Clear stringbuilder
+
+		for ( int row=0; row<dgtHght; row++ ) { // Iterate first each ROW for each Digit
+			appendAsciiForRow(digtGrps[0], row);
+
+			// Get row for every group of digits and precede it with a column.
+			for ( int i=1; i<digtGrps.length; i++) {
+				sb.append( asciiDgts[10][row] );
+				appendAsciiForRow(digtGrps[i], row);
 			}
-			rtrnValu += asciiDgts[10][row]; // Column
-			for ( int i=0; i<sprtDgtsM.length; i++ ) {
-				rtrnValu += asciiDgts[sprtDgtsM[i]][row];
-			}
-			rtrnValu += asciiDgts[10][row]; // Column
-			for ( int i=0; i<sprtDgtsS.length; i++ ) {
-				rtrnValu += asciiDgts[sprtDgtsS[i]][row];
-			}
-			rtrnValu += "\n";
+			sb.append("\n");
 		}
-		return rtrnValu;
+		return sb.toString();
+	}
+	
+	private void appendAsciiForRow(int digt, int row) {
+		int[] dgts = getSprtDgts(digt); // Split digit into an array of digits
+		for ( int i=0; i<dgts.length; i++ ) {
+			sb.append( asciiDgts[dgts[i]][row] );
+		}
 	}
 	
 	static private int[] getSprtDgts(int num) {
-		int dgtsLen = (int) ( Math.log10(num) + 1 );
+		int dgtsLen;
+		if ( num < 10 ) // Pad all digits so they are length 2:
+			dgtsLen = 2;
+		else
+			dgtsLen = (int) ( Math.log10(num) + 1 );
 
-		// Since we fill in the digits from the right, if we simply do length++, then the leftmost digit will get the
-		// value 0, so it's padded correctly.
-		if ( dgtsLen == 1 )
-			dgtsLen++;
-		
 		int[] sprtDgts = new int[dgtsLen];
 		for ( int i=0; i<dgtsLen; i++ ) {
 			sprtDgts[dgtsLen-i-1] = (num % 10);
 			num=num/10;
 		}
 		return sprtDgts;
-	}
-
-	public void run() {
-	    ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
-	    exec.scheduleAtFixedRate(new Runnable() {
-	    	@Override
-	    	public void run() {
-	    		prntCurrTime();
-	    	}
-	    }, 0, 1, TimeUnit.SECONDS);
 	}
 }
