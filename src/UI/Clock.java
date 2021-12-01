@@ -110,12 +110,16 @@ public class Clock {
 
 	public String getCurrTime() {
 		cdr.setTimeInMillis(System.currentTimeMillis());
-		String hour = String.format("%02d", cdr.get(Calendar.HOUR_OF_DAY) );
-		String mins = String.format("%02d", cdr.get(Calendar.MINUTE) );
-		String secs = String.format("%02d", cdr.get(Calendar.SECOND) );
-		String hnds = String.format("%02d", cdr.get(Calendar.MILLISECOND) / 10 );
+	
+		String time = String.format( 
+					"%02d:%02d:%02d:%02d", 
+					cdr.get(Calendar.HOUR_OF_DAY), 
+					cdr.get(Calendar.MINUTE),
+					cdr.get(Calendar.SECOND),
+					cdr.get(Calendar.MILLISECOND) / 10
+				);
 
-		return hour + ":" + mins + ":" + secs  + ":" + hnds;
+		return time;
 	}
 
 	private String gnrtAsciiChars(int[] digtGrps) {
