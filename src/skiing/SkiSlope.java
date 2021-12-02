@@ -10,10 +10,10 @@ public class SkiSlope {
 	public void RaceTrack() {
 		this.trackLength = 500.0;
 		checkpoints = new double[4];
-		checkpoints[0]=100;
-		checkpoints[1]=200;
-		checkpoints[2]=300;
-		checkpoints[3]=400;
+		checkpoints[0]=100.0;
+		checkpoints[1]=200.0;
+		checkpoints[2]=300.0;
+		checkpoints[3]=400.0;
 	}
 
 	public static Skier[] RaceTrackPlayer(Skier[] list) {

@@ -31,8 +31,10 @@ public class Tempmain {
 					}
 				}
 				for (int k = 0; k <= skiSlope.trackLength; k++) {
-					if (list[j].position >= skiSlope.trackLength && list[j].goal == false)
+					if (list[j].position >= skiSlope.trackLength && list[j].goal == false) {
 					goalTime[j] = currentTotalTime;
+					list[j].goal = true;
+					}
 				}
 			}
 			secondsPassed++;

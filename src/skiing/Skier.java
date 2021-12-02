@@ -9,7 +9,7 @@ public class Skier {
 	double position; // Räkna position i meter i banan
 	int[] sTime = new int[3];
 	boolean[] checkpointCheck;
-	boolean goal;
+	boolean goal=false;
 	
 	public Skier(String name, int playernumber, double speed, double position, int[] startingTime) {
 		this.name = name;
