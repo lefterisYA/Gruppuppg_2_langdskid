@@ -15,16 +15,23 @@ public class UI {
 		sc.close();
 	}
 	
-	public int getUserInt() {
+	public int getUserInt(String msg) {
+		System.out.println(msg);
 		return sc.nextInt();
 	}
 	
-	public String getUserStrng() {
+	public String getUserStrng(String msg) {
+		System.out.println(msg);
 		return sc.next();
 	}
 
-	public Double getUserDouble() {
+	public Double getUserDouble(String msg) {
+		System.out.println(msg);
 		return sc.nextDouble();
+	}
+	
+	public void postMsg(String msg) {
+		System.out.println(msg);
 	}
 
 	// Används för att anmäla sig som skidåkare med scanner

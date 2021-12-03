@@ -7,12 +7,12 @@ import test.Test;
 
 
 public class Tempmain {
+	static UI ui;
 
 	public static void main(String[] args) {
-		UI ui = new UI();
+		ui = new UI();
 		// Gör en array med skidåkare utan några värden
-		System.out.println("Hur många tävlare?");
-		int amountOfPlayers = ui.getUserInt();
+		int amountOfPlayers = ui.getUserInt("Hur många tävlare?");
 		Skier[] list = new Skier[amountOfPlayers];
 
 		// Deklarerade skiers sätts in i listan
@@ -20,9 +20,9 @@ public class Tempmain {
 		
 		//Slumpar hastigheten lite för alla skidåkare
 		for (int i = 0; i < list.length; i++) {
-			System.out.println(list[i].speed+"m/s");
+			ui.postMsg(list[i].speed+"m/s");
 			list[i].speedRandom();
-			System.out.println(list[i].speed+"m/s");
+			ui.postMsg(list[i].speed+"m/s");
 		}
 
 		// Skidbanan konstrueras
@@ -46,19 +46,19 @@ public class Tempmain {
 		// går igenom alla spelare och printar ut resultaten
 		for (int i = 0; i < list.length; i++) {
 			if (list[0] == list[i])
-				System.out.print("En riktig vinnare! Första plats går till " + list[i].name + " som");
+				ui.postMsg("En riktig vinnare! Första plats går till " + list[i].name + " som");
 			if (list[list.length - 1] == list[i])
-				System.out.print("En riktig torsk! Sista plats går till " + list[i].name + " som");
+				ui.postMsg("En riktig torsk! Sista plats går till " + list[i].name + " som");
 			else
-				System.out.print(list[i].name);
-			System.out.println(
+				ui.postMsg(list[i].name);
+			ui.postMsg(
 					" kom " + (i + 1) + "a i mål vid " + toString(timeConverter(list[i].goalTime)) + " och hen satte ");
 			for (int j = 0; j < list[i].checkpointTime.length; j++) {
-				System.out.print(
+				ui.postMsg(
 						"Checkpoint " + (j + 1) + " vid " + toString(timeConverter(list[i].checkpointTime[j])) + ". ");
 			}
-			System.out.println(list[i].speed+"m/s");;
-			System.out.print("\n\n");
+			ui.postMsg(list[i].speed+"m/s");;
+			ui.postMsg("\n\n");
 		}
 	}
 
@@ -95,7 +95,7 @@ public class Tempmain {
 	public static Skier[] playerDeclaration(int amountOfPlayers) {
 		Skier[] list = new Skier[amountOfPlayers];
 		for (int i = 0; i < list.length; i++) { // Går igenom så många skidåkare som valts och ger dom ett nummer
-			System.out.println("Beskriv spelare nummer " + (i + 1));
+			ui.postMsg("Beskriv spelare nummer " + (i + 1));
 			Skier skier = Test.skierDeclarationtest(i);
 			list[i] = skier;
 		}
