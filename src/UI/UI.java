@@ -10,6 +10,22 @@ public class UI {
 	public UI() {
 		sc = new Scanner(System.in);
 	}
+	
+	public void end() {
+		sc.close();
+	}
+	
+	public int getUserInt() {
+		return sc.nextInt();
+	}
+	
+	public String getUserStrng() {
+		return sc.next();
+	}
+
+	public Double getUserDouble() {
+		return sc.nextDouble();
+	}
 
 	// Används för att anmäla sig som skidåkare med scanner
 	public Skier addSkierDialog(int playerNumber) {

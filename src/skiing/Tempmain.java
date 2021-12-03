@@ -1,21 +1,19 @@
 package skiing;
 
 import java.util.Arrays;
-import java.util.Scanner;
 
+import UI.UI;
 import test.Test;
 
 
 public class Tempmain {
 
 	public static void main(String[] args) {
-		Scanner scan = new Scanner(System.in);
-
+		UI ui = new UI();
 		// Gör en array med skidåkare utan några värden
 		System.out.println("Hur många tävlare?");
-		int amountOfPlayers = scan.nextInt();
+		int amountOfPlayers = ui.getUserInt();
 		Skier[] list = new Skier[amountOfPlayers];
-		scan.close();
 
 		// Deklarerade skiers sätts in i listan
 		list = playerDeclaration(amountOfPlayers);
