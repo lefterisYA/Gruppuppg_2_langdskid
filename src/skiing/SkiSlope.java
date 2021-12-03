@@ -22,6 +22,7 @@ public class SkiSlope {
 			for(int j = 0; j<list[i].checkpointCheck.length;j++)
 				list[i].checkpointCheck[j]=false;
 			list[i].goal = false;
+			list[i].checkpointTime = new int [4];
 		}
 		return list;
 	}

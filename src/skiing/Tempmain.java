@@ -1,69 +1,145 @@
 package skiing;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Tempmain {
 
 	public static void main(String[] args) {
-		System.out.println("Hur många tävlare?");
 		Scanner scan = new Scanner(System.in);
+
+		// Gör en array med skidåkare utan några värden
+		System.out.println("Hur många tävlare?");
 		int amountOfPlayers = scan.nextInt();
 		Skier[] list = new Skier[amountOfPlayers];
-		list = playerDeclaration(amountOfPlayers);
+		scan.close();
 
+		// Deklarerade skiers sätts in i listan
+		list = playerDeclaration(amountOfPlayers);
+		
+		//Slumpar hastigheten lite för alla skidåkare
+		for (int i = 0; i < list.length; i++) {
+			System.out.println(list[i].speed+"m/s");
+			list[i].speedRandom();
+			System.out.println(list[i].speed+"m/s");
+		}
+
+		// Skidbanan konstrueras
 		SkiSlope skiSlope = new SkiSlope();
 		skiSlope.RaceTrack();
+
+		// Skidåkare modifieras till banan
 		list = SkiSlope.RaceTrackPlayer(list);
 
-		String[][] checkpointTime = new String[list.length][skiSlope.checkpoints.length];
-		String[] goalTime = new String[list.length];
-		String currentTotalTime = "";
+		// Här är racet
+		Race(list, skiSlope);
 
-		double secondsPassed = 0;
-		double minutesPassed = 0;
-		for (double i = 0; i <= skiSlope.trackLength+10; i++) {
-			for (int j = 0; j < list.length; j++) {
-				list[j].position = list[j].position + list[j].speed;
-				for (int k = 0; k < skiSlope.checkpoints.length; k++) {
-					if (list[j].position >= skiSlope.checkpoints[k] && list[j].checkpointCheck[k] == false) {
-						checkpointTime[j][k] = currentTotalTime;
-						list[j].checkpointCheck[k] = true;
-					}
-				}
-				for (int k = 0; k <= skiSlope.trackLength; k++) {
-					if (list[j].position >= skiSlope.trackLength && list[j].goal == false) {
-					goalTime[j] = currentTotalTime;
-					list[j].goal = true;
-					}
-				}
-			}
-			secondsPassed++;
-			if (secondsPassed == 60) {
-				minutesPassed++;
-				secondsPassed = 0;
-			}
-			currentTotalTime = (minutesPassed + " minuter och " + secondsPassed + " sekunder");
-		}
-		for (int i = 0; i < list.length; i++) {
-			System.out.println(list[i].name + " kom i mål vid " + goalTime[i]+ " och hen satte checkpoint ");
-				for (int j = 0; j < checkpointTime[0].length; j++) {
-				System.out.println(j+1 + " vid " + checkpointTime[i][j]+ ".");
-			}
-		}
-
-//		int[] startTime = {9,30,30,30};
-//		Skier ski1 = new Skier("Johan", 1, 15.0, 0.0, startTime);
-//		
+		// Printar ut resultaten
+		skiResults(list);
 	}
 
+	private static void skiResults(Skier[] list) {
+		// Sorterar vinnare och förlorare
+		Arrays.sort(list);
+
+		// går igenom alla spelare och printar ut resultaten
+		for (int i = 0; i < list.length; i++) {
+			if (list[0] == list[i])
+				System.out.print("En riktig vinnare! Första plats går till " + list[i].name + " som");
+			if (list[list.length - 1] == list[i])
+				System.out.print("En riktig torsk! Sista plats går till " + list[i].name + " som");
+			else
+				System.out.print(list[i].name);
+			System.out.println(
+					" kom " + (i + 1) + "a i mål vid " + toString(timeConverter(list[i].goalTime)) + " och hen satte ");
+			for (int j = 0; j < list[i].checkpointTime.length; j++) {
+				System.out.print(
+						"Checkpoint " + (j + 1) + " vid " + toString(timeConverter(list[i].checkpointTime[j])) + ". ");
+			}
+			System.out.println(list[i].speed+"m/s");;
+			System.out.print("\n\n");
+		}
+	}
+
+	private static void Race(Skier[] list, SkiSlope skiSlope) {
+		// Håller koll på tiden som har gått
+		int secondsPassedTotal = 0;
+
+		// Den förstå for-loopen räknar tiden, baserat på hur lång banan är
+		for (double i = 0; i <= skiSlope.trackLength + 1; i++) { // Den andra går igenom listan och
+			for (int j = 0; j < list.length; j++) { // ökar individuellt alla skidåkares
+				list[j].position = list[j].position + list[j].speed; // position med deras hastighet, en gång per
+																		// sekund.
+				for (int k = 0; k < skiSlope.checkpoints.length; k++) {
+					if (list[j].position >= skiSlope.checkpoints[k] && list[j].checkpointCheck[k] == false) {
+						list[j].checkpointTime[k] = secondsPassedTotal; // Den tredje går igenom checkpointsen,
+																		// kollar ifall de
+						list[j].checkpointCheck[k] = true; // har gått igenom en checkpoint och sparar tiden
+					}
+				}
+				if (list[j].position >= skiSlope.trackLength && list[j].goal == false) {
+					list[j].goalTime = secondsPassedTotal; // Den här if-satsen kollar ifall de har gått i mål.
+					list[j].goal = true;
+				}
+			}
+
+			// Räknar tid
+			secondsPassedTotal++;
+		}
+	}
+	
+
+
+	// Deklarerar skidåkare
 	public static Skier[] playerDeclaration(int amountOfPlayers) {
 		Skier[] list = new Skier[amountOfPlayers];
-		for (int i = 0; i < list.length; i++) {
+		for (int i = 0; i < list.length; i++) { // Går igenom så många skidåkare som valts och ger dom ett nummer
 			System.out.println("Beskriv spelare nummer " + (i + 1));
 			Skier skier = new Skier();
 			skier.SkierDeclaration(i);
 			list[i] = skier;
 		}
 		return list;
+	}
+
+	// Konverterar totala sekunder till timmar/minuter/sekunder
+	public static int[] timeConverter(int secondsTotal) {
+		int hours = 0;
+		int minutes = 0;
+		int seconds = 0;
+
+		if (secondsTotal >= 60) {
+			minutes = secondsTotal / 60;
+			seconds = secondsTotal % 60;
+			if (minutes >= 60) {
+				hours = minutes / 60;
+				minutes = minutes % 60;
+			}
+		} else
+			seconds = secondsTotal;
+		if (hours >= 1) {
+			int[] hms = { hours, minutes, seconds };
+			return hms;
+		}
+		if (minutes >= 1) {
+			int[] ms = { 0, minutes, seconds };
+			return ms;
+		} else {
+			int[] s = { 0, 0, seconds };
+			return s;
+		}
+
+	}
+
+	public static String toString(int[] hms) {
+		return (hms[0] + ":" + hms[1] + ":" + hms[2]);
+//		if (hms[0]>0)
+//			return (hms[0]+":"+hms[1]+":"+hms[2]);
+//		if (hms[1]>0)
+//			return (hms[1]+":"+hms[2]);
+//		if (hms[2]>0)
+//			return (hms[2]+"");
+//		else
+//			return ("Error");
 	}
 }
