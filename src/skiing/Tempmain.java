@@ -3,6 +3,9 @@ package skiing;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import test.Test;
+
+
 public class Tempmain {
 
 	public static void main(String[] args) {
@@ -95,8 +98,7 @@ public class Tempmain {
 		Skier[] list = new Skier[amountOfPlayers];
 		for (int i = 0; i < list.length; i++) { // Går igenom så många skidåkare som valts och ger dom ett nummer
 			System.out.println("Beskriv spelare nummer " + (i + 1));
-			Skier skier = new Skier();
-			skier.SkierDeclaration(i);
+			Skier skier = Test.skierDeclarationtest(i);
 			list[i] = skier;
 		}
 		return list;

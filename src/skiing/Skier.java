@@ -27,44 +27,6 @@ public class Skier extends Person implements Comparable<Skier> {
 	public Skier() {
 	}
 
-	// Används för att anmäla sig som skidåkare med scanner
-	public void SkierDeclaration(int i) {
-		this.playerNumber = i + 1;
-		Scanner scan = new Scanner(System.in);
-
-		System.out.println("Vad heter spelare nummer " + playerNumber);
-		super.name = scan.next();
-
-		System.out.println("Hur snabb är " + name + "? (Svara i m/s) ");
-		this.speed = scan.nextDouble();
-
-		System.out.println("Vart börjar " + name + "? (Svara i meter på banan) ");
-		this.position = scan.nextDouble();
-
-		System.out.println("När börjar " + name
-				+ "? (Starting time, svara först timme, tryck enter och skriv minut, sen sekund) ");
-		for (int j = 0; j < sTime.length; j++) {
-			sTime[j] = scan.nextInt();
-			scan.close();
-		}
-	}
-
-//	Test om jag inte orkar skriva i alla individuella värden
-	public void SkierDeclarationtest(int i) {
-		this.playerNumber = i + 1;
-		System.out.println("Vad heter spelare nummer " + playerNumber);
-		this.name = ("Kalle" + this.playerNumber);
-		System.out.println("Hur snabb är " + name + "? (Svara i m/s) ");
-		this.speed = this.playerNumber * 0.5;
-		System.out.println("Vart börjar " + name + "? (Svara i meter på banan) ");
-		this.position = 0;
-		System.out.println("När börjar " + name
-				+ "? (Starting time, svara först timme, tryck enter och skriv minut, sen sekund) ");
-		for (int j = 0; j < sTime.length; j++) {
-			sTime[j] = 10;
-		}
-	}
-	
 	//Slumpar hastigheten lite grann
 	public void speedRandom() {
 		double random = Math.random() * 3;
