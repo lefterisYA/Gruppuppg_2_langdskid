@@ -27,7 +27,7 @@ public class Test {
 	}
 
 	public static void run() {
-		UI ui = new UI();
+		GUI ui = new GUI();
 		ui.titleText("hello world");
 		Clock clk = new Clock();
 
