@@ -1,7 +1,5 @@
 package skiing;
 
-import java.util.Scanner;
-
 public class Skier extends Person implements Comparable<Skier> {
 	int playerNumber; // Sparar personens nummer, i den ordning dom blivit anmälda i tävlingen, inte
 						// om dom kom först eller sist
