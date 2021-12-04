@@ -1,15 +1,14 @@
 package skiing;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class Skier extends Person implements Comparable<Skier> {
-	final static LinkedList<Skier> skiers = new LinkedList<Skier>(); //TODO
-
 	int playerNumber; // Sparar personens nummer, i den ordning dom blivit anmälda i tävlingen, inte
 						// om dom kom först eller sist
 	double speed; // Räknar speed i meter per sekund
 	double position; // Räknar position i meter i banan
 	int[] sTime = new int[3]; // Starttiden H,M,S
+	ArrayList<String> checkpointCheckList = new ArrayList<String>(); //TODO
 	boolean[] checkpointCheck; // Används för att se om personen gått igenom en checkpoint
 	boolean goal = false; // Används för att se om personen gått i mål
 	int goalTime;
@@ -24,12 +23,18 @@ public class Skier extends Person implements Comparable<Skier> {
 		this.sTime = startingTime;
 	}
 
+	public Skier(String name, double speed, double position) {
+		super.name = name;
+		this.speed = speed;
+		this.position = position;
+	}
+
 	// En constructor som jag använder för att deklarera en array (list) med
 	// skidåkare utan några värden.
 	public Skier() {
 	}
 
-	//Slumpar hastigheten lite grann
+	// Slumpar hastigheten lite grann
 	public void speedRandom() {
 		double random = Math.random() * 3;
 		if (Math.random() < 0.5) {
@@ -40,7 +45,7 @@ public class Skier extends Person implements Comparable<Skier> {
 			this.speed = 1;
 	}
 
-	//Jämför med tid i mål
+	// Jämför med tid i mål
 	@Override
 	public int compareTo(Skier o) {
 		if (goalTime > o.goalTime)
@@ -50,14 +55,16 @@ public class Skier extends Person implements Comparable<Skier> {
 		else
 			return 0;
 	}
-	
-	public boolean playerNumberExists(int playerNumber) {
-		//TODO
-		return false;
+
+	public boolean playerNumberExists() {
+		if (this.playerNumber > 0)
+			return true;
+		else
+			return false;
 	}
-	
+
 	public int getUniquePlayerNumber(int playerNumber) {
-		//TODO
+		// TODO
 		return 0;
 	}
 
