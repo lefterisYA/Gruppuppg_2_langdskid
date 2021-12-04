@@ -1,6 +1,10 @@
 package skiing;
 
+import java.util.LinkedList;
+
 public class Skier extends Person implements Comparable<Skier> {
+	final static LinkedList<Skier> skiers = new LinkedList<Skier>(); //TODO
+
 	int playerNumber; // Sparar personens nummer, i den ordning dom blivit anmälda i tävlingen, inte
 						// om dom kom först eller sist
 	double speed; // Räknar speed i meter per sekund
@@ -45,6 +49,16 @@ public class Skier extends Person implements Comparable<Skier> {
 			return -1;
 		else
 			return 0;
+	}
+	
+	public boolean playerNumberExists(int playerNumber) {
+		//TODO
+		return false;
+	}
+	
+	public int getUniquePlayerNumber(int playerNumber) {
+		//TODO
+		return 0;
 	}
 
 }
