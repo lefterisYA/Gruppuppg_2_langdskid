@@ -3,13 +3,13 @@ package skiing;
 public class Skier extends Person implements Comparable<Skier> {
 	int playerNumber; // Sparar personens nummer, i den ordning dom blivit anmälda i tävlingen, inte
 						// om dom kom först eller sist
-	double speed; // Räknar speed i meter per sekund
+	public double speed; // Räknar speed i meter per sekund
 	double position; // Räknar position i meter i banan
 	int[] sTime = new int[3]; // Starttiden H,M,S
 	boolean[] checkpointCheck; // Används för att se om personen gått igenom en checkpoint
 	boolean goal = false; // Används för att se om personen gått i mål
-	int goalTime;
-	int[] checkpointTime;
+	public int goalTime;
+	public int[] checkpointTime;
 
 	// constructor för skidåkare som just nu inte används
 	public Skier(String name, int playernumber, double speed, double position, int[] startingTime) {
