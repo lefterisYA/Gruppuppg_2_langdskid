@@ -9,14 +9,16 @@ package common;
  */
 
 public class Utils {
-
-	private static Utils utils = new Utils();
+	private static Utils utils;
 	
 	public static Utils getInstance() {
+		if ( utils == null )
+			utils = new Utils();
+
 		return utils;
-		
 	}
-	public static int[] timeConverter(int secondsTotal) {
+
+	public int[] timeConverter(int secondsTotal) {
 		int hours = 0;
 		int minutes = 0;
 		int seconds = 0;
