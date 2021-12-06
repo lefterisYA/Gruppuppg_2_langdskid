@@ -1,6 +1,5 @@
 package UI;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -8,10 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +27,7 @@ public class GUI implements UI {
 
 	String bodyText = "";
 
-	private ExecutorService executor = Executors.newSingleThreadExecutor();
+//	private ExecutorService executor = Executors.newSingleThreadExecutor();
 	private String usrInp;
 
 	public GUI() {
