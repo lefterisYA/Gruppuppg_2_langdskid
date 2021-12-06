@@ -26,7 +26,7 @@ public class ResultBoard {
 			/* 2. MELLANTIDER */
 			int[] checkPointTimes = skier.checkpointTime; // alla mellantider för en åkare
 			for(int j=0; j<checkPointTimes.length; j++) { // loopar alla mellantider
-				ui.postMsg("Mellantid " + (j+1) + ": " + Utils.toString(Utils.timeConverter(checkPointTimes[j])));
+				ui.postMsg("Mellantid " + (j+1) + ": " + Utils.toString(Utils.getInstance().timeConverter(checkPointTimes[j])));
 			}
 			
 			/* 3. MEDELHASTIGHET */
@@ -35,7 +35,7 @@ public class ResultBoard {
 			ui.postMsg("Medelhastighet: " + String.format("%.2f", speed) + " m/s"); // formatera double-strängen med 2 decimaler
 			
 			/* 4. SLUTTID */
-			String goalTime = Utils.toString(Utils.timeConverter(skier.goalTime));
+			String goalTime = Utils.toString(Utils.getInstance().timeConverter(skier.goalTime));
 			ui.postMsg("Sluttid: " + goalTime);
 			
 			ui.postMsg("===============================");
