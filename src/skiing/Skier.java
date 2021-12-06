@@ -3,12 +3,12 @@ package skiing;
 import java.util.ArrayList;
 
 public class Skier extends Person implements Comparable<Skier> {
-	int playerNumber; // Sparar personens nummer, i den ordning dom blivit anmälda i tävlingen, inte
-						// om dom kom först eller sist
+	int playerNumber; // Sparar personens nummer, deras tävlingsnummer, inte
+						// om dom är först eller sist
 	double speed; // Räknar speed i meter per sekund
 	double position; // Räknar position i meter i banan
 	int[] sTime = new int[3]; // Starttiden H,M,S
-	ArrayList<String> checkpointCheckList = new ArrayList<String>(); //TODO
+	static ArrayList<String> checkpointCheckList = new ArrayList<String>(); // TODO
 	boolean[] checkpointCheck; // Används för att se om personen gått igenom en checkpoint
 	boolean goal = false; // Används för att se om personen gått i mål
 	int goalTime;
@@ -21,6 +21,13 @@ public class Skier extends Person implements Comparable<Skier> {
 		this.speed = speed;
 		this.position = position;
 		this.sTime = startingTime;
+	}
+
+	public Skier(String name, int playernumber, double speed, double position) {
+		super.name = name;
+		this.playerNumber = playernumber;
+		this.speed = speed;
+		this.position = position;
 	}
 
 	public Skier(String name, double speed, double position) {
@@ -56,16 +63,14 @@ public class Skier extends Person implements Comparable<Skier> {
 			return 0;
 	}
 
-	public boolean playerNumberExists() {
-		if (this.playerNumber > 0)
-			return true;
-		else
-			return false;
+	public void setCheckpointCheckList(int numberOfCheckpoints) {
+		for (int i = 0; i < numberOfCheckpoints; i++) {
+			checkpointCheckList.add("false");
+		}
 	}
-
-	public int getUniquePlayerNumber(int playerNumber) {
-		// TODO
-		return 0;
+	
+	public void getCheckpointCheckList() {
+		checkpointCheckList.
 	}
 
 }
