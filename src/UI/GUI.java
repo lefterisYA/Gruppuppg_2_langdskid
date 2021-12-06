@@ -118,45 +118,34 @@ public class GUI implements UI {
 
 	@Override
 	public int getUserInt(String msg) {
-		Future<String> future = getFuture(msg);
-		try {
-			return Integer.parseInt( future.get() );
-		} catch (Exception e) { }
-		return 0;
+		return Integer.parseInt( getWhenAvail(msg) );
 	}
 
 	@Override
 	public String getUserStrng(String msg) {
-		Future<String> future = getFuture(msg);
-		try {
-			return future.get();
-		} catch (Exception e) { }
-		return "";
+		return getWhenAvail(msg);
 	}
 
 	@Override
 	public Double getUserDouble(String msg) {
-		Future<String> future = getFuture(msg);
-		try {
-			return Double.parseDouble( future.get() );
-		} catch (Exception e) { }
-		return 0.0;
+		return Double.parseDouble( getWhenAvail(msg) );
 	}
 	
-	private Future<String> getFuture(String msg) {
+	private String getWhenAvail(String msg) {
 		postMsg(msg);
+		runClock();
 		btnTest.removeActionListener(btnTest.getActionListeners()[0] );
 		btnTest.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) { usrInp=textField.getText(); }
 		});
 		
-		return executor.submit(() -> {
-			while (usrInp==null)
+		while (usrInp==null)
+			try {
 				Thread.sleep(100);
-			String val=usrInp;
-			usrInp=null;
-			return val;
-		});
+			} catch (InterruptedException e1) { }
+		String val=usrInp;
+		usrInp=null;
+		return val;
 	}
 
 	private void runClock() {
@@ -168,7 +157,7 @@ public class GUI implements UI {
 	    	public void run() {
 //	    		System.out.println( Clock.getCurrTimeInAscii() );
 //	    		ui.bodyText( "\n" + clk.getCurrTimeInAscii() );
-	    		bodyText( "\n" + clk.getCurrTime() );
+	    		titleText( "\n" + clk.getCurrTime() );
 	    	}
 	    }, 0, 20, TimeUnit.MILLISECONDS);
 	}
