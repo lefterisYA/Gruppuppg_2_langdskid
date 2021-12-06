@@ -1,27 +1,15 @@
 package test;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 import UI.*;
 import skiing.Skier;
 
 public class Test {
 	public static void main(String[] args) {
-//		testConsoleClock();
-		run();
-		
-//		System.exit(0);
-		
+		UI ui1 = new GUI();
+//		UI ui2 = new Console();
+
 	}
 
-	private static void testConsoleClock() {
-	}
-
-	public static void run() {
-		GUI ui = new GUI();
-	}
 
 //	Test om jag inte orkar skriva i alla individuella värden
 	public static Skier skierDeclarationtest(int i) {

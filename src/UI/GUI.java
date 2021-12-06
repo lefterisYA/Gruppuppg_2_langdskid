@@ -8,7 +8,10 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -23,8 +26,13 @@ public class GUI implements UI {
 	JLabel label1 = new JLabel("Test");
 	JButton btnTest = new JButton("Press");
 	JButton btnClose = new JButton("CLOSE");
-	JTextField textField = new JTextField("This is a text");
+	JTextField textField = new JTextField("", 5);
 	JTextArea textArea = new JTextArea("This is also text");
+
+	String bodyText = "";
+
+	private ExecutorService executor = Executors.newSingleThreadExecutor();
+	private String usrInp;
 
 	public GUI() {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -34,25 +42,26 @@ public class GUI implements UI {
 		textArea.setEditable(false);
 		textArea.setBounds(0, 0, 600, 200);
 
-		textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 44));
+//		textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 44));
+		textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 		//    	   textArea.setBackground(new Color(0,0,0,0));
 		textArea.setOpaque(false);
 		btnClose.setBounds(0, 0, 50, 50);
 		btnTest.setBounds(0, 0, 50, 50);
 
 		btnClose.addActionListener(new ActionListener() {
-			@Override
 			public void actionPerformed(ActionEvent e) { System.exit(0); }
 		});
 
 		btnTest.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) { bodyText("Hello world".repeat(10)+"!\nfoo bar"); }
+			public void actionPerformed(ActionEvent e) { runClock(); }
 		});
 
 		panel.add(label1, 0, 0, 2);
 		panel.add(textArea, 0, 1, 2);
 
+		panel.add(textField, 0, 2, 2);
+		 
 		panel.add(btnTest, 0, 1, true);
 		panel.add(btnClose, 1, 0, true);
 
@@ -60,8 +69,12 @@ public class GUI implements UI {
 		frame.pack(); // resize frame to panel
 		frame.setVisible(true);
 		
-		runClock(this);
+        //		runClock(this);
 		//    	   frame.getContentPane().add(btnClose);
+	}
+	
+	public void showWelcomeScreen() {
+		
 	}
 
 	public void titleText(String text) {
@@ -80,35 +93,73 @@ public class GUI implements UI {
 
 	@Override
 	public Skier addSkierDialog(int playerNumber) {
-		// TODO Auto-generated method stub
-		return null;
+		playerNumber++;
+
+		String name = getUserStrng("Vad heter spelare nummer " + playerNumber);
+
+		Double speed = getUserDouble("Hur snabb är " + name + "? (Svara i m/s) ");
+
+		Double position = getUserDouble("Vart börjar " + name + "? (Svara i meter på banan) ");
+
+		int[] sTime = new int[3];
+		for (int j = 0; j < sTime.length; j++) {
+			sTime[j] = getUserInt("När börjar " + name
+				+ "? (Starting time, svara först timme, tryck enter och skriv minut, sen sekund) ");
+		}
+		
+		return new Skier(name, playerNumber, speed, position, sTime);
 	}
 
 	@Override
 	public void postMsg(String msg) {
-		// TODO Auto-generated method stub
-
+		bodyText += "\n" + msg;
+		bodyText(bodyText);
 	}
 
 	@Override
 	public int getUserInt(String msg) {
-		// TODO Auto-generated method stub
+		Future<String> future = getFuture(msg);
+		try {
+			return Integer.parseInt( future.get() );
+		} catch (Exception e) { }
 		return 0;
 	}
 
 	@Override
 	public String getUserStrng(String msg) {
-		// TODO Auto-generated method stub
-		return null;
+		Future<String> future = getFuture(msg);
+		try {
+			return future.get();
+		} catch (Exception e) { }
+		return "";
 	}
 
 	@Override
 	public Double getUserDouble(String msg) {
-		// TODO Auto-generated method stub
-		return null;
+		Future<String> future = getFuture(msg);
+		try {
+			return Double.parseDouble( future.get() );
+		} catch (Exception e) { }
+		return 0.0;
 	}
 	
-	private void runClock(GUI ui) {
+	private Future<String> getFuture(String msg) {
+		postMsg(msg);
+		btnTest.removeActionListener(btnTest.getActionListeners()[0] );
+		btnTest.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) { usrInp=textField.getText(); }
+		});
+		
+		return executor.submit(() -> {
+			while (usrInp==null)
+				Thread.sleep(100);
+			String val=usrInp;
+			usrInp=null;
+			return val;
+		});
+	}
+
+	private void runClock() {
 		Clock clk = new Clock();
 
 	    ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
@@ -117,7 +168,7 @@ public class GUI implements UI {
 	    	public void run() {
 //	    		System.out.println( Clock.getCurrTimeInAscii() );
 //	    		ui.bodyText( "\n" + clk.getCurrTimeInAscii() );
-	    		ui.bodyText( "\n" + clk.getCurrTime() );
+	    		bodyText( "\n" + clk.getCurrTime() );
 	    	}
 	    }, 0, 20, TimeUnit.MILLISECONDS);
 	}

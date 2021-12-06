@@ -3,6 +3,7 @@ package skiing;
 import java.util.Arrays;
 
 import UI.Console;
+import UI.GUI;
 import UI.UI;
 import common.Utils;
 import skiingresult.ResultBoard;
@@ -16,7 +17,7 @@ public class Tempmain {
 		
 		Utils utils = Utils.getInstance(); // get singelton instance of class Utils
 		 
-		ui = new Console();
+		ui = new GUI();
 		// Gör en array med skidåkare utan några värden
 		int amountOfPlayers = ui.getUserInt("Hur många tävlare?");
 		Skier[] list = new Skier[amountOfPlayers];
@@ -106,7 +107,7 @@ public class Tempmain {
 		Skier[] list = new Skier[amountOfPlayers];
 		for (int i = 0; i < list.length; i++) { // Går igenom så många skidåkare som valts och ger dom ett nummer
 			ui.postMsg("Beskriv spelare nummer " + (i + 1));
-			Skier skier = Test.skierDeclarationtest(i);
+			Skier skier = ui.addSkierDialog(i);
 			list[i] = skier;
 		}
 		return list;
