@@ -11,7 +11,9 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
-public class GUI {
+import skiing.Skier;
+
+public class GUI implements UI {
        JFrame frame = new JFrame("My First GUI");
        Panel panel = new Panel(new GridBagLayout(), new GridBagConstraints());
 
@@ -70,6 +72,36 @@ public class GUI {
     	   textArea.setText(text);
 //    	   textArea.setBackground(new Color(0,0,0,0));
        }
+
+	@Override
+	public Skier addSkierDialog(int playerNumber) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void postMsg(String msg) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getUserInt(String msg) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public String getUserStrng(String msg) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Double getUserDouble(String msg) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
 
 class Panel extends JPanel {

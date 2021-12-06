@@ -2,6 +2,7 @@ package skiing;
 
 import java.util.Arrays;
 
+import UI.Console;
 import UI.UI;
 import common.Utils;
 import skiingresult.ResultBoard;
@@ -15,7 +16,7 @@ public class Tempmain {
 		
 		Utils utils = Utils.getInstance(); // get singelton instance of class Utils
 		 
-		ui = new UI();
+		ui = new Console();
 		// Gör en array med skidåkare utan några värden
 		int amountOfPlayers = ui.getUserInt("Hur många tävlare?");
 		Skier[] list = new Skier[amountOfPlayers];

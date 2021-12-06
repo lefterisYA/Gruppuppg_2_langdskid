@@ -1,11 +1,12 @@
 package skiingresult;
+import UI.Console;
 import UI.UI;
 import common.Utils;
 import skiing.*;
 
 public class ResultBoard {
 
-	static UI ui = new UI();
+	static UI ui = new Console();
 	
 	public ResultBoard() {
 	}
