@@ -8,70 +8,75 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.*;
 
 import skiing.Skier;
 
 public class GUI implements UI {
-       JFrame frame = new JFrame("My First GUI");
-       Panel panel = new Panel(new GridBagLayout(), new GridBagConstraints());
+	JFrame frame = new JFrame("My First GUI");
+	Panel panel = new Panel(new GridBagLayout(), new GridBagConstraints());
 
-       JLabel label1 = new JLabel("Test");
-       JButton btnTest = new JButton("Press");
-       JButton btnClose = new JButton("CLOSE");
-       JTextField textField = new JTextField("This is a text");
-       JTextArea textArea = new JTextArea("This is also text");
-       
-       public GUI() {
-    	   frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//    	   frame.setSize(600,300);
-    	   frame.setMinimumSize(new Dimension(600,300));
+	JLabel label1 = new JLabel("Test");
+	JButton btnTest = new JButton("Press");
+	JButton btnClose = new JButton("CLOSE");
+	JTextField textField = new JTextField("This is a text");
+	JTextArea textArea = new JTextArea("This is also text");
 
-    	   textArea.setEditable(false);
-    	   textArea.setBounds(0, 0, 600, 200);
+	public GUI() {
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//    	   frame.setSize(600,300);
+		frame.setMinimumSize(new Dimension(600,300));
 
-    	   textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 44));
-//    	   textArea.setBackground(new Color(0,0,0,0));
-    	   textArea.setOpaque(false);
-    	   btnClose.setBounds(0, 0, 50, 50);
-    	   btnTest.setBounds(0, 0, 50, 50);
+		textArea.setEditable(false);
+		textArea.setBounds(0, 0, 600, 200);
 
-    	   btnClose.addActionListener(new ActionListener() {
-    		   @Override
-    		   public void actionPerformed(ActionEvent e) { System.exit(0); }
-    	   });
+		textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 44));
+		//    	   textArea.setBackground(new Color(0,0,0,0));
+		textArea.setOpaque(false);
+		btnClose.setBounds(0, 0, 50, 50);
+		btnTest.setBounds(0, 0, 50, 50);
 
-    	   btnTest.addActionListener(new ActionListener() {
-    		   @Override
-    		   public void actionPerformed(ActionEvent e) { bodyText("Hello world".repeat(10)+"!\nfoo bar"); }
-    	   });
+		btnClose.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) { System.exit(0); }
+		});
 
-    	   panel.add(label1, 0, 0, 2);
-    	   panel.add(textArea, 0, 1, 2);
+		btnTest.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) { bodyText("Hello world".repeat(10)+"!\nfoo bar"); }
+		});
 
-    	   panel.add(btnTest, 0, 1, true);
-    	   panel.add(btnClose, 1, 0, true);
+		panel.add(label1, 0, 0, 2);
+		panel.add(textArea, 0, 1, 2);
 
-    	   frame.getContentPane().add(panel);
-    	   frame.pack(); // resize frame to panel
-    	   frame.setVisible(true);
-//    	   frame.getContentPane().add(btnClose);
-       }
-       
-       public void titleText(String text) {
-    	   label1.setText(text);
-       }
+		panel.add(btnTest, 0, 1, true);
+		panel.add(btnClose, 1, 0, true);
 
-       public void changeTextRz(String text) {
-    	   textArea.setText(text);
-    	   frame.pack();
-       }
+		frame.getContentPane().add(panel);
+		frame.pack(); // resize frame to panel
+		frame.setVisible(true);
+		
+		runClock(this);
+		//    	   frame.getContentPane().add(btnClose);
+	}
 
-       public void bodyText(String text) {
-    	   textArea.setText(text);
-//    	   textArea.setBackground(new Color(0,0,0,0));
-       }
+	public void titleText(String text) {
+		label1.setText(text);
+	}
+
+	public void changeTextRz(String text) {
+		textArea.setText(text);
+		frame.pack();
+	}
+
+	public void bodyText(String text) {
+		textArea.setText(text);
+		//    	   textArea.setBackground(new Color(0,0,0,0));
+	}
 
 	@Override
 	public Skier addSkierDialog(int playerNumber) {
@@ -82,7 +87,7 @@ public class GUI implements UI {
 	@Override
 	public void postMsg(String msg) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -101,6 +106,20 @@ public class GUI implements UI {
 	public Double getUserDouble(String msg) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private void runClock(GUI ui) {
+		Clock clk = new Clock();
+
+	    ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+	    exec.scheduleAtFixedRate(new Runnable() {
+	    	@Override
+	    	public void run() {
+//	    		System.out.println( Clock.getCurrTimeInAscii() );
+//	    		ui.bodyText( "\n" + clk.getCurrTimeInAscii() );
+	    		ui.bodyText( "\n" + clk.getCurrTime() );
+	    	}
+	    }, 0, 20, TimeUnit.MILLISECONDS);
 	}
 }
 
