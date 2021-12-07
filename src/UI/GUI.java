@@ -131,7 +131,11 @@ public class GUI implements UI {
 
 	@Override
 	public int getUserInt(String msg) {
-		return Integer.parseInt( getWhenAvail(msg) );
+		try {
+			return Integer.parseInt( getWhenAvail(msg) );
+		} catch ( Exception e ) {
+			return getUserInt("Du måste ange tal i siffor!");
+		}
 	}
 
 	@Override
@@ -141,7 +145,11 @@ public class GUI implements UI {
 
 	@Override
 	public Double getUserDouble(String msg) {
-		return Double.parseDouble( getWhenAvail(msg) );
+		try {
+			return Double.parseDouble( getWhenAvail(msg) );
+		} catch ( Exception e ) {
+			return getUserDouble("Du måste ange tal i siffor!");
+		}
 	}
 	
 	private String getWhenAvail(String msg) {
