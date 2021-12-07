@@ -5,7 +5,6 @@ import java.util.Arrays;
 import UI.UI;
 import test.Test;
 
-
 public class Tempmain {
 	static UI ui;
 
@@ -17,12 +16,12 @@ public class Tempmain {
 
 		// Deklarerade skiers sätts in i listan
 		list = playerDeclaration(amountOfPlayers);
-		
-		//Slumpar hastigheten lite för alla skidåkare
+
+		// Slumpar hastigheten lite för alla skidåkare
 		for (int i = 0; i < list.length; i++) {
-			ui.postMsg(list[i].speed+"m/s");
+			ui.postMsg(list[i].speed + "m/s");
 			list[i].speedRandom();
-			ui.postMsg(list[i].speed+"m/s");
+			ui.postMsg(list[i].speed + "m/s");
 		}
 
 		// Skidbanan konstrueras
@@ -57,7 +56,8 @@ public class Tempmain {
 				ui.postMsg(
 						"Checkpoint " + (j + 1) + " vid " + toString(timeConverter(list[i].checkpointTime[j])) + ". ");
 			}
-			ui.postMsg(list[i].speed+"m/s");;
+			ui.postMsg(list[i].speed + "m/s");
+			;
 			ui.postMsg("\n\n");
 		}
 	}
@@ -88,8 +88,6 @@ public class Tempmain {
 			secondsPassedTotal++;
 		}
 	}
-	
-
 
 	// Deklarerar skidåkare
 	public static Skier[] playerDeclaration(int amountOfPlayers) {

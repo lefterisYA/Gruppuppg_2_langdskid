@@ -8,7 +8,7 @@ public class Skier extends Person implements Comparable<Skier> {
 	double speed; // Räknar speed i meter per sekund
 	double position; // Räknar position i meter i banan
 	int[] sTime = new int[3]; // Starttiden H,M,S
-	static ArrayList<String> checkpointCheckList = new ArrayList<String>(); // TODO
+	ArrayList<String> checkpointCheckList = new ArrayList<String>(); // TODO
 	boolean[] checkpointCheck; // Används för att se om personen gått igenom en checkpoint
 	boolean goal = false; // Används för att se om personen gått i mål
 	int goalTime;
@@ -68,9 +68,8 @@ public class Skier extends Person implements Comparable<Skier> {
 			checkpointCheckList.add("false");
 		}
 	}
-	
+
 	public void getCheckpointCheckList() {
-		checkpointCheckList.
 	}
 
 }
