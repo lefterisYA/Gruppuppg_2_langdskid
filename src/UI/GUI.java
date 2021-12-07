@@ -62,7 +62,7 @@ public class GUI implements UI {
 		textField.addKeyListener((KeyListener) new KeyListener() {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode()==KeyEvent.VK_ENTER){
-					usrInp=textField.getText();
+					readUsrInp();
 				}
 			}
 
@@ -149,7 +149,7 @@ public class GUI implements UI {
 		runClock();
 		btnTest.removeActionListener(btnTest.getActionListeners()[0] );
 		btnTest.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) { usrInp=textField.getText(); }
+			public void actionPerformed(ActionEvent e) { readUsrInp(); }
 		});
 		
 		while (usrInp==null)
@@ -159,6 +159,11 @@ public class GUI implements UI {
 		String val=usrInp;
 		usrInp=null;
 		return val;
+	}
+	
+	private void readUsrInp() {
+		usrInp=textField.getText();	
+		textField.setText("");
 	}
 
 	private void runClock() {
