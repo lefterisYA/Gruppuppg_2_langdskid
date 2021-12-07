@@ -13,23 +13,23 @@ public class SkierList {
 		return skierList;
 	}
 	
-	public void addSkierList(Skier skiboi){
-		skierLinkedList.add(skiboi);
-		if (playerNumberExists(skiboi)==false)
-		setPlayerNumberUnique(skiboi);	
+	public void addSkierList(Skier skier){
+		skierLinkedList.add(skier);
+		if (playerNumberExists(skier)==false)
+		setPlayerNumberUnique(skier);	
 	}
 	
-	public boolean playerNumberExists(Skier skiboi) {
-		if (skiboi.playerNumber > 0)
+	public boolean playerNumberExists(Skier skier) {
+		if (skier.playerNumber > 0)
 			return true;
 		else
 			return false;
 	}
-	public boolean playerNumberUnique(Skier skiboi) {
+	public boolean playerNumberUnique(Skier skier) {
 		Skier[] skierList = new Skier[skierLinkedList.size()];
 		skierList = getSkierList();
 		for (int i = 0; i < skierList.length; i++) {
-			if (skiboi.playerNumber==skierList[i].playerNumber) {
+			if (skier.playerNumber==skierList[i].playerNumber) {
 				return false;
 			}
 		}
@@ -47,9 +47,9 @@ public class SkierList {
 		return true;
 	}
 	
-	public void setPlayerNumberUnique(Skier skiboi) {
-		skiboi.playerNumber=(skierLinkedList.indexOf(skiboi)+1);
-		skierLinkedList.set(skierLinkedList.indexOf(skiboi), skiboi);
+	public void setPlayerNumberUnique(Skier skier) {
+		skier.playerNumber=(skierLinkedList.indexOf(skier)+1);
+		skierLinkedList.set(skierLinkedList.indexOf(skier), skier);
 	}
 	
 	public void assignAllPlayerNumbersUnique() {
