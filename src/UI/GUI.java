@@ -21,13 +21,6 @@ import javax.swing.*;
 import skiing.Skier;
 
 public class GUI implements UI {
-	public enum Windows {
-		INTRO,
-		CREATE_RACE,
-		PRINT_STRTLIST,
-		RGSTR_SKIER
-	}
-	
 	private volatile boolean newValExists = false;
 	JFrame frame = new JFrame("My First GUI");
 	Panel panel = new Panel(new GridBagLayout(), new GridBagConstraints());
@@ -210,6 +203,18 @@ public class GUI implements UI {
 		} catch ( Exception e ) {
 			return getUserDouble("Du måste ange tal i siffor!");
 		}
+	}
+
+	@Override
+	public void showScreen(Screen newScreen) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Screen getNextScreen() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
 

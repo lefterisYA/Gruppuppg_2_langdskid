@@ -1,6 +1,7 @@
 package main;
 
 import UI.GUI;
+import UI.Screen;
 import UI.UI;
 import common.Utils;
 import skiing.SkiSlope;
@@ -21,16 +22,44 @@ public class Main {
 class GameLogic {
 	private final UI ui;
 	
+	// Race race;
+	
 	public GameLogic(UI ui) {
 		this.ui=ui;
 	}
 	
 	// MASSA TODO I GUI KLASSEN
 	public void run() {
-		ui.showIntroScreen();
-		// GUI.Windows nextWin = ui.showIntroScreen(); // TODO, returnera ett fönster
-		// ui.setWindow(GUI.Windows nextWin);
-//		ui.addSkierDialog(2);
+		int numOfPlayers = ui.getUserInt("Hur många spelare?");
+		playerDeclaration(numOfPlayers);
+		boolean xxx = true;
+		if (xxx) return;
+
+		ui.showScreen(Screen.INTRO);
+
+		while ( true ) {
+			// TODO i GUI KLASSEN, implementera följande metoder:
+			Screen nextScreen = ui.getNextScreen(); // TODO, returnera ett fönster
+
+			switch (nextScreen) {
+			case CREATE_RACE: 
+				ui.showScreen(Screen.INTRO);
+				String level = ui.getUserStrng("Ange Klass:");
+				String time = ui.getUserStrng("Ange starttid:");
+				String time_interval = ui.getUserStrng("Ange startintervall:");
+				int first_startnumber  = ui.getUserInt("Ange första startnummer");
+				// race = new Race(level, time, time_interval);
+			case INTRO:
+				break;
+			case PRINT_STRTLIST:
+				break;
+			case RGSTR_SKIER:
+				ui.showScreen(Screen.RGSTR_SKIER);
+				String name = ui.getUserStrng("Ange namn på tävlande.");
+				String club = ui.getUserStrng("Ange tävlandes klubb");
+				break;
+			}
+		} 
 	}
 	
 	// Deklarerar skidåkare

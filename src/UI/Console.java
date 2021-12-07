@@ -61,12 +61,23 @@ public class Console implements UI {
 	@Override
 	public void showIntroScreen() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void clearMsgScreen() {
 		// Console doesn't support clearing inside of Eclipse. 
 		System.out.println("\n".repeat(10));
+	}
+
+	@Override
+	public void showScreen(Screen newScreen) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Screen getNextScreen() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

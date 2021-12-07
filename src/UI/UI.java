@@ -16,4 +16,6 @@ public interface UI {
 	public abstract Double getUserDouble(String msg);
 	public abstract void showIntroScreen();
 	public abstract void clearMsgScreen();
+	public abstract void showScreen(Screen newScreen);
+	public abstract Screen getNextScreen();
 }
