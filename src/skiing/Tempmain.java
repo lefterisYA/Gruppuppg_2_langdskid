@@ -2,14 +2,20 @@ package skiing;
 
 import java.util.Arrays;
 
+import UI.Console;
+import UI.GUI;
 import UI.UI;
+import common.Utils;
+import skiingresult.ResultBoard;
 import test.Test;
 
 public class Tempmain {
 	static UI ui;
 
 	public static void main(String[] args) {
-		ui = new UI();
+		Utils utils = Utils.getInstance(); // get singelton instance of class Utils
+		 
+		ui = new GUI();
 		// Gör en array med skidåkare utan några värden
 		int amountOfPlayers = ui.getUserInt("Hur många tävlare?");
 		Skier[] list = new Skier[amountOfPlayers];
@@ -43,6 +49,7 @@ public class Tempmain {
 		Arrays.sort(list);
 
 		// går igenom alla spelare och printar ut resultaten
+		/*
 		for (int i = 0; i < list.length; i++) {
 			if (list[0] == list[i])
 				ui.postMsg("En riktig vinnare! Första plats går till " + list[i].name + " som");
@@ -51,15 +58,18 @@ public class Tempmain {
 			else
 				ui.postMsg(list[i].name);
 			ui.postMsg(
-					" kom " + (i + 1) + "a i mål vid " + toString(timeConverter(list[i].goalTime)) + " och hen satte ");
+					" kom " + (i + 1) + "a i mål vid " + Utils.toString(Utils.timeConverter(list[i].goalTime)) + " och hen satte ");
 			for (int j = 0; j < list[i].checkpointTime.length; j++) {
 				ui.postMsg(
-						"Checkpoint " + (j + 1) + " vid " + toString(timeConverter(list[i].checkpointTime[j])) + ". ");
+						"Checkpoint " + (j + 1) + " vid " + Utils.toString(Utils.timeConverter(list[i].checkpointTime[j])) + ". ");
 			}
 			ui.postMsg(list[i].speed + "m/s");
 			;
 			ui.postMsg("\n\n");
 		}
+		*/
+		ResultBoard board = new ResultBoard();
+		board.test(list);
 	}
 
 	private static void Race(Skier[] list, SkiSlope skiSlope) {
@@ -79,7 +89,7 @@ public class Tempmain {
 					}
 				}
 				if (list[j].position >= skiSlope.trackLength && list[j].goal == false) {
-					list[j].goalTime = secondsPassedTotal; // Den här if-satsen kollar ifall de har gått i mål.
+					list[j].setGoalTime( secondsPassedTotal ); // Den här if-satsen kollar ifall de har gått i mål.
 					list[j].goal = true;
 				}
 			}
@@ -94,50 +104,11 @@ public class Tempmain {
 		Skier[] list = new Skier[amountOfPlayers];
 		for (int i = 0; i < list.length; i++) { // Går igenom så många skidåkare som valts och ger dom ett nummer
 			ui.postMsg("Beskriv spelare nummer " + (i + 1));
-			Skier skier = Test.skierDeclarationtest(i);
+			Skier skier = ui.addSkierDialog(i);
 			list[i] = skier;
 		}
 		return list;
 	}
 
-	// Konverterar totala sekunder till timmar/minuter/sekunder
-	public static int[] timeConverter(int secondsTotal) {
-		int hours = 0;
-		int minutes = 0;
-		int seconds = 0;
-
-		if (secondsTotal >= 60) {
-			minutes = secondsTotal / 60;
-			seconds = secondsTotal % 60;
-			if (minutes >= 60) {
-				hours = minutes / 60;
-				minutes = minutes % 60;
-			}
-		} else
-			seconds = secondsTotal;
-		if (hours >= 1) {
-			int[] hms = { hours, minutes, seconds };
-			return hms;
-		}
-		if (minutes >= 1) {
-			int[] ms = { 0, minutes, seconds };
-			return ms;
-		} else {
-			int[] s = { 0, 0, seconds };
-			return s;
-		}
-
-	}
-
-	public static String toString(int[] hms) {
-		return (hms[0] + ":" + hms[1] + ":" + hms[2]);
-//		if (hms[0]>0)
-//			return (hms[0]+":"+hms[1]+":"+hms[2]);
-//		if (hms[1]>0)
-//			return (hms[1]+":"+hms[2]);
-//		if (hms[2]>0)
-//			return (hms[2]+"");
-//		else
-//			return ("Error");
-	}
+		
 }

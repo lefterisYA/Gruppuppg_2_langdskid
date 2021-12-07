@@ -1,6 +1,5 @@
 package UI;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -8,68 +7,196 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.*;
 
-public class GUI {
-       JFrame frame = new JFrame("My First GUI");
-       Panel panel = new Panel(new GridBagLayout(), new GridBagConstraints());
+import skiing.Skier;
 
-       JLabel label1 = new JLabel("Test");
-       JButton btnTest = new JButton("Press");
-       JButton btnClose = new JButton("CLOSE");
-       JTextField textField = new JTextField("This is a text");
-       JTextArea textArea = new JTextArea("This is also text");
-       
-       public GUI() {
-    	   frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//    	   frame.setSize(600,300);
-    	   frame.setMinimumSize(new Dimension(600,300));
+public class GUI implements UI {
+	JFrame frame = new JFrame("My First GUI");
+	Panel panel = new Panel(new GridBagLayout(), new GridBagConstraints());
 
-    	   textArea.setEditable(false);
-    	   textArea.setBounds(0, 0, 600, 200);
+	JLabel label1 = new JLabel("Test");
+	JButton btnTest = new JButton("Press");
+	JButton btnClose = new JButton("CLOSE");
+	JTextField textField = new JTextField("", 5);
+	JTextArea textArea = new JTextArea("This is also text");
 
-    	   textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 44));
-//    	   textArea.setBackground(new Color(0,0,0,0));
-    	   textArea.setOpaque(false);
-    	   btnClose.setBounds(0, 0, 50, 50);
-    	   btnTest.setBounds(0, 0, 50, 50);
+	private volatile boolean newValExists = false;
 
-    	   btnClose.addActionListener(new ActionListener() {
-    		   @Override
-    		   public void actionPerformed(ActionEvent e) { System.exit(0); }
-    	   });
+	String bodyText = "";
 
-    	   btnTest.addActionListener(new ActionListener() {
-    		   @Override
-    		   public void actionPerformed(ActionEvent e) { bodyText("Hello world".repeat(10)+"!\nfoo bar"); }
-    	   });
+//	private ExecutorService executor = Executors.newSingleThreadExecutor();
+	private String usrInp;
 
-    	   panel.add(label1, 0, 0, 2);
-    	   panel.add(textArea, 0, 1, 2);
+	public GUI() {
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//    	   frame.setSize(600,300);
+		frame.setMinimumSize(new Dimension(900,800));
 
-    	   panel.add(btnTest, 0, 1, true);
-    	   panel.add(btnClose, 1, 0, true);
+		textArea.setEditable(false);
+		textArea.setBounds(0, 0, 600, 200);
 
-    	   frame.getContentPane().add(panel);
-    	   frame.pack(); // resize frame to panel
-    	   frame.setVisible(true);
-//    	   frame.getContentPane().add(btnClose);
-       }
-       
-       public void titleText(String text) {
-    	   label1.setText(text);
-       }
+//		textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 44));
+		textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+		//    	   textArea.setBackground(new Color(0,0,0,0));
+		textArea.setOpaque(false);
+		btnClose.setBounds(0, 0, 50, 50);
+		btnTest.setBounds(0, 0, 50, 50);
 
-       public void changeTextRz(String text) {
-    	   textArea.setText(text);
-    	   frame.pack();
-       }
+		btnClose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) { System.exit(0); }
+		});
 
-       public void bodyText(String text) {
-    	   textArea.setText(text);
-//    	   textArea.setBackground(new Color(0,0,0,0));
-       }
+		btnTest.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) { runClock(); }
+		});
+
+		textField.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) { runClock(); }
+		});
+
+		textField.addKeyListener((KeyListener) new KeyListener() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode()==KeyEvent.VK_ENTER){
+					readUsrInp();
+				}
+			}
+
+			@Override public void keyReleased(KeyEvent arg0) { }
+			@Override public void keyTyped(KeyEvent arg0) { }
+		});
+
+		panel.add(label1, 0, 0, 2);
+		panel.add(textArea, 0, 1, 2);
+
+		panel.add(textField, 0, 2, 2);
+		 
+		panel.add(btnTest, 0, 1, true);
+		panel.add(btnClose, 1, 0, true);
+
+		frame.getContentPane().add(panel);
+		frame.pack(); // resize frame to panel
+		frame.setVisible(true);
+		
+        //		runClock(this);
+		//    	   frame.getContentPane().add(btnClose);
+	}
+	
+	public void showWelcomeScreen() {
+		
+	}
+
+	public void titleText(String text) {
+		label1.setText(text);
+	}
+
+	public void changeTextRz(String text) {
+		textArea.setText(text);
+		frame.pack();
+	}
+
+	public void bodyText(String text) {
+		textArea.setText(text);
+		//    	   textArea.setBackground(new Color(0,0,0,0));
+	}
+
+	@Override
+	public Skier addSkierDialog(int playerNumber) {
+		playerNumber++;
+
+		String name = getUserStrng("Vad heter spelare nummer " + playerNumber);
+
+		Double speed = getUserDouble("Hur snabb är " + name + "? (Svara i m/s) ");
+
+		Double position = getUserDouble("Vart börjar " + name + "? (Svara i meter på banan) ");
+
+		int[] sTime = new int[3];
+		for (int j = 0; j < sTime.length; j++) {
+			sTime[j] = getUserInt("När börjar " + name
+				+ "? (Starting time, svara först timme, tryck enter och skriv minut, sen sekund) ");
+		}
+		
+		return new Skier(name, playerNumber, speed, position, sTime);
+	}
+
+	@Override
+	public void postMsg(String msg) {
+		bodyText += "\n" + msg;
+		bodyText(bodyText);
+	}
+
+	@Override
+	public int getUserInt(String msg) {
+		try {
+			return Integer.parseInt( getWhenAvail(msg) );
+		} catch ( Exception e ) {
+			return getUserInt("Du måste ange tal i siffor!");
+		}
+	}
+
+	@Override
+	public String getUserStrng(String msg) {
+		return getWhenAvail(msg);
+	}
+
+	@Override
+	public Double getUserDouble(String msg) {
+		try {
+			return Double.parseDouble( getWhenAvail(msg) );
+		} catch ( Exception e ) {
+			return getUserDouble("Du måste ange tal i siffor!");
+		}
+	}
+	
+	private String getWhenAvail(String msg) {
+		postMsg(msg);
+		runClock();
+		btnTest.removeActionListener(btnTest.getActionListeners()[0] );
+		btnTest.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) { readUsrInp(); }
+		});
+		
+		while (!newValExists)
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e1) { }
+		String val=usrInp;
+		newValExists=false;
+		usrInp=null;
+		return val;
+	}
+	
+	private void readUsrInp() {
+		usrInp=textField.getText();	
+		textField.setText("");
+		newValExists=true;
+	}
+
+	private void runClock() {
+		Clock clk = new Clock();
+
+	    ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+	    exec.scheduleAtFixedRate(new Runnable() {
+	    	@Override
+	    	public void run() {
+//	    		System.out.println( Clock.getCurrTimeInAscii() );
+//	    		ui.bodyText( "\n" + clk.getCurrTimeInAscii() );
+	    		titleText( "\n" + clk.getCurrTime() );
+	    	}
+	    }, 0, 20, TimeUnit.MILLISECONDS);
+	}
+
+	@Override
+	public void showIntroScreen() {
+		// TODO Auto-generated method stub
+		
+	}
 }
 
 class Panel extends JPanel {

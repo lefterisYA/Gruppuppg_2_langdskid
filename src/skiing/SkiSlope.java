@@ -1,9 +1,8 @@
 package skiing;
 
 public class SkiSlope {
-	double trackLength;
-	double[] checkpoints;
-
+	public double trackLength;
+	public double[] checkpoints;
 	public SkiSlope() {
 
 	}

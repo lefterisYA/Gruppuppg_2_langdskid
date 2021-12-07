@@ -3,17 +3,16 @@ package skiing;
 import java.util.ArrayList;
 
 public class Skier extends Person implements Comparable<Skier> {
-	int playerNumber; // Sparar personens nummer, deras tävlingsnummer, inte
+	public int playerNumber; // Sparar personens nummer, deras tävlingsnummer, inte
 						// om dom är först eller sist
-	double speed; // Räknar speed i meter per sekund
-	double position; // Räknar position i meter i banan
-	int[] sTime = new int[3]; // Starttiden H,M,S
-	ArrayList<String> checkpointCheckList = new ArrayList<String>(); // Används för att se om personen gått igenom en checkpoint
-	boolean goal = false; // Används för att se om personen gått i mål
-	int goalTime;
+	public double speed; // Räknar speed i meter per sekund
+	public double position; // Räknar position i meter i banan
+	public int[] sTime = new int[3]; // Starttiden H,M,S
+	public ArrayList<String> checkpointCheckList = new ArrayList<String>(); // Används för att se om personen gått igenom en checkpoint
+	public boolean goal = false; // Används för att se om personen gått i mål
+	public int goalTime;
 //	ArrayList<String> checkpointTimeList = new ArrayList<String>();
-	int[] checkpointTime;
-
+	public int[] checkpointTime;
 	// constructor för skidåkare som just nu inte används
 	public Skier(String name, int playernumber, double speed, double position, int[] startingTime) {
 		super.name = name;
@@ -62,7 +61,6 @@ public class Skier extends Person implements Comparable<Skier> {
 		else
 			return 0;
 	}
-
 	public void setCheckpointCheckList(int numberOfCheckpoints) {
 		for (int i = 0; i < numberOfCheckpoints; i++) {
 			checkpointCheckList.add("false");
@@ -70,6 +68,11 @@ public class Skier extends Person implements Comparable<Skier> {
 	}
 
 	public void getCheckpointCheckList() {
+	}
+	// TODO: skiva klart alla setters and getters.
+	public void setGoalTime(int val) { goalTime = val; }
+	public int getGoalTime() {
+		return goalTime;
 	}
 
 }
