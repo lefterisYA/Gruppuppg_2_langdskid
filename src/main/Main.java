@@ -5,8 +5,11 @@ import UI.UI;
 import common.Utils;
 import skiing.SkiSlope;
 import skiing.Skier;
+import skiing.SkierList;
 
 public class Main {
+	SkierList skierList = new SkierList();
+	
 	public static void main(String[] args) {
 		Utils utils = Utils.getInstance(); // get singelton instance of class Utils
 		GameLogic gLogic = new GameLogic(new GUI());
@@ -22,10 +25,12 @@ class GameLogic {
 		this.ui=ui;
 	}
 	
+	// MASSA TODO I GUI KLASSEN
 	public void run() {
 		ui.showIntroScreen();
-		ui.addSkierDialog(2);
-		
+		// GUI.Windows nextWin = ui.showIntroScreen(); // TODO, returnera ett fönster
+		// ui.setWindow(GUI.Windows nextWin);
+//		ui.addSkierDialog(2);
 	}
 	
 	// Deklarerar skidåkare

@@ -21,10 +21,18 @@ import javax.swing.*;
 import skiing.Skier;
 
 public class GUI implements UI {
+	public enum Windows {
+		INTRO,
+		CREATE_RACE,
+		PRINT_STRTLIST,
+		RGSTR_SKIER
+	}
+	
 	private volatile boolean newValExists = false;
 	JFrame frame = new JFrame("My First GUI");
 	Panel panel = new Panel(new GridBagLayout(), new GridBagConstraints());
 	ElemGnrt elemGnrt = new ElemGnrt(this);
+	BttnHnlr bttnHnlr = new BttnHnlr(this);
 	String bodyText = "";
 
 	private String usrInp;
@@ -41,13 +49,16 @@ public class GUI implements UI {
 		frame.pack(); // resize frame to panel
 		frame.setVisible(true);
 	}
+	
+	private void gnrtWelcomeScreen() {
+	}
 
 	private void addElms() {
 		panel.add(elemGnrt.getLabel(), 0, 0, 2);
 		panel.add(elemGnrt.getTextArea(), 0, 1, 2);
 		panel.add(elemGnrt.getTextField(), 0, 2, 2);
-		panel.add(elemGnrt.getButton(ElemGnrt.Buttons.ACCPT), 0, 1, true);
-		panel.add(elemGnrt.getButton(ElemGnrt.Buttons.EXIT), 1, 0, true);
+		panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.ACCPT), 0, 1, true);
+		panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.EXIT), 1, 0, true);
 	}
 	
 	private void gnrtElems() {
@@ -55,12 +66,12 @@ public class GUI implements UI {
 		elemGnrt.gnrtTextArea();
 		elemGnrt.gnrtTextField();
 
-		ActionListener actnLsnrExit = new ActionListener() {
-			public void actionPerformed(ActionEvent e) { System.exit(0); }
-		};
-		ActionListener actnLsnrNewVal = new ActionListener() {
-			public void actionPerformed(ActionEvent e) { readUsrInp(); }
-		};
+//		ActionListener actnLsnrExit = new ActionListener() {
+//			public void actionPerformed(ActionEvent e) { System.exit(0); }
+//		};
+//		ActionListener actnLsnrNewVal = new ActionListener() {
+//			public void actionPerformed(ActionEvent e) { readUsrInp(); }
+//		};
 		EventListener actnLsnrEnterKey = new KeyListener() {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode()==KeyEvent.VK_ENTER){
@@ -71,18 +82,19 @@ public class GUI implements UI {
 			@Override public void keyReleased(KeyEvent arg0) { }
 			@Override public void keyTyped(KeyEvent arg0) { }
 		};
-
-		elemGnrt.addLnsr(ElemGnrt.ActnLnrs.EXIT,  	actnLsnrExit);
-		elemGnrt.addLnsr(ElemGnrt.ActnLnrs.NEWVAL, 	actnLsnrNewVal);
-		elemGnrt.addLnsr(ElemGnrt.ActnLnrs.ENTER, 	actnLsnrEnterKey);
+//
+//		elemGnrt.addLnsr(ElemGnrt.ActnLnrs.EXIT,  	actnLsnrExit);
+//		elemGnrt.addLnsr(ElemGnrt.ActnLnrs.NEWVAL, 	actnLsnrNewVal);
+//		elemGnrt.addLnsr(ElemGnrt.ActnLnrs.ENTR_KEY, 	actnLsnrEnterKey);
 
 		elemGnrt.getTextField().addKeyListener((KeyListener) actnLsnrEnterKey);
 		
-		elemGnrt.gnrtButton(ElemGnrt.Buttons.ACCPT, ElemGnrt.ActnLnrs.NEWVAL, "OK");
-		elemGnrt.gnrtButton(ElemGnrt.Buttons.EXIT, ElemGnrt.ActnLnrs.EXIT, "EXIT");
+		bttnHnlr.gnrtButton(BttnHnlr.Buttons.ACCPT, "OK");
+		bttnHnlr.gnrtButton(BttnHnlr.Buttons.EXIT, "EXIT");
 
-		elemGnrt.getButton(ElemGnrt.Buttons.ACCPT).setBounds(0, 0, 50, 50);
-		elemGnrt.getButton(ElemGnrt.Buttons.EXIT).setBounds(0, 0, 50, 50);
+		bttnHnlr.gnrtButton(BttnHnlr.Buttons.SEL_1, "Skapa tävling");
+		bttnHnlr.gnrtButton(BttnHnlr.Buttons.SEL_2, "Anmäl tävlande");
+		bttnHnlr.gnrtButton(BttnHnlr.Buttons.SEL_3, "Skriv ut startlista");
 	}
 
 	public void titleText(String text) {
@@ -119,7 +131,7 @@ public class GUI implements UI {
 		newValExists=true;
 	}
 
-	private void runClock() {
+	public void runClock() {
 		Clock clk = new Clock();
 
 	    ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
@@ -135,7 +147,15 @@ public class GUI implements UI {
 
 	@Override
 	public void showIntroScreen() {
-		
+		panel.removeAll();
+
+		panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.SEL_1), 0, 0);
+		panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.SEL_2), 0, 1, true);
+		panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.SEL_3), 0, 1, true);
+
+//		int numOfSkiers = getUserInt("Hur många skidåkare?");
+
+//		addSkierDialog(numOfSkiers);	
 	}
 	
 	@Override
@@ -238,22 +258,35 @@ class Panel extends JPanel {
 }
 
 /*
- * Generates and keeps all JElement objects.
+ * Each Window will likely have just:
+ *  ___________________________   ___________________________    ___________________________
+ * |______PROG. TITLE_________|  |______PROG. TITLE_________|   |______PROG. TITLE_________|
+ * |                          |  |                          |   |                          |
+ * |      MENU TITLE          |  |      MENU TITLE          |   |      MENU TITLE          |
+ * |  _____________________   |  |                          |   |  _____________________   |
+ * |  |                   |   |  | [ BUTTON SEL 1 ]         |   |  | QUESTION FR PROG  |   | 
+ * |  |   INFO FROM PROG  |   |  | [ BUTTON SEL 2 ]         |   |  |___________________|   |
+ * |  |                   |   |  | [ BUTTON SEL 3 ]         |   |  _____________________   |
+ * |  |                   |   |  | [ BUTTON SEL 4 ]         |   |  |   USER INPUP      |   |
+ * |  |___________________|   |  | [ ...          ]         |   |  |___________________|   |
+ * |                          |  |                          |   |                          |
+ * |  [EXIT]          [OK]    |  |  [EXIT]          [BACK]  |   |  [BACK]          [OK]    |
+ * |__________________________|  |__________________________|   |__________________________|
+ * 
+ * So we only need:
+ * 
+ * 2 TextArea [ Menu title and info]
+ * 1 TextField
+ * 3 Buttons, Exit, ok, back +
+ * 5 buttons each menu item.
+ * 
+ * This class generates, keeps and updates all the JElement objects.
  */
 class ElemGnrt {
-	enum Buttons {
-			ENTER,
-			ACCPT,
-			EXIT,
-			NEWVAL,
-			CLOCK
-	};
-
 	enum ActnLnrs {
-			ENTER,
+			ENTR_KEY,
 			EXIT,
 			NEWVAL,
-			CLOCK
 	};
 
 	JLabel label;
@@ -265,21 +298,16 @@ class ElemGnrt {
 	GUI ui;
 	
 	HashMap<ActnLnrs, EventListener> actnLnrs = new HashMap<ActnLnrs, EventListener>();
-	HashMap<Buttons, JButton> buttons = new HashMap<Buttons, JButton>();
 	
 	public ElemGnrt(GUI ui) {
 		this.ui=ui;
 	}
 
 	JTextField getTextField() {
-//		if ( textField == null )
-//			gnrtTextField();
 		return textField;
 	}
 
 	JTextArea getTextArea() {
-//		if ( textArea == null )
-//			gnrtTextArea();
 		return textArea;
 	}
 
@@ -287,43 +315,22 @@ class ElemGnrt {
 		return label;
 	}
 	
-	public JComponent getButton(Buttons bttnKey) {
-		return buttons.get(bttnKey);
-	}
-
-	public void setButtonActnLsnr(Buttons bttnKey, ActnLnrs actnLsnrKey) {
-		buttons.get(bttnKey).removeActionListener(buttons.get(bttnKey).getActionListeners()[0] );
-		buttons.get(bttnKey).addActionListener((ActionListener) actnLnrs.get(actnLsnrKey));
-	}
-
 	EventListener getActionListener(ActnLnrs key) {
 		return actnLnrs.get(key);
 	}
 	
 	void addLnsr(ActnLnrs key, EventListener actnLsnr) {
-//		if ( actnLnrs.containsKey(key) )
-//			actnLnrs.remove(key);
 		actnLnrs.put(key, actnLsnr);
 	}
-	
-	void gnrtButton(Buttons bttnKey, ActnLnrs actnLsnrKey, String bttnText) {
-		JButton newBttn = new JButton(bttnText);
-		buttons.put(bttnKey, newBttn);
-		buttons.get(bttnKey).addActionListener( (ActionListener) actnLnrs.get(actnLsnrKey) );
-	}
-	
+
 	void gnrtTextField() {
 		textField = new JTextField("", 5);
-//		textField.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) { readUsrInp(); }
-//		});
 	}
 
 	void gnrtTextArea() {
 		textArea = new JTextArea();
 		textArea.setEditable(false);
 		textArea.setBounds(0, 0, 600, 200);
-
 //		textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 44));
 		textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 		//    	   textArea.setBackground(new Color(0,0,0,0));
@@ -334,4 +341,72 @@ class ElemGnrt {
 	void gnrtLabel(String txt) {
 		label = new JLabel("Test");
 	}
+}
+
+class BttnHnlr {
+	enum Buttons {
+			ACCPT,
+			EXIT,
+			BACK,
+			SEL_1,
+			SEL_2,
+			SEL_3,
+			SEL_4,
+			SEL_5,
+			SEL_6,
+			SEL_7
+	};
+
+	GUI ui;
+	HashMap<Buttons, JButton> buttons = new HashMap<Buttons, JButton>();
+
+	public BttnHnlr(GUI ui) {
+		this.ui = ui;
+	}
+	
+	private void fireBttnPrst(Buttons bttn) {
+		switch (bttn) {
+		case EXIT:
+			System.exit(0);
+		case ACCPT:
+			ui.runClock();
+			break;
+		case BACK:
+			ui.runClock();
+			break;
+		case SEL_1:
+			ui.runClock();
+			break;
+		case SEL_2:
+			ui.runClock();
+			break;
+		case SEL_3:
+			ui.runClock();
+			break;
+		default:
+			ui.postMsg("BUtton not handled!!!!!!!!");
+		}
+	}
+
+	public void gnrtButton(Buttons bttnKey, String bttnText) {
+		JButton newBttn = new JButton(bttnText);
+		newBttn.setBounds(0, 0, 50, 50);
+		newBttn.addActionListener( new ActionListener() {
+			public void actionPerformed(ActionEvent e) { 
+				fireBttnPrst(bttnKey);
+			}
+		});
+		buttons.put(bttnKey, newBttn);
+//		newBttn.addActionListener( (ActionListener) actnLnrs.get(actnLsnrKey) );
+	}
+
+	public JButton getButton(Buttons bttnKey) {
+		return buttons.get(bttnKey);
+	}
+	
+//	public void setButtonActnLsnr(Buttons bttnKey, ActnLnrs actnLsnrKey) {
+//		buttons.get(bttnKey).removeActionListener(buttons.get(bttnKey).getActionListeners()[0] );
+//		buttons.get(bttnKey).addActionListener((ActionListener) actnLnrs.get(actnLsnrKey));
+//	}
+//	
 }
