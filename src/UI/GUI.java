@@ -191,6 +191,12 @@ public class GUI implements UI {
 	    	}
 	    }, 0, 20, TimeUnit.MILLISECONDS);
 	}
+
+	@Override
+	public void showIntroScreen() {
+		// TODO Auto-generated method stub
+		
+	}
 }
 
 class Panel extends JPanel {

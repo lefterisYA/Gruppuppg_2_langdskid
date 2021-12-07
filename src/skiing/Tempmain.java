@@ -14,7 +14,6 @@ public class Tempmain {
 	static UI ui;
 
 	public static void main(String[] args) {
-		
 		Utils utils = Utils.getInstance(); // get singelton instance of class Utils
 		 
 		ui = new GUI();
@@ -90,7 +89,7 @@ public class Tempmain {
 					}
 				}
 				if (list[j].position >= skiSlope.trackLength && list[j].goal == false) {
-					list[j].goalTime = secondsPassedTotal; // Den här if-satsen kollar ifall de har gått i mål.
+					list[j].setGoalTime( secondsPassedTotal ); // Den här if-satsen kollar ifall de har gått i mål.
 					list[j].goal = true;
 				}
 			}

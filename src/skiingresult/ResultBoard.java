@@ -36,7 +36,7 @@ public class ResultBoard {
 			ui.postMsg("Medelhastighet: " + String.format("%.2f", speed) + " m/s"); // formatera double-strängen med 2 decimaler
 			
 			/* 4. SLUTTID */
-			String goalTime = Utils.toString(Utils.getInstance().timeConverter(skier.goalTime));
+			String goalTime = Utils.toString(Utils.getInstance().timeConverter(skier.getGoalTime()));
 			ui.postMsg("Sluttid: " + goalTime);
 			
 			ui.postMsg("===============================");

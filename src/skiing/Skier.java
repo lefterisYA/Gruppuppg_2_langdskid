@@ -4,13 +4,13 @@ public class Skier extends Person implements Comparable<Skier> {
 	int playerNumber; // Sparar personens nummer, i den ordning dom blivit anmälda i tävlingen, inte
 						// om dom kom först eller sist
 	public double speed; // Räknar speed i meter per sekund
-	double position; // Räknar position i meter i banan
+	public double position; // Räknar position i meter i banan
 	int[] sTime = new int[3]; // Starttiden H,M,S
-	boolean[] checkpointCheck; // Används för att se om personen gått igenom en checkpoint
-	boolean goal = false; // Används för att se om personen gått i mål
-	public int goalTime;
+	public boolean[] checkpointCheck; // Används för att se om personen gått igenom en checkpoint
+	public boolean goal = false; // Används för att se om personen gått i mål
+	private int goalTime;
 	public int[] checkpointTime;
-
+	
 	// constructor för skidåkare som just nu inte används
 	public Skier(String name, int playernumber, double speed, double position, int[] startingTime) {
 		super.name = name;
@@ -46,5 +46,12 @@ public class Skier extends Person implements Comparable<Skier> {
 		else
 			return 0;
 	}
+
+	// TODO: skiva klart alla setters and getters.
+	public void setGoalTime(int val) { goalTime = val; }
+	public int getGoalTime() {
+		return goalTime;
+	}
+
 
 }
