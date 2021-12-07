@@ -23,11 +23,8 @@ class GameLogic {
 	}
 	
 	public void run() {
-		showIntroScreen();
-		
-	}
-	
-	private void showIntroScreen() {
+		ui.showIntroScreen();
+		ui.addSkierDialog(2);
 		
 	}
 	
