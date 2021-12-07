@@ -15,4 +15,5 @@ public interface UI {
 	public abstract String getUserStrng(String msg);
 	public abstract Double getUserDouble(String msg);
 	public abstract void showIntroScreen();
+	public abstract void clearMsgScreen();
 }

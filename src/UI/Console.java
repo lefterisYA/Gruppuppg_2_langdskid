@@ -63,4 +63,10 @@ public class Console implements UI {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void clearMsgScreen() {
+		// Console doesn't support clearing inside of Eclipse. 
+		System.out.println("\n".repeat(10));
+	}
 }

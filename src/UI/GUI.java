@@ -21,51 +21,46 @@ import javax.swing.*;
 import skiing.Skier;
 
 public class GUI implements UI {
+	private volatile boolean newValExists = false;
 	JFrame frame = new JFrame("My First GUI");
 	Panel panel = new Panel(new GridBagLayout(), new GridBagConstraints());
-	JElemGenerator elemGnrt = new JElemGenerator(this);
-
-	private volatile boolean newValExists = false;
-
+	ElemGnrt elemGnrt = new ElemGnrt(this);
 	String bodyText = "";
 
-//	private ExecutorService executor = Executors.newSingleThreadExecutor();
 	private String usrInp;
 
 	public GUI() {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//    	   frame.setSize(600,300);
-		frame.setMinimumSize(new Dimension(900,800));
 
-		addListeners();
-		elemGnrt.gnrtLabel("Hello");
-		elemGnrt.gnrtTextArea();
-		elemGnrt.gnrtTextField();
+		frame.setMinimumSize(new Dimension(900,800)); // frame.setSize(600,300);
 
-		panel.add(elemGnrt.getLabel(), 0, 0, 2);
-		panel.add(elemGnrt.getTextArea(), 0, 1, 2);
-
-		panel.add(elemGnrt.getTextField(), 0, 2, 2);
-		 
-		panel.add(elemGnrt.getButton(JElemGenerator.Buttons.ACCPT), 0, 1, true);
-		panel.add(elemGnrt.getButton(JElemGenerator.Buttons.EXIT), 1, 0, true);
+		gnrtElems();
+		addElms();
 
 		frame.getContentPane().add(panel);
 		frame.pack(); // resize frame to panel
 		frame.setVisible(true);
-		
-        //		runClock(this);
-		//    	   frame.getContentPane().add(btnClose);
+	}
+
+	private void addElms() {
+		panel.add(elemGnrt.getLabel(), 0, 0, 2);
+		panel.add(elemGnrt.getTextArea(), 0, 1, 2);
+		panel.add(elemGnrt.getTextField(), 0, 2, 2);
+		panel.add(elemGnrt.getButton(ElemGnrt.Buttons.ACCPT), 0, 1, true);
+		panel.add(elemGnrt.getButton(ElemGnrt.Buttons.EXIT), 1, 0, true);
 	}
 	
-	private void addListeners() {
+	private void gnrtElems() {
+		elemGnrt.gnrtLabel("Hello");
+		elemGnrt.gnrtTextArea();
+		elemGnrt.gnrtTextField();
+
 		ActionListener actnLsnrExit = new ActionListener() {
 			public void actionPerformed(ActionEvent e) { System.exit(0); }
 		};
 		ActionListener actnLsnrNewVal = new ActionListener() {
 			public void actionPerformed(ActionEvent e) { readUsrInp(); }
 		};
-
 		EventListener actnLsnrEnterKey = new KeyListener() {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode()==KeyEvent.VK_ENTER){
@@ -77,15 +72,17 @@ public class GUI implements UI {
 			@Override public void keyTyped(KeyEvent arg0) { }
 		};
 
-		elemGnrt.addLnsr(JElemGenerator.ActnLnrs.EXIT,  	actnLsnrExit);
-		elemGnrt.addLnsr(JElemGenerator.ActnLnrs.NEWVAL, 	actnLsnrNewVal);
-		elemGnrt.addLnsr(JElemGenerator.ActnLnrs.ENTER, 	actnLsnrEnterKey);
+		elemGnrt.addLnsr(ElemGnrt.ActnLnrs.EXIT,  	actnLsnrExit);
+		elemGnrt.addLnsr(ElemGnrt.ActnLnrs.NEWVAL, 	actnLsnrNewVal);
+		elemGnrt.addLnsr(ElemGnrt.ActnLnrs.ENTER, 	actnLsnrEnterKey);
 
-		elemGnrt.gnrtButton(JElemGenerator.Buttons.ACCPT, JElemGenerator.ActnLnrs.NEWVAL, "OK");
-		elemGnrt.gnrtButton(JElemGenerator.Buttons.EXIT, JElemGenerator.ActnLnrs.EXIT, "EXIT");
+		elemGnrt.getTextField().addKeyListener((KeyListener) actnLsnrEnterKey);
+		
+		elemGnrt.gnrtButton(ElemGnrt.Buttons.ACCPT, ElemGnrt.ActnLnrs.NEWVAL, "OK");
+		elemGnrt.gnrtButton(ElemGnrt.Buttons.EXIT, ElemGnrt.ActnLnrs.EXIT, "EXIT");
 
-		elemGnrt.getButton(JElemGenerator.Buttons.ACCPT).setBounds(0, 0, 50, 50);
-		elemGnrt.getButton(JElemGenerator.Buttons.EXIT).setBounds(0, 0, 50, 50);
+		elemGnrt.getButton(ElemGnrt.Buttons.ACCPT).setBounds(0, 0, 50, 50);
+		elemGnrt.getButton(ElemGnrt.Buttons.EXIT).setBounds(0, 0, 50, 50);
 	}
 
 	public void titleText(String text) {
@@ -100,6 +97,40 @@ public class GUI implements UI {
 	public void bodyText(String text) {
 		elemGnrt.getTextArea().setText(text);
 		//    	   textArea.setBackground(new Color(0,0,0,0));
+	}
+	
+	private String getWhenAvail(String msg) {
+		postMsg(msg);
+		runClock();
+		
+		while (!newValExists)
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e1) { }
+		String val=usrInp;
+		newValExists=false;
+		usrInp=null;
+		return val;
+	}
+	
+	private void readUsrInp() {
+		usrInp=elemGnrt.getTextField().getText();	
+		elemGnrt.getTextField().setText("");
+		newValExists=true;
+	}
+
+	private void runClock() {
+		Clock clk = new Clock();
+
+	    ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+	    exec.scheduleAtFixedRate(new Runnable() {
+	    	@Override
+	    	public void run() {
+//	    		System.out.println( Clock.getCurrTimeInAscii() );
+//	    		ui.bodyText( "\n" + clk.getCurrTimeInAscii() );
+	    		titleText( "\n" + clk.getCurrTime() );
+	    	}
+	    }, 0, 20, TimeUnit.MILLISECONDS);
 	}
 
 	@Override
@@ -131,6 +162,12 @@ public class GUI implements UI {
 		bodyText += "\n" + msg;
 		bodyText(bodyText);
 	}
+	
+	@Override
+	public void clearMsgScreen() {
+		bodyText = "";
+		bodyText(bodyText);
+	}
 
 	@Override
 	public int getUserInt(String msg) {
@@ -154,42 +191,12 @@ public class GUI implements UI {
 			return getUserDouble("Du måste ange tal i siffor!");
 		}
 	}
-	
-	private String getWhenAvail(String msg) {
-		postMsg(msg);
-		runClock();
-		
-		while (!newValExists)
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e1) { }
-		String val=usrInp;
-		newValExists=false;
-		usrInp=null;
-		return val;
-	}
-	
-	void readUsrInp() {
-		usrInp=elemGnrt.getTextField().getText();	
-		elemGnrt.getTextField().setText("");
-		newValExists=true;
-	}
-
-	private void runClock() {
-		Clock clk = new Clock();
-
-	    ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
-	    exec.scheduleAtFixedRate(new Runnable() {
-	    	@Override
-	    	public void run() {
-//	    		System.out.println( Clock.getCurrTimeInAscii() );
-//	    		ui.bodyText( "\n" + clk.getCurrTimeInAscii() );
-	    		titleText( "\n" + clk.getCurrTime() );
-	    	}
-	    }, 0, 20, TimeUnit.MILLISECONDS);
-	}
 }
 
+/* 
+ * An extension of JPanel so that we can add JElements relative to other elements without keeping track of the
+ * GridBagConstraints object outside of this class.
+ */
 class Panel extends JPanel {
 	private static final long serialVersionUID = -4040485876947807582L;
 	public final GridBagConstraints cnst;
@@ -230,7 +237,10 @@ class Panel extends JPanel {
 	}
 }
 
-class JElemGenerator {
+/*
+ * Generates and keeps all JElement objects.
+ */
+class ElemGnrt {
 	enum Buttons {
 			ENTER,
 			ACCPT,
@@ -238,6 +248,7 @@ class JElemGenerator {
 			NEWVAL,
 			CLOCK
 	};
+
 	enum ActnLnrs {
 			ENTER,
 			EXIT,
@@ -256,7 +267,7 @@ class JElemGenerator {
 	HashMap<ActnLnrs, EventListener> actnLnrs = new HashMap<ActnLnrs, EventListener>();
 	HashMap<Buttons, JButton> buttons = new HashMap<Buttons, JButton>();
 	
-	public JElemGenerator(GUI ui) {
+	public ElemGnrt(GUI ui) {
 		this.ui=ui;
 	}
 
@@ -306,18 +317,6 @@ class JElemGenerator {
 //		textField.addActionListener(new ActionListener() {
 //			public void actionPerformed(ActionEvent e) { readUsrInp(); }
 //		});
-
-		textField.addKeyListener((KeyListener) new KeyListener() {
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode()==KeyEvent.VK_ENTER){
-					ui.readUsrInp();
-				}
-			}
-
-			@Override public void keyReleased(KeyEvent arg0) { }
-			@Override public void keyTyped(KeyEvent arg0) { }
-		});
-
 	}
 
 	void gnrtTextArea() {
@@ -334,10 +333,5 @@ class JElemGenerator {
 	
 	void gnrtLabel(String txt) {
 		label = new JLabel("Test");
-	}
-	
-	void gnrtCloseButton() {
-		
-		
 	}
 }
