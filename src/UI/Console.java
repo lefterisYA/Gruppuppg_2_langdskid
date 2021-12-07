@@ -57,4 +57,10 @@ public class Console implements UI {
 		
 		return new Skier(name, playerNumber, speed, position, sTime);
 	}
+
+	@Override
+	public void showIntroScreen() {
+		// TODO Auto-generated method stub
+		
+	}
 }
