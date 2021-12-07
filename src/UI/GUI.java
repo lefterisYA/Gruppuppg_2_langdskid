@@ -7,6 +7,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -33,7 +35,7 @@ public class GUI implements UI {
 	public GUI() {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//    	   frame.setSize(600,300);
-		frame.setMinimumSize(new Dimension(600,300));
+		frame.setMinimumSize(new Dimension(900,800));
 
 		textArea.setEditable(false);
 		textArea.setBounds(0, 0, 600, 200);
@@ -51,6 +53,21 @@ public class GUI implements UI {
 
 		btnTest.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) { runClock(); }
+		});
+
+		textField.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) { runClock(); }
+		});
+
+		textField.addKeyListener((KeyListener) new KeyListener() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode()==KeyEvent.VK_ENTER){
+					usrInp=textField.getText();
+				}
+			}
+
+			@Override public void keyReleased(KeyEvent arg0) { }
+			@Override public void keyTyped(KeyEvent arg0) { }
 		});
 
 		panel.add(label1, 0, 0, 2);
