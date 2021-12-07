@@ -27,6 +27,8 @@ public class GUI implements UI {
 	JTextField textField = new JTextField("", 5);
 	JTextArea textArea = new JTextArea("This is also text");
 
+	private volatile boolean newValExists = false;
+
 	String bodyText = "";
 
 //	private ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -160,11 +162,12 @@ public class GUI implements UI {
 			public void actionPerformed(ActionEvent e) { readUsrInp(); }
 		});
 		
-		while (usrInp==null)
+		while (!newValExists)
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e1) { }
 		String val=usrInp;
+		newValExists=false;
 		usrInp=null;
 		return val;
 	}
@@ -172,6 +175,7 @@ public class GUI implements UI {
 	private void readUsrInp() {
 		usrInp=textField.getText();	
 		textField.setText("");
+		newValExists=true;
 	}
 
 	private void runClock() {
