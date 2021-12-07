@@ -9,7 +9,6 @@ import common.Utils;
 import skiingresult.ResultBoard;
 import test.Test;
 
-
 public class Tempmain {
 	static UI ui;
 
@@ -23,12 +22,12 @@ public class Tempmain {
 
 		// Deklarerade skiers sätts in i listan
 		list = playerDeclaration(amountOfPlayers);
-		
-		//Slumpar hastigheten lite för alla skidåkare
+
+		// Slumpar hastigheten lite för alla skidåkare
 		for (int i = 0; i < list.length; i++) {
-			ui.postMsg(list[i].speed+"m/s");
+			ui.postMsg(list[i].speed + "m/s");
 			list[i].speedRandom();
-			ui.postMsg(list[i].speed+"m/s");
+			ui.postMsg(list[i].speed + "m/s");
 		}
 
 		// Skidbanan konstrueras
@@ -36,7 +35,7 @@ public class Tempmain {
 		skiSlope.RaceTrack();
 
 		// Skidåkare modifieras till banan
-		list = SkiSlope.RaceTrackPlayer(list);
+		list = SkiSlope.RaceTrackPlayer(list, 4);
 
 		// Här är racet
 		Race(list, skiSlope);
@@ -64,7 +63,8 @@ public class Tempmain {
 				ui.postMsg(
 						"Checkpoint " + (j + 1) + " vid " + Utils.toString(Utils.timeConverter(list[i].checkpointTime[j])) + ". ");
 			}
-			ui.postMsg(list[i].speed+"m/s");;
+			ui.postMsg(list[i].speed + "m/s");
+			;
 			ui.postMsg("\n\n");
 		}
 		*/
@@ -82,10 +82,10 @@ public class Tempmain {
 				list[j].position = list[j].position + list[j].speed; // position med deras hastighet, en gång per
 																		// sekund.
 				for (int k = 0; k < skiSlope.checkpoints.length; k++) {
-					if (list[j].position >= skiSlope.checkpoints[k] && list[j].checkpointCheck[k] == false) {
+					if (list[j].position >= skiSlope.checkpoints[k] && Boolean.parseBoolean(list[j].checkpointCheckList.get(k)) == false) {
 						list[j].checkpointTime[k] = secondsPassedTotal; // Den tredje går igenom checkpointsen,
 																		// kollar ifall de
-						list[j].checkpointCheck[k] = true; // har gått igenom en checkpoint och sparar tiden
+						list[j].checkpointCheckList.set(k, "true"); // har gått igenom en checkpoint och sparar tiden
 					}
 				}
 				if (list[j].position >= skiSlope.trackLength && list[j].goal == false) {
@@ -98,8 +98,6 @@ public class Tempmain {
 			secondsPassedTotal++;
 		}
 	}
-	
-
 
 	// Deklarerar skidåkare
 	public static Skier[] playerDeclaration(int amountOfPlayers) {
