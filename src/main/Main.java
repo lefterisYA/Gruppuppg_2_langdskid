@@ -28,17 +28,11 @@ class GameLogic {
 		this.ui=ui;
 	}
 	
-	// MASSA TODO I GUI KLASSEN
 	public void run() {
-//		int numOfPlayers = ui.getUserInt("Hur många spelare?");
-//		playerDeclaration(numOfPlayers);
-//		boolean xxx = true;
-//		if (xxx) return;
-
 		ui.showScreen(Screen.INTRO);
 
 		while ( true ) {
-			Screen nextScreen = ui.getNextScreen(); // TODO, returnera ett fönster
+			Screen nextScreen = ui.getNextScreen();
 
 			switch (nextScreen) {
 			case CREATE_RACE: 
@@ -47,7 +41,7 @@ class GameLogic {
 				String time = ui.getUserStrng("Ange starttid:");
 				String time_interval = ui.getUserStrng("Ange startintervall:");
 				int first_startnumber  = ui.getUserInt("Ange första startnummer");
-				// race = new Race(level, time, time_interval);
+				// race = new Race(level, time, time_interval); // TODO
 			case INTRO:
 				break;
 			case PRINT_STRTLIST:
