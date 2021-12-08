@@ -205,6 +205,7 @@ public class GUI implements UI {
 		}
 	}
 
+	/*
 	@Override
 	public void showScreen(Screen newScreen) {
 		// TODO Auto-generated method stub
@@ -216,6 +217,8 @@ public class GUI implements UI {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	 */
+	
 }
 
 /* 
