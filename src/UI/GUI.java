@@ -255,6 +255,7 @@ public class GUI implements UI {
 		}
 	}
 
+	/*
 	@Override
 	public Screen getNextScreen() {
 		switch ( getWhenAvail("") ) {
@@ -268,6 +269,8 @@ public class GUI implements UI {
 			return Screen.CREATE_RACE;
 		}
 	}
+	 */
+	
 }
 
 /* 

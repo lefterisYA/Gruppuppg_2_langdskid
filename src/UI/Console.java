@@ -69,6 +69,7 @@ public class Console implements UI {
 		System.out.println("\n".repeat(10));
 	}
 
+	/*
 	@Override
 	public void showScreen(Screen newScreen) {
 		// TODO Auto-generated method stub
@@ -80,4 +81,5 @@ public class Console implements UI {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	*/
 }
