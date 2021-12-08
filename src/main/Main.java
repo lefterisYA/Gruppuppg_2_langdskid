@@ -30,20 +30,19 @@ class GameLogic {
 	
 	// MASSA TODO I GUI KLASSEN
 	public void run() {
-		int numOfPlayers = ui.getUserInt("Hur många spelare?");
-		playerDeclaration(numOfPlayers);
-		boolean xxx = true;
-		if (xxx) return;
+//		int numOfPlayers = ui.getUserInt("Hur många spelare?");
+//		playerDeclaration(numOfPlayers);
+//		boolean xxx = true;
+//		if (xxx) return;
 
 		ui.showScreen(Screen.INTRO);
 
 		while ( true ) {
-			// TODO i GUI KLASSEN, implementera följande metoder:
 			Screen nextScreen = ui.getNextScreen(); // TODO, returnera ett fönster
 
 			switch (nextScreen) {
 			case CREATE_RACE: 
-				ui.showScreen(Screen.INTRO);
+				ui.showScreen(Screen.CREATE_RACE);
 				String level = ui.getUserStrng("Ange Klass:");
 				String time = ui.getUserStrng("Ange starttid:");
 				String time_interval = ui.getUserStrng("Ange startintervall:");

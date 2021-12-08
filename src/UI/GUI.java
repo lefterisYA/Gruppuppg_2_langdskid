@@ -1,10 +1,12 @@
 package UI;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Label;
 import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,14 +38,66 @@ public class GUI implements UI {
 		frame.setMinimumSize(new Dimension(900,800)); // frame.setSize(600,300);
 
 		gnrtElems();
-		addElms();
+//		addElms();
 
 		frame.getContentPane().add(panel);
 		frame.pack(); // resize frame to panel
 		frame.setVisible(true);
 	}
 	
-	private void gnrtWelcomeScreen() {
+	public void setUserInp(String txt) {
+		usrInp=txt;
+		readUsrInp();
+	}
+
+	@Override
+	public void showScreen(Screen newScreen) {
+//		spacer.setText("F");
+//		spacer.setMinimumSize(new Dimension(1,800));
+//		spacer.setSize(800, 800);
+		switch (newScreen){
+		case INTRO:
+			panel.removeAll();
+			titleText("Välkommen");
+			panel.add(elemGnrt.getLabel(), 1, 0, 1);
+			panel.add(elemGnrt.getTextArea(), -1, 1, true);
+			panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.SEL_1), 0, 1, true);
+			panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.SEL_2), 1, 0, true);
+			panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.SEL_3), 1, 0, true);
+			panel.addVertSpcr(400);
+			panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.ACCPT), -2, 1, true);
+			panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.EXIT), 2, 0, true);
+
+			bodyText("Var god gör ett val:");
+			panel.addVertSpcr(1);
+			panel.updateUI();
+			break;
+
+		case CREATE_RACE:
+			panel.removeAll();
+			titleText("Ny tävling:");
+
+			panel.add(elemGnrt.getLabel(), 0, 0, 3);
+			panel.add(elemGnrt.getTextArea(), 0, 1);
+			panel.add(elemGnrt.getTextField(), 1, 1);
+			panel.addVertSpcr(200);
+			panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.ACCPT), 0, 3);
+			panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.EXIT), 2, 3);
+			
+			panel.updateUI();
+			break;
+		case PRINT_STRTLIST:
+			break;
+		case RGSTR_SKIER:
+			break;
+		default:
+			System.out.println("Screen not handled!");
+		}
+		
+	}
+	
+	private void clearWin() {
+		
 	}
 
 	private void addElms() {
@@ -106,7 +160,6 @@ public class GUI implements UI {
 	
 	private String getWhenAvail(String msg) {
 		postMsg(msg);
-		runClock();
 		
 		while (!newValExists)
 			try {
@@ -142,9 +195,6 @@ public class GUI implements UI {
 	public void showIntroScreen() {
 		panel.removeAll();
 
-		panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.SEL_1), 0, 0);
-		panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.SEL_2), 0, 1, true);
-		panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.SEL_3), 0, 1, true);
 
 //		int numOfSkiers = getUserInt("Hur många skidåkare?");
 
@@ -206,15 +256,17 @@ public class GUI implements UI {
 	}
 
 	@Override
-	public void showScreen(Screen newScreen) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public Screen getNextScreen() {
-		// TODO Auto-generated method stub
-		return null;
+		switch ( getWhenAvail("") ) {
+		case "1":
+			return Screen.CREATE_RACE;
+		case "2":
+			return Screen.CREATE_RACE;
+		case "3":
+			return Screen.CREATE_RACE;
+		default:
+			return Screen.CREATE_RACE;
+		}
 	}
 }
 
@@ -229,10 +281,10 @@ class Panel extends JPanel {
 	public Panel(GridBagLayout layout, GridBagConstraints cnst) {
 		super(layout);
 		this.cnst = cnst;
-		cnst.weightx = 1;
-		cnst.weighty = 1;
+//		cnst.weightx = 1;
+//		cnst.weighty = 1;
 		cnst.insets = new Insets(10, 10, 10, 10);
-		cnst.anchor = GridBagConstraints.NORTH;
+		cnst.anchor = GridBagConstraints.SOUTH;
 	}
 
 	private void setCnst(int x, int y, int width) {
@@ -260,23 +312,33 @@ class Panel extends JPanel {
 	public void add(JComponent element, int x, int y) {
 		add(element, x, y, 1, false);
 	}
+	
+	public void addVertSpcr(int height) {
+		JPanel spacer = new JPanel();
+		spacer.setBorder(BorderFactory.createEmptyBorder(height, 1, 1, 1));
+//		spacer.setBackground(new Color(0,0,0));
+		cnst.gridy++;
+		add(spacer, cnst);
+	}
 }
 
 /*
  * Each Window will likely have just:
- *  ___________________________   ___________________________    ___________________________
- * |______PROG. TITLE_________|  |______PROG. TITLE_________|   |______PROG. TITLE_________|
- * |                          |  |                          |   |                          |
- * |      MENU TITLE          |  |      MENU TITLE          |   |      MENU TITLE          |
- * |  _____________________   |  |                          |   |  _____________________   |
- * |  |                   |   |  | [ BUTTON SEL 1 ]         |   |  | QUESTION FR PROG  |   | 
- * |  |   INFO FROM PROG  |   |  | [ BUTTON SEL 2 ]         |   |  |___________________|   |
- * |  |                   |   |  | [ BUTTON SEL 3 ]         |   |  _____________________   |
- * |  |                   |   |  | [ BUTTON SEL 4 ]         |   |  |   USER INPUP      |   |
- * |  |___________________|   |  | [ ...          ]         |   |  |___________________|   |
- * |                          |  |                          |   |                          |
- * |  [EXIT]          [OK]    |  |  [EXIT]          [BACK]  |   |  [BACK]          [OK]    |
- * |__________________________|  |__________________________|   |__________________________|
+ * 
+ * ┌──────────────────────────┐  ┌──────────────────────────┐   ┌──────────────────────────┐
+ * │        PROG TITLE        │  │        PROG TITLE        │   │        PROG TITLE        │
+ * │‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾│  │‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾│   │‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾│
+ * │        MENU TITLE        │  │        MENU TITLE        │   │        MENU TITLE        │
+ * │  ┌───────────────────┐   │  │                          │   │  ┌───────────────────┐   │
+ * │  │                   │   │  │    [ BUTTON SEL 1 ]      │   │  │ QUESTION FR PROG  │   │ 
+ * │  │     QUESTION      │   │  │    [ BUTTON SEL 2 ]      │   │  └───────────────────┘   │
+ * │  │   FROM PROGRAM    │   │  │    [ BUTTON SEL 3 ]      │   │  ┌───────────────────┐   │
+ * │  │                   │   │  │    [ BUTTON SEL 4 ]      │   │  │    USER INPUT     │   │
+ * │  └───────────────────┘   │  │    [ ...          ]      │   │  └───────────────────┘   │
+ * │                          │  │                          │   │                          │
+ * │  [EXIT]          [OK]    │  │  [EXIT]          [BACK]  │   │  [BACK]          [OK]    │
+ * │                          │  │                          │   │                          │
+ * └──────────────────────────┘  └──────────────────────────┘   └──────────────────────────┘
  * 
  * So we only need:
  * 
@@ -329,7 +391,8 @@ class ElemGnrt {
 	}
 
 	void gnrtTextField() {
-		textField = new JTextField("", 5);
+		textField = new JTextField("", 20);
+		textField.setMinimumSize(new Dimension(400,20));
 	}
 
 	void gnrtTextArea() {
@@ -337,14 +400,15 @@ class ElemGnrt {
 		textArea.setEditable(false);
 		textArea.setBounds(0, 0, 600, 200);
 //		textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 44));
-		textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+		textArea.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
 		//    	   textArea.setBackground(new Color(0,0,0,0));
 		textArea.setOpaque(false);
 
 	}
 	
 	void gnrtLabel(String txt) {
-		label = new JLabel("Test");
+		label = new JLabel(txt);
+		label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 44));
 	}
 }
 
@@ -380,13 +444,13 @@ class BttnHnlr {
 			ui.runClock();
 			break;
 		case SEL_1:
-			ui.runClock();
+			ui.setUserInp("1");
 			break;
 		case SEL_2:
-			ui.runClock();
+			ui.setUserInp("2");
 			break;
 		case SEL_3:
-			ui.runClock();
+			ui.setUserInp("3");
 			break;
 		default:
 			ui.postMsg("BUtton not handled!!!!!!!!");
