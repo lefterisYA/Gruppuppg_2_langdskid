@@ -1,9 +1,10 @@
 package skiing;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class SkierList {
-	static LinkedList<Skier> skierLinkedList = new LinkedList<Skier>();
+	static List<Skier> skierLinkedList = new LinkedList<Skier>();
 	
 	public Skier[] getSkierList() {
 		Skier[] skierList = new Skier[skierLinkedList.size()];
