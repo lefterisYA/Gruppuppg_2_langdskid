@@ -15,7 +15,7 @@ public class Finish {
 		}
 		return null;
 	}
-	
+
 	public void setFinishTime(Skier skier) {
 		Clock clock = new Clock();
 		int goalTime = skier.setGoalTime(clock.getCurrTime()); // TODO get correct method to set gaolTime to current computer time
