@@ -69,6 +69,18 @@ public class Console implements UI {
 		System.out.println("\n".repeat(10));
 	}
 
+	@Override
+	public void showScreen(Screen newScreen) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Screen getNextScreen() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	/*
 	@Override
 	public void showScreen(Screen newScreen) {

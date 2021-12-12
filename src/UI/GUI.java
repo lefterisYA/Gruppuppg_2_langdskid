@@ -255,6 +255,12 @@ public class GUI implements UI {
 		}
 	}
 
+	@Override
+	public Screen getNextScreen() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	/*
 	@Override
 	public Screen getNextScreen() {
