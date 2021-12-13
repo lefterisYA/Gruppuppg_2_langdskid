@@ -4,8 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Skier extends Person implements Comparable<Skier> {
-	public int playerNumber; // Sparar personens nummer, deras tävlingsnummer, inte
-						// om dom är först eller sist
+	public int playerNumber; // Sparar personens tävlingsnummer
 	public double speed; // Räknar speed i meter per sekund
 	public double position; // Räknar position i meter i banan
 	public int[] startingTime = new int[3]; // Starttiden H,M,S
@@ -71,12 +70,11 @@ public class Skier extends Person implements Comparable<Skier> {
 			this.speed = 1;
 	}
 
-	// Jämför med tid i mål
 	@Override
 	public int compareTo(Skier o) {
-		if (goalTime > o.goalTime)
+		if (playerNumber > o.playerNumber)
 			return 1;
-		if (goalTime < o.goalTime)
+		if (playerNumber < o.playerNumber)
 			return -1;
 		else
 			return 0;

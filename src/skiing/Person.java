@@ -4,7 +4,8 @@ public class Person {
 	public String firstName;
 	public String lastName;
 	public String name = firstName+lastName;
-	public String gender;
+	public String gender; //Ange dam eller herr
+	public int age;
 	public String getFirstName() {
 		return firstName;
 	}
