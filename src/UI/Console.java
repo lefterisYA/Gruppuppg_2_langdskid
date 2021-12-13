@@ -81,6 +81,12 @@ public class Console implements UI {
 		return null;
 	}
 
+	@Override
+	public void setNextScreen(Screen intro) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	/*
 	@Override
 	public void showScreen(Screen newScreen) {

@@ -30,8 +30,7 @@ class GameLogic {
 
 	public void run() {
         Screen currScreen = Screen.INTRO;
-//		System.out.println(ui.getUserStrng("Ange Klass:"));
-//		System.out.println("done");
+
 		while ( true ) {
 			switch (currScreen) {
 			case CREATE_RACE:
@@ -40,10 +39,13 @@ class GameLogic {
 				String time = ui.getUserStrng("Ange starttid:");
 				String time_interval = ui.getUserStrng("Ange startintervall:");
 				int first_startnumber  = ui.getUserInt("Ange första startnummer");
+				currScreen=Screen.INTRO;
+//				ui.setNextScreen(Screen.INTRO);
 				// race = new Race(level, time, time_interval); // TODO
 
 			case INTRO:
 				ui.showScreen(currScreen);
+				currScreen=null;
 				break;
 
 			case PRINT_STRTLIST:
@@ -53,11 +55,20 @@ class GameLogic {
 				ui.showScreen(Screen.RGSTR_SKIER);
 				String name = ui.getUserStrng("Ange namn på tävlande.");
 				String club = ui.getUserStrng("Ange tävlandes klubb");
+				currScreen=Screen.INTRO;
 				break;
+			
+			case EXIT:
+				System.exit(0);
+
+			case ACPT:
+				System.out.println("ACPT pressed");
 
 			}
 
-			currScreen = ui.getNextScreen();
+			if (currScreen == null)
+				currScreen = ui.getNextScreen();
+//			System.out.println("MAIN: "+currScreen.name());
 		}
 	}
 

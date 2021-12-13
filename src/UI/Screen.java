@@ -6,5 +6,6 @@ public enum Screen {
 	PRINT_STRTLIST,
 	RGSTR_SKIER,
 	ACPT,
+	BACK,
 	EXIT
 }

@@ -18,4 +18,5 @@ public interface UI {
 	public abstract void clearMsgScreen();
 	public abstract void showScreen(Screen newScreen);
 	public abstract Screen getNextScreen();
+	public abstract void setNextScreen(Screen intro);
 }
