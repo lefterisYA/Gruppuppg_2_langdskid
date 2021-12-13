@@ -22,7 +22,7 @@ public class Utils {
 		return utils;
 	}
 
-	public int[] timeConverter(int secondsTotal) {
+	public static int[] timeConverter(int secondsTotal) {
 		int hours = 0;
 		int minutes = 0;
 		int seconds = 0;
@@ -47,6 +47,13 @@ public class Utils {
 			return s;
 		}
 
+	}
+	public static int timeConverter(int[] time) {
+		int minutes = 0;
+		int seconds = 0;
+		minutes=minutes+(time[0]*60)+time[1];
+		seconds=seconds+(minutes*60)+time[2];
+		return seconds;
 	}
 	
 	public static String toString(int[] hms) {
