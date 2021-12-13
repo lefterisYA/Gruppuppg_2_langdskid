@@ -27,10 +27,11 @@ public class GUI implements UI {
 	JFrame frame = new JFrame("My First GUI");
 	Panel panel = new Panel(new GridBagLayout(), new GridBagConstraints());
 	ElemGnrt elemGnrt = new ElemGnrt(this);
-	BttnHnlr bttnHnlr = new BttnHnlr(this);
+//	BttnHnlr bttnHnlr = new BttnHnlr(this);
 	String bodyText = "";
 
 	private String usrInp;
+	private UserInput usrInput = new UserInput();
 
 	public GUI() {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -44,10 +45,15 @@ public class GUI implements UI {
 		frame.pack(); // resize frame to panel
 		frame.setVisible(true);
 	}
-	
-	public void setUserInp(String txt) {
-		usrInp=txt;
+
+	void setUserInp(String txt) {
+		usrInput.setValue(txt);
 		readUsrInp();
+	}
+
+	void setUserInp(Screen val) {
+		usrInput.setValue(val);
+		newValExists=true;
 	}
 
 	@Override
@@ -61,12 +67,12 @@ public class GUI implements UI {
 			titleText("Välkommen");
 			panel.add(elemGnrt.getLabel(), 1, 0, 1);
 			panel.add(elemGnrt.getTextArea(), -1, 1, true);
-			panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.SEL_1), 0, 1, true);
-			panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.SEL_2), 1, 0, true);
-			panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.SEL_3), 1, 0, true);
+			panel.add(new Button(this, "Skapa tävling", 	Screen.CREATE_RACE), 0, 1, true);
+			panel.add(new Button(this, "WIP",			 	Screen.CREATE_RACE), 1, 0, true);
+			panel.add(new Button(this, "WIP", 				Screen.CREATE_RACE), 1, 0, true);
 			panel.addVertSpcr(400);
-			panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.ACCPT), -2, 1, true);
-			panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.EXIT), 2, 0, true);
+			panel.add(new Button(this, "OK",  			 	Screen.ACPT), -2, 1, true);
+			panel.add(new Button(this, "Avsluta",     		Screen.EXIT), 2, 0, true);
 
 			bodyText("Var god gör ett val:");
 			panel.addVertSpcr(1);
@@ -81,33 +87,38 @@ public class GUI implements UI {
 			panel.add(elemGnrt.getTextArea(), 0, 1);
 			panel.add(elemGnrt.getTextField(), 1, 1);
 			panel.addVertSpcr(200);
-			panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.ACCPT), 0, 3);
-			panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.EXIT), 2, 3);
-			
+			panel.add(new Button(this, "OK",  			 	Screen.ACPT), 0, 3);
+			panel.add(new Button(this, "Avsluta",     		Screen.EXIT), 2, 3);
+
 			panel.updateUI();
 			break;
+
 		case PRINT_STRTLIST:
 			break;
+
 		case RGSTR_SKIER:
 			break;
+
 		default:
 			System.out.println("Screen not handled!");
 		}
-		
+
 	}
-	
+
 	private void clearWin() {
-		
+
 	}
 
 	private void addElms() {
 		panel.add(elemGnrt.getLabel(), 0, 0, 2);
 		panel.add(elemGnrt.getTextArea(), 0, 1, 2);
 		panel.add(elemGnrt.getTextField(), 0, 2, 2);
-		panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.ACCPT), 0, 1, true);
-		panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.EXIT), 1, 0, true);
+		panel.add(new Button(this, "OK",  			 	Screen.ACPT), 0, 3);
+		panel.add(new Button(this, "Avsluta",     		Screen.EXIT), 2, 3);
+//		panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.ACCPT), 0, 1, true);
+//		panel.add(bttnHnlr.getButton(BttnHnlr.Buttons.EXIT), 1, 0, true);
 	}
-	
+
 	private void gnrtElems() {
 		elemGnrt.gnrtLabel("Hello");
 		elemGnrt.gnrtTextArea();
@@ -129,19 +140,15 @@ public class GUI implements UI {
 			@Override public void keyReleased(KeyEvent arg0) { }
 			@Override public void keyTyped(KeyEvent arg0) { }
 		};
-//
-//		elemGnrt.addLnsr(ElemGnrt.ActnLnrs.EXIT,  	actnLsnrExit);
-//		elemGnrt.addLnsr(ElemGnrt.ActnLnrs.NEWVAL, 	actnLsnrNewVal);
-//		elemGnrt.addLnsr(ElemGnrt.ActnLnrs.ENTR_KEY, 	actnLsnrEnterKey);
 
 		elemGnrt.getTextField().addKeyListener((KeyListener) actnLsnrEnterKey);
-		
-		bttnHnlr.gnrtButton(BttnHnlr.Buttons.ACCPT, "OK");
-		bttnHnlr.gnrtButton(BttnHnlr.Buttons.EXIT, "EXIT");
 
-		bttnHnlr.gnrtButton(BttnHnlr.Buttons.SEL_1, "Skapa tävling");
-		bttnHnlr.gnrtButton(BttnHnlr.Buttons.SEL_2, "Anmäl tävlande");
-		bttnHnlr.gnrtButton(BttnHnlr.Buttons.SEL_3, "Skriv ut startlista");
+//		bttnHnlr.gnrtButton(BttnHnlr.Buttons.ACCPT, "OK");
+//		bttnHnlr.gnrtButton(BttnHnlr.Buttons.EXIT, "EXIT");
+//
+//		bttnHnlr.gnrtButton(BttnHnlr.Buttons.SEL_1, "Skapa tävling");
+//		bttnHnlr.gnrtButton(BttnHnlr.Buttons.SEL_2, "Anmäl tävlande");
+//		bttnHnlr.gnrtButton(BttnHnlr.Buttons.SEL_3, "Skriv ut startlista");
 	}
 
 	public void titleText(String text) {
@@ -157,22 +164,25 @@ public class GUI implements UI {
 		elemGnrt.getTextArea().setText(text);
 		//    	   textArea.setBackground(new Color(0,0,0,0));
 	}
-	
-	private String getWhenAvail(String msg) {
-		postMsg(msg);
-		
+
+	private void blockUntilValAvail() {
 		while (!newValExists)
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e1) { }
-		String val=usrInp;
+	}
+
+	private String getWhenAvail(String msg) {
+		postMsg(msg);
+		blockUntilValAvail();
+		String val=(String) usrInput.getValue();
 		newValExists=false;
-		usrInp=null;
 		return val;
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	private void readUsrInp() {
-		usrInp=elemGnrt.getTextField().getText();	
+		usrInput.setValue(elemGnrt.getTextField().getText());
 		elemGnrt.getTextField().setText("");
 		newValExists=true;
 	}
@@ -198,9 +208,9 @@ public class GUI implements UI {
 
 //		int numOfSkiers = getUserInt("Hur många skidåkare?");
 
-//		addSkierDialog(numOfSkiers);	
+//		addSkierDialog(numOfSkiers);
 	}
-	
+
 	@Override
 	public Skier addSkierDialog(int playerNumber) {
 		playerNumber++;
@@ -216,7 +226,7 @@ public class GUI implements UI {
 			sTime[j] = getUserInt("När börjar " + name
 				+ "? (Starting time, svara först timme, tryck enter och skriv minut, sen sekund) ");
 		}
-		
+
 		return new Skier(name, playerNumber, speed, position, sTime);
 	}
 
@@ -225,7 +235,7 @@ public class GUI implements UI {
 		bodyText += "\n" + msg;
 		bodyText(bodyText);
 	}
-	
+
 	@Override
 	public void clearMsgScreen() {
 		bodyText = "";
@@ -243,6 +253,8 @@ public class GUI implements UI {
 
 	@Override
 	public String getUserStrng(String msg) {
+//		panel.add(elemGnrt.getTextArea(), 0, 0, false);
+//		panel.add(elemGnrt.getTextField(), 0, 1, true);
 		return getWhenAvail(msg);
 	}
 
@@ -257,29 +269,12 @@ public class GUI implements UI {
 
 	@Override
 	public Screen getNextScreen() {
-		// TODO Auto-generated method stub
-		return null;
+		blockUntilValAvail();
+		return (Screen) usrInput.getValue();
 	}
-
-	/*
-	@Override
-	public Screen getNextScreen() {
-		switch ( getWhenAvail("") ) {
-		case "1":
-			return Screen.CREATE_RACE;
-		case "2":
-			return Screen.CREATE_RACE;
-		case "3":
-			return Screen.CREATE_RACE;
-		default:
-			return Screen.CREATE_RACE;
-		}
-	}
-	 */
-	
 }
 
-/* 
+/*
  * An extension of JPanel so that we can add JElements relative to other elements without keeping track of the
  * GridBagConstraints object outside of this class.
  */
@@ -321,7 +316,7 @@ class Panel extends JPanel {
 	public void add(JComponent element, int x, int y) {
 		add(element, x, y, 1, false);
 	}
-	
+
 	public void addVertSpcr(int height) {
 		JPanel spacer = new JPanel();
 		spacer.setBorder(BorderFactory.createEmptyBorder(height, 1, 1, 1));
@@ -333,13 +328,13 @@ class Panel extends JPanel {
 
 /*
  * Each Window will likely have just:
- * 
+ *
  * ┌──────────────────────────┐  ┌──────────────────────────┐   ┌──────────────────────────┐
  * │        PROG TITLE        │  │        PROG TITLE        │   │        PROG TITLE        │
  * │‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾│  │‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾│   │‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾│
  * │        MENU TITLE        │  │        MENU TITLE        │   │        MENU TITLE        │
  * │  ┌───────────────────┐   │  │                          │   │  ┌───────────────────┐   │
- * │  │                   │   │  │    [ BUTTON SEL 1 ]      │   │  │ QUESTION FR PROG  │   │ 
+ * │  │                   │   │  │    [ BUTTON SEL 1 ]      │   │  │ QUESTION FR PROG  │   │
  * │  │     QUESTION      │   │  │    [ BUTTON SEL 2 ]      │   │  └───────────────────┘   │
  * │  │   FROM PROGRAM    │   │  │    [ BUTTON SEL 3 ]      │   │  ┌───────────────────┐   │
  * │  │                   │   │  │    [ BUTTON SEL 4 ]      │   │  │    USER INPUT     │   │
@@ -348,14 +343,14 @@ class Panel extends JPanel {
  * │  [EXIT]          [OK]    │  │  [EXIT]          [BACK]  │   │  [BACK]          [OK]    │
  * │                          │  │                          │   │                          │
  * └──────────────────────────┘  └──────────────────────────┘   └──────────────────────────┘
- * 
+ *
  * So we only need:
- * 
+ *
  * 2 TextArea [ Menu title and info]
  * 1 TextField
  * 3 Buttons, Exit, ok, back +
  * 5 buttons each menu item.
- * 
+ *
  * This class generates, keeps and updates all the JElement objects.
  */
 class ElemGnrt {
@@ -372,9 +367,9 @@ class ElemGnrt {
 	JButton btnAcpt;
 	JButton btnClse;
 	GUI ui;
-	
+
 	HashMap<ActnLnrs, EventListener> actnLnrs = new HashMap<ActnLnrs, EventListener>();
-	
+
 	public ElemGnrt(GUI ui) {
 		this.ui=ui;
 	}
@@ -390,11 +385,11 @@ class ElemGnrt {
 	JLabel getLabel() {
 		return label;
 	}
-	
+
 	EventListener getActionListener(ActnLnrs key) {
 		return actnLnrs.get(key);
 	}
-	
+
 	void addLnsr(ActnLnrs key, EventListener actnLsnr) {
 		actnLnrs.put(key, actnLsnr);
 	}
@@ -414,11 +409,36 @@ class ElemGnrt {
 		textArea.setOpaque(false);
 
 	}
-	
+
 	void gnrtLabel(String txt) {
 		label = new JLabel(txt);
 		label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 44));
 	}
+}
+
+class Button extends JButton {
+	private static final long serialVersionUID = 1849303325697245859L;
+	GUI ui;
+//	private String label;
+//	private Screen actn;
+	
+	public Button(GUI ui, String label, Screen actn) {
+		super(label);
+
+		this.ui 	= ui;
+//		this.label  = label;
+//		this.actn   = actn;
+
+		this.setBounds(0, 0, 50, 50);
+
+		addActionListener( new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ui.setUserInp(actn);
+			}
+		});
+	}
+	
+//	public String getLabel() { return label; }
 }
 
 class BttnHnlr {
@@ -441,7 +461,7 @@ class BttnHnlr {
 	public BttnHnlr(GUI ui) {
 		this.ui = ui;
 	}
-	
+
 	private void fireBttnPrst(Buttons bttn) {
 		switch (bttn) {
 		case EXIT:
@@ -453,10 +473,10 @@ class BttnHnlr {
 			ui.runClock();
 			break;
 		case SEL_1:
-			ui.setUserInp("1");
+			ui.setUserInp(Screen.CREATE_RACE);
 			break;
 		case SEL_2:
-			ui.setUserInp("2");
+			ui.setUserInp(Screen.CREATE_RACE);
 			break;
 		case SEL_3:
 			ui.setUserInp("3");
@@ -470,7 +490,7 @@ class BttnHnlr {
 		JButton newBttn = new JButton(bttnText);
 		newBttn.setBounds(0, 0, 50, 50);
 		newBttn.addActionListener( new ActionListener() {
-			public void actionPerformed(ActionEvent e) { 
+			public void actionPerformed(ActionEvent e) {
 				fireBttnPrst(bttnKey);
 			}
 		});
@@ -481,10 +501,10 @@ class BttnHnlr {
 	public JButton getButton(Buttons bttnKey) {
 		return buttons.get(bttnKey);
 	}
-	
+
 //	public void setButtonActnLsnr(Buttons bttnKey, ActnLnrs actnLsnrKey) {
 //		buttons.get(bttnKey).removeActionListener(buttons.get(bttnKey).getActionListeners()[0] );
 //		buttons.get(bttnKey).addActionListener((ActionListener) actnLnrs.get(actnLsnrKey));
 //	}
-//	
+//
 }

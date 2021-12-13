@@ -10,51 +10,57 @@ import skiing.SkierList;
 
 public class Main {
 	SkierList skierList = new SkierList();
-	
+
 	public static void main(String[] args) {
 		Utils utils = Utils.getInstance(); // get singelton instance of class Utils
 		GameLogic gLogic = new GameLogic(new GUI());
 		gLogic.run();
 	}
-	
+
 }
 
 class GameLogic {
 	private final UI ui;
-	
+
 	// Race race;
-	
+
 	public GameLogic(UI ui) {
 		this.ui=ui;
 	}
-	
+
 	public void run() {
-		ui.showScreen(Screen.INTRO);
-
+        Screen currScreen = Screen.INTRO;
+//		System.out.println(ui.getUserStrng("Ange Klass:"));
+//		System.out.println("done");
 		while ( true ) {
-			Screen nextScreen = ui.getNextScreen();
-
-			switch (nextScreen) {
-			case CREATE_RACE: 
+			switch (currScreen) {
+			case CREATE_RACE:
 				ui.showScreen(Screen.CREATE_RACE);
 				String level = ui.getUserStrng("Ange Klass:");
 				String time = ui.getUserStrng("Ange starttid:");
 				String time_interval = ui.getUserStrng("Ange startintervall:");
 				int first_startnumber  = ui.getUserInt("Ange första startnummer");
 				// race = new Race(level, time, time_interval); // TODO
+
 			case INTRO:
+				ui.showScreen(currScreen);
 				break;
+
 			case PRINT_STRTLIST:
 				break;
+
 			case RGSTR_SKIER:
 				ui.showScreen(Screen.RGSTR_SKIER);
 				String name = ui.getUserStrng("Ange namn på tävlande.");
 				String club = ui.getUserStrng("Ange tävlandes klubb");
 				break;
+
 			}
-		} 
+
+			currScreen = ui.getNextScreen();
+		}
 	}
-	
+
 	// Deklarerar skidåkare
 	public Skier[] playerDeclaration(int amountOfPlayers) {
 		Skier[] list = new Skier[amountOfPlayers];
@@ -67,7 +73,7 @@ class GameLogic {
 	}
 
 	private static void skiResults(Skier[] list) {
-	
+
 	}
 
 	private static void Race(Skier[] list, SkiSlope skiSlope) {
