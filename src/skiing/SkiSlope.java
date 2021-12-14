@@ -1,5 +1,7 @@
 package skiing;
 
+//TODO rensa gamla/oanvända metoder
+
 public class SkiSlope {
 	public double trackLength;
 	public double[] checkpoints;

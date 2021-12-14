@@ -12,13 +12,16 @@ public class SkierDeclaration {
 		Skier skier = new Skier();
 		ui.postMsg("Ange förnamn:");
 		skier.firstName=scan.nextLine();
+//		skier.firstName="Olle";
 		ui.postMsg("Ange efternamn:");
 		skier.lastName=scan.nextLine();
+//		skier.lastName="Karlsson";
 		ui.postMsg("Ange kön (Dam eller Herr):");
 		skier.gender=scan.nextLine();
+//		skier.gender="Herr";
 		ui.postMsg("Ange ålder:");
 		skier.age=scan.nextInt();
-		scan.close();
+//		skier.age=24;
 		return skier;
 	}
 }

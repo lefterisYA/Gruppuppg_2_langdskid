@@ -26,7 +26,7 @@ public class Tempmain {
 		// Slumpar hastigheten lite för alla skidåkare
 		for (int i = 0; i < list.length; i++) {
 			ui.postMsg(list[i].speed + "m/s");
-			list[i].speedRandom();
+//			list[i].speedRandom();
 			ui.postMsg(list[i].speed + "m/s");
 		}
 

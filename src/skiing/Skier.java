@@ -3,6 +3,8 @@ package skiing;
 import java.util.LinkedList;
 import java.util.List;
 
+	//TODO rensa gamla/oanvända metoder
+
 public class Skier extends Person implements Comparable<Skier> {
 	public int playerNumber; // Sparar personens tävlingsnummer
 	public double speed; // Räknar speed i meter per sekund
@@ -33,25 +35,12 @@ public class Skier extends Person implements Comparable<Skier> {
 	public void setGoal(boolean goal) {
 		this.goal = goal;
 	}
-	public Skier(String name, int playernumber, double speed, double position, int[] startingTime) {
-		super.name = name;
-		this.playerNumber = playernumber;
-		this.speed = speed;
-		this.position = position;
-		this.startingTime = startingTime;
-	}
-
-	public Skier(String name, int playernumber, double speed, double position) {
-		super.name = name;
-		this.playerNumber = playernumber;
-		this.speed = speed;
-		this.position = position;
-	}
-
-	public Skier(String name, double speed, double position) {
-		super.name = name;
-		this.speed = speed;
-		this.position = position;
+	public Skier(String firstName, String lastName, String gender, int age) {
+		super.firstName = firstName;
+		super.lastName = lastName;
+		super.gender = gender;
+		super.age = age;
+		
 	}
 
 	// En constructor som jag använder för att deklarera en array (list) med
@@ -59,16 +48,16 @@ public class Skier extends Person implements Comparable<Skier> {
 	public Skier() {
 	}
 
-	// Slumpar hastigheten lite grann
-	public void speedRandom() {
-		double random = Math.random() * 3;
-		if (Math.random() < 0.5) {
-			random = -random;
-		}
-		this.speed = this.speed + (Math.round(random * 100.0) / 100.0);
-		if (this.speed < 1)
-			this.speed = 1;
-	}
+//	// Slumpar hastigheten lite grann
+//	public void speedRandom() {
+//		double random = Math.random() * 3;
+//		if (Math.random() < 0.5) {
+//			random = -random;
+//		}
+//		this.speed = this.speed + (Math.round(random * 100.0) / 100.0);
+//		if (this.speed < 1)
+//			this.speed = 1;
+//	}
 
 	@Override
 	public int compareTo(Skier o) {
