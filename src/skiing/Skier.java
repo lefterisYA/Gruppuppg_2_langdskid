@@ -14,7 +14,15 @@ public class Skier extends Person implements Comparable<Skier> {
 	public boolean goal = false; // Används för att se om personen gått i mål
 	public int goalTime;
 	public int[] checkpointTime;
+	private Clock clock;
 	
+	public void setClock(Clock clock) {
+		this.clock = clock;
+	}
+	public Clock getClock() {
+		return clock;
+	}
+
 	public int getPlayerNumber() {return playerNumber;}
 	public void setPlayerNumber(int playerNumber) {this.playerNumber = playerNumber;}
 	public int[] getCheckpointTime() {return checkpointTime;}
