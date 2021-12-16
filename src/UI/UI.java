@@ -1,5 +1,6 @@
 package UI;
 
+import main.ProgLogic;
 import skiing.Skier;
 
 public interface UI {
@@ -19,4 +20,6 @@ public interface UI {
 	public abstract void showScreen(Screen newScreen);
 	public abstract Screen getNextScreen();
 	public abstract void setNextScreen(Screen intro);
+	public abstract void registerCallingThread(Thread thread);
+	public abstract void registerCallingThread(ProgLogic progLogic);
 }

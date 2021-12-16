@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.*;
 
+import main.ProgLogic;
 import skiing.Skier;
 
 public class GUI implements UI {
@@ -35,6 +36,8 @@ public class GUI implements UI {
 	private Screen currScreen = null;
 	private LinkedList<Screen> screenStack = new LinkedList<Screen>();
 
+	private static ProgLogic caller;
+
 	public GUI() {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -42,6 +45,10 @@ public class GUI implements UI {
 		frame.getContentPane().add(panel);
 		frame.pack(); // resize frame to panel
 		frame.setVisible(true);
+	}
+	
+	public void registerCallingThread(ProgLogic caller) {
+		GUI.caller = 	caller;
 	}
 
 	void setUserInp(String txt) {
@@ -72,7 +79,7 @@ public class GUI implements UI {
 
 	private void showScreen() {
 		String sname = currScreen != null ? currScreen.name() : "null";
-		System.out.println("GUI:"+sname);
+		System.out.println("GUI: "+sname+Thread.currentThread().getId());
                         
 		switch (currScreen){
 		case INTRO:
@@ -80,12 +87,12 @@ public class GUI implements UI {
 			titleText("Välkommen");
 			panel.add(elemGnrt.getLabel(), 1, 0, 1);
 			panel.add(elemGnrt.getTextArea(), -1, 1, true);
-			panel.add(new Button(this, "Skapa tävling", 		Screen.CREATE_RACE, true), 0, 1, true);
-			panel.add(new Button(this, "Lägg till tävlande",	Screen.RGSTR_SKIER, true), 1, 0, true);
-			panel.add(new Button(this, "WIP", 					Screen.CREATE_RACE, true), 1, 0, true);
+			panel.add(new Button(this, "Skapa tävling", 		Screen.CREATE_RACE, 	false), 0, 1, true);
+			panel.add(new Button(this, "Lägg till tävlande",	Screen.RGSTR_SKIER,  	true), 1, 0, true);
+			panel.add(new Button(this, "WIP", 					Screen.PRINT_STRTLIST, 	true), 1, 0, true);
 			panel.addVertSpcr(400);
-			panel.add(new Button(this, "OK",  			 		Screen.ACPT, false), -2, 1, true);
-			panel.add(new Button(this, "Avsluta",     			Screen.EXIT, false), 2, 0, true);
+			panel.add(new Button(this, "OK",  			 		Screen.ACPT, 			false), -2, 1, true);
+			panel.add(new Button(this, "Avsluta",     			Screen.EXIT, 			false), 2, 0, true);
 
 			bodyText("Var god gör ett val:");
 			panel.addVertSpcr(1);
@@ -107,18 +114,22 @@ public class GUI implements UI {
 			panel.add(elemGnrt.getTextArea(), 0, 1);
 			panel.add(elemGnrt.getTextField(), 1, 1);
 			panel.addVertSpcr(200);
-			panel.add(new Button(this, "OK",  			 	Screen.ACPT, true), 0, 3);
+			panel.add(new Button(this, "Tillbaka",		 	Screen.BACK, false), 0, 3);
 			panel.add(new Button(this, "Avsluta",     		Screen.EXIT, false), 2, 3);
 			bodyText("");
 
 			panel.updateUI();
+			break;
 
 		case PRINT_STRTLIST:
 			break;
 
-			
 		case BACK:
-			showScreen(getLastScreen());
+//			Thread.currentThread().interrupt();
+//			System.out.println("here in GUI/BACK" + caller.getId());
+			caller.interrupt();
+//			caller.stop();
+//			showScreen(getLastScreen());
 			break;
 
 		case EXIT:
@@ -184,7 +195,7 @@ public class GUI implements UI {
 				+ "? (Starting time, svara först timme, tryck enter och skriv minut, sen sekund) ");
 		}
 
-		return new Skier(name, playerNumber, speed, position, sTime);
+		return new Skier();
 	}
 
 	@Override
@@ -236,6 +247,8 @@ public class GUI implements UI {
 
 	public void setNextScreen(Screen nxtScn) {
 			currScreen = nxtScn;
+		System.out.println("setNextScreen()");
+			caller.interrupt();
 	}
 
 	public void setNextScreen(Screen nxtScn, boolean async) {
@@ -280,8 +293,17 @@ public class GUI implements UI {
 	public void setIntrptBlock(boolean val) {
 		intrptBlock = val;
 	}
+
+	@Override
+	public void registerCallingThread(Thread thread) {
+		// TODO Auto-generated method stub
+		
+	}
 }
 
+/*
+ * Addition to the JButton cllass so that action listeners are added at creatinong o fobjects.
+ */
 class Button extends JButton {
 	private static final long serialVersionUID = 1849303325697245859L;
 	GUI ui;
@@ -295,15 +317,17 @@ class Button extends JButton {
 			public void actionPerformed(ActionEvent e) {
 				if ( sync ) {
 					ui.setNextScreen(actn, false);
+					System.out.println("Button.addActionListener. Button pressed. Scrn: " + actn);
 				} else {
 					Thread thread = new Thread(){
 						public void run(){
-							System.out.println("Thread Running");
+							System.out.println("Button.addActionListener: Thread Running");
 							ui.showScreen(actn);
 						}
 					};
 					thread.start();
 				}
+				Thread.currentThread().interrupt();
 			}
 		});
 	}
