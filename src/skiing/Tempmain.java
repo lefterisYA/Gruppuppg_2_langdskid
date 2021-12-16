@@ -10,14 +10,14 @@ import skiingresult.ResultBoard;
 import test.Test;
 
 public class Tempmain {
-	static UI ui;
+	static GUI ui;
 
 	public static void main(String[] args) {
 		Utils utils = Utils.getInstance(); // get singelton instance of class Utils
 		 
 		ui = new GUI();
 		// Gör en array med skidåkare utan några värden
-		int amountOfPlayers = ui.getUserInt("Hur många tävlare?");
+		int amountOfPlayers = 0; // ui.getUserInt("Hur många tävlare?");
 		Skier[] list = new Skier[amountOfPlayers];
 
 		// Deklarerade skiers sätts in i listan
