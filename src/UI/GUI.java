@@ -448,6 +448,7 @@ class ElemGnrt {
 		};
 
 		textField.addKeyListener((KeyListener) actnLsnrEnterKey);
+
 	}
 
 	private void gnrtTextArea() {
