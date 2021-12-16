@@ -55,24 +55,13 @@ public class GUI {
 		screenStack.addFirst(scrn);
 	}
 	
-	private Screen getLastScreen() {
+	public Screen getLastScreen() {
 		screenStack.pop();
 		if ( screenStack.size() > 0 )
 			return screenStack.getFirst();
 		else
 			return Screen.INTRO;
 	}
-
-	private GuiCallback exitCallback = new GuiCallback() {
-		@Override
-		public void onSuccess() {
-			System.exit(0);
-		}
-
-		public void onCancel() { }
-		public void onNewScrn(Screen newScrn) { }
-		public void onNewUsrInp(String val) { }
-	};
 
 	GuiCallback guiCallback;
 	public void rgsrCallback( GuiCallback guiCallback ) {
@@ -98,7 +87,7 @@ public class GUI {
 			panel.add(new Button( "WIP",					guiCallback, Screen.PRINT_STRTLIST  ), 1, 0, true);
 			panel.addVertSpcr(400);
 			panel.add(new Button( "OK",						guiCallback, Screen.ACPT 			), -2, 1, true);
-			panel.add(new Button( "Avsluta",				exitCallback						), 2, 0, true);
+			panel.add(new Button( "Avsluta",				guiCallback, Screen.EXIT 			), 2, 0, true);
 
 			bodyText("Var god gör ett val:");
 			panel.addVertSpcr(1);
@@ -121,7 +110,7 @@ public class GUI {
 			panel.addVertSpcr(200);
 
 			panel.add(new Button( "Avbryt",					guiCallback, Screen.BACK 			), 1, 0, true);
-			panel.add(new Button( "Avsluta",				exitCallback			 			), 1, 0, true);
+			panel.add(new Button( "Avsluta",				guiCallback, Screen.EXIT 			), 1, 0, true);
 			bodyText("");
 
 			panel.updateUI();
@@ -129,13 +118,6 @@ public class GUI {
 
 		case PRINT_STRTLIST:
 			break;
-
-		case BACK:
-			showScreen(getLastScreen());
-			break;
-
-		case EXIT:
-			System.exit(0);
 
 		default:
 			System.out.println("Screen not handled!");
