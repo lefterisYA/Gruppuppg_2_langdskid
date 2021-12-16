@@ -26,6 +26,6 @@ public class Test {
 		for (int j = 0; j < sTime.length; j++) {
 			sTime[j] = 10;
 		}
-		return new Skier(name, playerNumber, speed, position, sTime);
+		return new Skier();
 	}
 }
