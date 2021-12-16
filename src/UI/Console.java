@@ -2,6 +2,7 @@ package UI;
 
 import java.util.Scanner;
 
+import main.ProgLogic;
 import skiing.Skier;
 
 public class Console implements UI {
@@ -55,7 +56,7 @@ public class Console implements UI {
 			sTime[j] = sc.nextInt();
 		}
 		
-		return new Skier(name, playerNumber, speed, position, sTime);
+		return new Skier();
 	}
 
 	@Override
@@ -83,6 +84,18 @@ public class Console implements UI {
 
 	@Override
 	public void setNextScreen(Screen intro) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void registerCallingThread(Thread thread) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void registerCallingThread(ProgLogic progLogic) {
 		// TODO Auto-generated method stub
 		
 	}
