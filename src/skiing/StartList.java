@@ -1,49 +1,76 @@
 package skiing;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
 
+import UI.UI;
 import common.Utils;
 
 public class StartList {
-	
-	//Exempel i main på hur startlistan kan användas
-	//skierlist.firstStart och skierlist.startInterval lär jag
-	//göra om efter att jag vet mer hur timer kommer att fungera
-	
-	
-//	public static void main(String[] args) {
-//		int firstStart=12;
-//		int startInterval=30;
-//		int firstPlayerNumber=101;
-//		Skier skier = SkierDeclaration.SkierDeclare();
-//		Skier skier2 = SkierDeclaration.SkierDeclare();
-//		SkierList skierlist = new SkierList();
-//		classCheck(skier, skierlist);
-//		skierlist.addSkiertoList(skier);
-//		skierlist.addSkiertoList(skier2);
-//		skierlist.assignAllPlayerNumbersRandom();
-//		skierlist.sortList();
-//		setPlayerNumber(skierlist);
-//	}
 
-	public static void classCheck(Skier skier, SkierList skierlist) {
-		if (skierlist.getSkiingClass(skier)!=skierlist.getSkiingClass()) {
-			skierlist.assignSkiingClass(skier);
-		}
+	public static void main(String[] args) {
+		SkierList skierlist = skierConfig();
+		
+		ClassList classlist = classConfig(skierlist);
 	}
-	 
-	public static void setPlayerNumber(SkierList skierlist, 
-			int firstStart, int startInterval, int firstPlayerNumber) {
-		skierlist.firstStart[0]=firstStart;
-		skierlist.startInterval[2]=startInterval;
-		skierlist.firstPlayerNumber=firstPlayerNumber;
-		for (int i = 0; i < skierlist.skierLinkedList.size(); i++) {
-			Skier skiski = skierlist.getSkier(i);
-			skiski.playerNumber=skierlist.firstPlayerNumber+i;
-			skiski.startingTime=Utils.timeConverter(Utils.timeConverter(skierlist.firstStart)
-					+(Utils.timeConverter(skierlist.startInterval)*i));
-			skierlist.setSkier(skiski, i);
+
+	private static SkierList skierConfig() {
+		//anmälning individer
+		SkierList skierlist = new SkierList();
+		Scanner scan = new Scanner(System.in);
+		System.out.println("Hur många skidåkare vill du registrera?");
+		int amountOfSkiers = scan.nextInt();
+		for (int i = 0; i < amountOfSkiers; i++) {
+			skierlist.addSkiertoList(SkierDeclaration.SkierDeclare());
 		}
+		return skierlist;
+	}
+
+	private static ClassList classConfig(SkierList skierlist) {
+		//anmälan klass
+		System.out.println("Vilken klass gäller det? t.ex H21 eller D24");
+//		String chosenClass = scan.nextLine();
+		String chosenClass = "H24";
+		ClassList classlist = new ClassList();
+		classlist.setSkiingClass(chosenClass);
+		int x = 0;
+		for (int i = 0; i < skierlist.skierLinkedList.size(); i++) {
+			if (chosenClass.equals(skierlist.getSkiingClassAtIndex(i))) {
+				while (x <= 0) {
+					timeConfigInput(classlist);
+					x++;
+				}
+				classlist.classList.add(skierlist.getSkier(i));
+				
+				//lottning
+				classlist.assignAllPlayerNumbersRandom();
+				classlist.sortList();
+				classlist.setPlayerNumber(classlist);
+			}
+		}
+		return classlist;
+	}
+
+	private static void timeConfigInput(ClassList classlist) {
+		Scanner scan1 = new Scanner(System.in);
+		System.out.println("När ska den första starttiden vara? input timme: ");
+//				firstStart[0] = scan1.nextInt();
+		classlist.firstStart[0] = 12;
+		System.out.println("input minut: ");
+		classlist.firstStart[1] = 30;
+//				firstStart[1] =scan1.nextInt();
+		System.out.println("input sekund: ");
+		classlist.firstStart[2] = 0;
+//				firstStart[2] = scan1.nextInt();
+		System.out.println("Ange startinteravll i sekunder: ");
+//				int startInterval = scan1.nextInt();
+		classlist.startInterval = 30;
+		System.out.println("Ange första spelarens nummer, resterande spelares nummer kommer baseras på det"
+				+ "här. Så om du väljer t.ex 101, kommer spelare två vara 102, tre 103, osv.");
+//				int firstPlayerNumber = scan1.nextInt();
+		classlist.firstPlayerNumber = 101;
 	}
 
 }
