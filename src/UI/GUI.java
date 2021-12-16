@@ -125,9 +125,10 @@ public class GUI implements UI {
 			break;
 
 		case BACK:
-//			Thread.currentThread().interrupt();
+
+			Thread.currentThread().interrupt();
 //			System.out.println("here in GUI/BACK" + caller.getId());
-			caller.interrupt();
+//			caller.interrupt();
 //			caller.stop();
 //			showScreen(getLastScreen());
 			break;
@@ -139,6 +140,16 @@ public class GUI implements UI {
 			System.out.println("Screen not handled!");
 		}
 	}
+
+	public void interruptCaller() {
+		caller.interrupt();
+	}
+
+	public void interrupt() {
+		Thread.currentThread().interrupt();
+//		caller.interrupt();
+	}
+
 
 	public void titleText(String text) {
 		elemGnrt.getLabel().setText(text);
@@ -247,7 +258,7 @@ public class GUI implements UI {
 
 	public void setNextScreen(Screen nxtScn) {
 			currScreen = nxtScn;
-		System.out.println("setNextScreen()");
+			System.out.println("setNextScreen()");
 			caller.interrupt();
 	}
 
@@ -315,19 +326,22 @@ class Button extends JButton {
 
 		addActionListener( new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if ( sync ) {
+//				if ( sync ) {
+					
+					ui.interrupt();
+					ui.interruptCaller();
 					ui.setNextScreen(actn, false);
 					System.out.println("Button.addActionListener. Button pressed. Scrn: " + actn);
-				} else {
-					Thread thread = new Thread(){
-						public void run(){
-							System.out.println("Button.addActionListener: Thread Running");
-							ui.showScreen(actn);
-						}
-					};
-					thread.start();
-				}
-				Thread.currentThread().interrupt();
+//				} else {
+//					Thread thread = new Thread(){
+//						public void run(){
+//							System.out.println("Button.addActionListener: Thread Running");
+//							ui.showScreen(actn);
+//						}
+//					};
+//					thread.start();
+//				}
+//				Thread.currentThread().interrupt();
 			}
 		});
 	}
