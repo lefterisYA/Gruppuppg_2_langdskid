@@ -1,5 +1,8 @@
 package UI;
 
+import skiing.Skier;
+
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -9,14 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.EventListener;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 //import java.awt.Color;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -26,7 +22,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import skiing.Skier;
+import java.util.EventListener;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class GUI {
 	JFrame frame = new JFrame("My First GUI");
@@ -48,7 +49,7 @@ public class GUI {
 	}
 	
 	private void addToScreenStack(Screen scrn) {
-		if ( scrn == Screen.BACK )
+		if ( scrn.isVirt )
 			return;
 		if ( screenStack.contains(scrn) )
 			screenStack.remove(scrn);
@@ -68,9 +69,23 @@ public class GUI {
 		this.guiCallback = guiCallback;
 	}
 	
+	GuiCallback clockStart = new GuiCallback() {
+		public void onSuccess() {
+			runClock();
+		}
+		public void onCancel() {
+		}
+		public void onNewScrn(Screen newScrn) {
+		}
+		public void onNewUsrInp(String val) {
+		}
+	};
+
+	
 	public void showScreen(Screen newScreen) {
 		currScreen = newScreen;
 		addToScreenStack(currScreen);
+		String title;
 	
 		String sname = currScreen != null ? currScreen.name() : "null";
 		System.out.println( Thread.currentThread().getStackTrace()[1] + sname+" threadId:"+Thread.currentThread().getId()); 
@@ -78,12 +93,15 @@ public class GUI {
 		case INTRO:
 			panel.removeAll();
 			clearMsgScreen();
-			titleText("Välkommen");
+			title="Välkommen";
+			titleText(title);
 			panel.add(elemGnrt.getLabel(), 1, 0, 1);
 			panel.add(elemGnrt.getTextArea(), -1, 1, true);
 			panel.add(new Button( "Skapa tävling", 			guiCallback, Screen.CREATE_RACE  	), 0, 1, true);
-
 			panel.add(new Button( "Lägg till tävlande",		guiCallback, Screen.RGSTR_SKIER   	), 1, 0, true);
+			panel.add(new Button( "Visa slutresultat",		guiCallback, Screen.PRINT_STRTLIST  ), 1, 0, true);
+			panel.add(new Button( "Se tävling", 			guiCallback, Screen.PRINT_STRTLIST  ), -2, 1, true);
+			panel.add(new Button( "Starta klocka",			clockStart 							), 1, 0, true);
 			panel.add(new Button( "WIP",					guiCallback, Screen.PRINT_STRTLIST  ), 1, 0, true);
 			panel.addVertSpcr(400);
 			panel.add(new Button( "OK",						guiCallback, Screen.ACPT 			), -2, 1, true);
@@ -94,25 +112,32 @@ public class GUI {
 			panel.updateUI();
 			break;
 
-		case RGSTR_SKIER:
-			String title = "Registrera tävlande";
-
-		case CREATE_RACE:
-			title = "Ny tävling";
-
+		case RGSTR_SKIER,CREATE_RACE:
 			panel.removeAll();
+			clearMsgScreen();
+			elemGnrt.getTextField().setText("");
+
+			title = currScreen == Screen.CREATE_RACE ? "Ny tävling" : "Registrera tävlande";
 			titleText(title);
 		
 			bodyText("");
 			panel.add(elemGnrt.getLabel(), 0, 0, 3);
+
 			panel.add(elemGnrt.getTextArea(), 0, 1);
-			panel.add(elemGnrt.getTextField(), 1, 1);
+			panel.add(elemGnrt.getTextField(), 1, 0, true);
 			panel.addVertSpcr(200);
 
 			panel.add(new Button( "Avbryt",					guiCallback, Screen.BACK 			), 1, 0, true);
-			panel.add(new Button( "Avsluta",				guiCallback, Screen.EXIT 			), 1, 0, true);
 			bodyText("");
 
+			panel.updateUI();
+			break;
+
+		case RGSTR_SKIER_VERIFY:
+			title="Klart?";
+			titleText(title);
+			panel.add(new Button( "Lägg till",				guiCallback, Screen.BACK 			), 1, 0, true);
+			panel.add(new Button( "Lägg till fler",			guiCallback, Screen.EXIT 			), -2, 0, true);
 			panel.updateUI();
 			break;
 
@@ -124,6 +149,10 @@ public class GUI {
 		}
 	}
 
+	public void addInputField() {
+		
+	}
+	
 	public void titleText(String text) {
 		elemGnrt.getLabel().setText(text);
 	}
@@ -181,12 +210,14 @@ public class GUI {
 	}
 
 	public String getUserStrng(String msg) {
-		postMsg(msg);
+
+		bodyText(elemGnrt.getTextArea().getText()+"\t"+elemGnrt.getTextField().getText()+"\n"+msg);
+//		bodyText(msg);
+//		postMsg(msg);
 		elemGnrt.setTextFieldCback(guiCallback);
 		elemGnrt.getTextField().setText("");
 		
 		return null;
-
 	}
 }
 
@@ -230,7 +261,9 @@ class Button extends JButton {
  */
 class Panel extends JPanel {
 	private static final long serialVersionUID = -4040485876947807582L;
+
 	public final GridBagConstraints cnst;
+	private Component lastAdded;
 
 	public Panel(GridBagLayout layout, GridBagConstraints cnst) {
 		super(layout);
@@ -253,6 +286,8 @@ class Panel extends JPanel {
 
 		setCnst(newX, newY, width);
 		add(element, cnst);
+		
+		lastAdded = element;
 	}
 
 	public void add(JComponent element, int x, int y, boolean relative) {
@@ -273,6 +308,15 @@ class Panel extends JPanel {
 //		spacer.setBackground(new Color(0,0,0));
 		cnst.gridy++;
 		add(spacer, cnst);
+	}
+	
+	public boolean removeLast() {
+		try {
+			remove(lastAdded);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 }
 
@@ -311,11 +355,10 @@ class ElemGnrt {
 	};
 
 	JLabel label;
-	JTextField textField;
+	LinkedList<JTextField> textFields = new LinkedList<JTextField>();
+	JTextArea board;
 	JTextArea textArea;
 
-	JButton btnAcpt;
-	JButton btnClse;
 	GUI ui;
 
 	HashMap<ActnLnrs, EventListener> actnLnrs = new HashMap<ActnLnrs, EventListener>();
@@ -327,51 +370,17 @@ class ElemGnrt {
 		gnrtLabel("");
 	}
 
-	JTextField getTextField() {
-		return textField;
-	}
+	// Getters:
+	JTextArea getTextArea() 		{ return textArea; }
+	JLabel getLabel() 				{ return label; }
+	JTextField getTextField() 		{ return textFields.getFirst(); }
+	JTextField getTextField(int i) 	{ return textFields.get(i); }
 
-	JTextArea getTextArea() {
-		return textArea;
-	}
-
-	JLabel getLabel() {
-		return label;
-	}
-
-	EventListener getActionListener(ActnLnrs key) {
-		return actnLnrs.get(key);
-	}
-
-	void addLnsr(ActnLnrs key, EventListener actnLsnr) {
-		actnLnrs.put(key, actnLsnr);
-	}
-
+	// Generators:
 	private void gnrtTextField() {
-		textField = new JTextField("", 20);
+		JTextField textField = new JTextField("", 20);
 		textField.setMinimumSize(new Dimension(400,20));
-	}
-
-	public void setTextFieldCback(GuiCallback callback) {
-		if ( callback == null )
-			return;
-
-		EventListener textFieldKeyListner = new KeyListener() {
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode()==KeyEvent.VK_ENTER){
-					callback.onNewUsrInp(textField.getText());
-				} else if ( e.getKeyCode() == KeyEvent.VK_ESCAPE ) {
-					callback.onCancel();
-				}
-			}
-
-			@Override public void keyReleased(KeyEvent arg0) { }
-			@Override public void keyTyped(KeyEvent arg0) { }
-		};
-
-		for ( KeyListener kLsnter : textField.getKeyListeners() )
-			textField.removeKeyListener(kLsnter);
-		textField.addKeyListener((KeyListener) textFieldKeyListner);
+		textFields.add(textField);
 	}
 
 	private void gnrtTextArea() {
@@ -389,5 +398,39 @@ class ElemGnrt {
 		label = new JLabel(txt);
 		label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 44));
 	}
+	
+	// Setters:
+	public void setTextFieldCback(GuiCallback callback) {
+		setTextFieldCback(callback, 0);
+	}
+
+	public void setTextFieldCback(GuiCallback callback, int idx) {
+		if ( callback == null )
+			return;
+
+		EventListener textFieldKeyListner = new KeyListener() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode()==KeyEvent.VK_ENTER){
+					callback.onNewUsrInp(textFields.get(idx).getText());
+				} else if ( e.getKeyCode() == KeyEvent.VK_ESCAPE ) {
+					callback.onCancel();
+				}
+			}
+
+			@Override public void keyReleased(KeyEvent arg0) { }
+			@Override public void keyTyped(KeyEvent arg0) { }
+		};
+
+		for ( KeyListener kLsnter : textFields.get(idx).getKeyListeners() )
+			textFields.get(idx).removeKeyListener(kLsnter);
+		textFields.get(idx).addKeyListener((KeyListener) textFieldKeyListner);
+	}
+	
+	//
+	public JTextField addTextField() {
+		gnrtTextField();
+		return textFields.getLast();
+	}
+
 }
 

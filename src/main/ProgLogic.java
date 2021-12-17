@@ -3,11 +3,14 @@ package main;
 import UI.GUI;
 import UI.GuiCallback;
 import UI.Screen;
+import skiing.Skier;
+import skiing.SkierList;
 
 public class ProgLogic {
 	private final GUI ui;
-	static Thread runningThread;
 	UserReplyHandler repHand;
+
+	public final SkierList skierList = new SkierList();
 
 	public ProgLogic(GUI ui) {
 		this.ui=ui;
@@ -19,50 +22,99 @@ public class ProgLogic {
 			public void onSuccess() { }
 			public void onCancel() { }
 		} );
-		
 	}
 	
 	public void run() {
 		ui.showScreen(Screen.INTRO);
 	}
 	
-	public void screenHandler(Screen currScrn) {
+	// outgoing, show new screen
+	public void screenHandler(Screen currScrn) { 
+		screenHandler(currScrn, null); 
+	}
+
+	// ingoing, process/handle user inpu:
+	public void usrInpFnsh(String[] usrReplies, Screen callScrn) {
+		screenHandler(callScrn, usrReplies);
+	}
+
+	// both of above methods call the following so we have out/in gathered in the same switch case statements.
+	private void screenHandler(Screen scrn, String[] usrReplies) {
 //		System.out.println( Thread.currentThread().getStackTrace()[1] + ": " + ( currScrn != null ? currScrn.name() : "null" ));
-		switch (currScrn) {
+
+
+		boolean isNewScrn = usrReplies == null ? false : true;
+		
+		switch (scrn) {
 		case CREATE_RACE:
-			ui.showScreen(currScrn);
-			repHand.sendMsgs( currScrn, new String[] { 
-					"Ange klass:", 
-					"Ange starttid", 
-					"Ange startIntervall:", 
-					"Ange första startnummer" 
-			});
+			if ( !isNewScrn ) {
+				ui.showScreen(scrn);
+				repHand.sendMsgsSync( scrn, new String[] { 
+						"Välj klass:", 
+						"Ange starttid", 
+						"Ange startIntervall:", 
+						"Ange första åkares startnummer" 
+				});
+			} else { 
+				screenHandler(Screen.INTRO); // next screen
+			}
 			break;
 
 		case INTRO:
-			ui.showScreen(currScrn);
-			// NOT ACTUALLY NEEDED!
+			if ( !isNewScrn ) {
+				ui.showScreen(scrn);
+			} else {
+				screenHandler(Screen.INTRO); // next screen
+			}
 			break;
 
 		case PRINT_STRTLIST:
-			ui.showScreen(currScrn);
-			// TODO
+			if ( !isNewScrn ) {
+				ui.showScreen(scrn);
+			} else {
+				screenHandler(Screen.INTRO); // next screen
+			}
 			break;
 
 		case RGSTR_SKIER:
-			ui.showScreen(currScrn);
-			repHand.sendMsgs( currScrn, new String[] { 
-					"Ange namn på tävlande.",
-					"Ange tävlandes klubb" 
-			});
-			break;
 
+			if ( !isNewScrn ) {
+				ui.showScreen(scrn);
+				repHand.sendMsgsSync( scrn, new String[] { 
+						"Ange namn på tävlande:",
+						"Ange kön på tävlande:",
+						"Ange ålder på tävlande:"
+				});
+			} else {
+				try {
+					int age = Integer.parseInt(usrReplies[2]);
+
+					String[] name = usrReplies[0].split(" ");
+					String firstName = name[0];
+					String lastName = name.length > 1 ? name[name.length-1] : "";
+
+					Skier newSkier = new Skier( firstName, lastName, usrReplies[1], age );
+
+					System.out.println(usrReplies[0]+" "+age);
+					skierList.addSkiertoList(newSkier);
+
+					ui.showScreen(Screen.RGSTR_SKIER_VERIFY); // next screen
+				} catch (Exception e) {
+					repHand.retry("Du måste ange åldern i siffor!");
+					return;
+				}
+			}
+			break;
 
 		case EXIT:
 			System.exit(0);
 
 		case BACK:
-			ui.showScreen(ui.getLastScreen());
+			if ( !isNewScrn ) {
+				ui.showScreen(ui.getLastScreen());
+			} else {
+				screenHandler(Screen.INTRO); // next screen
+			}
 			break;
 
 		default:
@@ -70,32 +122,6 @@ public class ProgLogic {
 		}
 	}
 	
-	public void usrInpFnsh(String[] messages, Screen callScrn) {
-		Screen nextScrn = null;
-		
-		switch (callScrn) {
-		case CREATE_RACE:
-			nextScrn = Screen.INTRO;
-			break;
-
-		case INTRO:
-			// NOT ACTUALLY NEEDED!
-			break;
-
-		case PRINT_STRTLIST:
-			// TODO
-			break;
-
-		case RGSTR_SKIER:
-			nextScrn = Screen.INTRO;
-			break;
-
-		default:
-			nextScrn = Screen.INTRO;
-			break;
-		}
-		screenHandler(nextScrn);
-	}
 
 }
 
@@ -112,13 +138,21 @@ class UserReplyHandler {
 		this.lgc 	= 	lgc;
 	}
 	
-	public void sendMsgs(Screen callScrn, String[] msgs) {
+	public void sendMsgsAsync(Screen callScrn, String[] msgs) {
+		// TODO
+	}
+
+	public void sendMsgsSync(Screen callScrn, String[] msgs) {
 		usrMsgs = msgs;
 		usrRpls = new String[usrMsgs.length];
 		msgIdx=0;
-		ui.getUserStrng(usrMsgs[0]);
 		this.callScrn = callScrn;
+		ui.getUserStrng(usrMsgs[0]);
 	}
+	
+	public void retry(String newMsg) {
+		ui.getUserStrng(newMsg);
+	};
 	
 	public void guiCallback(String val) {
 		usrRpls[msgIdx] = val;
