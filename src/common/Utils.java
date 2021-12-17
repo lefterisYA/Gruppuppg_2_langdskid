@@ -56,6 +56,14 @@ public class Utils {
 		return seconds;
 	}
 	
+	public static int[] timeAdder(int[] time1, int[] time2) {
+		int time1S=timeConverter(time1);
+		int time2S=timeConverter(time2);
+		time1S=time1S+time2S;
+		time1=timeConverter(time1S);
+		return time1;
+	}
+	
 	public static String toString(int[] hms) {
 		return (hms[0] + ":" + hms[1] + ":" + hms[2]);
 //		if (hms[0]>0)
