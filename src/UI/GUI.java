@@ -16,23 +16,26 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 //import java.awt.Color;
-//import java.awt.Label;
-//import java.awt.TextArea;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import skiing.Skier;
 
-public class GUI implements UI {
-	private volatile boolean newValExists = false;
-	private volatile boolean intrptBlock = false;
+public class GUI {
 	JFrame frame = new JFrame("My First GUI");
 	Panel panel = new Panel(new GridBagLayout(), new GridBagConstraints());
 	ElemGnrt elemGnrt = new ElemGnrt(this);
 	volatile String bodyText = "";
 
-	private String usrInp;
-	private Screen currScreen = null;
+	public Screen currScreen = null;
+	public Screen nextScreen = null;
 	private LinkedList<Screen> screenStack = new LinkedList<Screen>();
 
 	public GUI() {
@@ -43,26 +46,16 @@ public class GUI implements UI {
 		frame.pack(); // resize frame to panel
 		frame.setVisible(true);
 	}
-
-	void setUserInp(String txt) {
-		usrInp = txt;
-		readUsrInp();
-	}
-
-	@Override
-	public void showScreen(Screen newScreen) {
-		currScreen = newScreen;
-		addToScreenStack(currScreen);
-		showScreen();
-	}
 	
 	private void addToScreenStack(Screen scrn) {
+		if ( scrn == Screen.BACK )
+			return;
 		if ( screenStack.contains(scrn) )
 			screenStack.remove(scrn);
 		screenStack.addFirst(scrn);
 	}
 	
-	private Screen getLastScreen() {
+	public Screen getLastScreen() {
 		screenStack.pop();
 		if ( screenStack.size() > 0 )
 			return screenStack.getFirst();
@@ -70,22 +63,31 @@ public class GUI implements UI {
 			return Screen.INTRO;
 	}
 
-	private void showScreen() {
+	GuiCallback guiCallback;
+	public void rgsrCallback( GuiCallback guiCallback ) {
+		this.guiCallback = guiCallback;
+	}
+	
+	public void showScreen(Screen newScreen) {
+		currScreen = newScreen;
+		addToScreenStack(currScreen);
+	
 		String sname = currScreen != null ? currScreen.name() : "null";
-		System.out.println("GUI:"+sname);
-                        
+		System.out.println( Thread.currentThread().getStackTrace()[1] + sname+" threadId:"+Thread.currentThread().getId()); 
 		switch (currScreen){
 		case INTRO:
 			panel.removeAll();
+			clearMsgScreen();
 			titleText("Välkommen");
 			panel.add(elemGnrt.getLabel(), 1, 0, 1);
 			panel.add(elemGnrt.getTextArea(), -1, 1, true);
-			panel.add(new Button(this, "Skapa tävling", 		Screen.CREATE_RACE, true), 0, 1, true);
-			panel.add(new Button(this, "Lägg till tävlande",	Screen.RGSTR_SKIER, true), 1, 0, true);
-			panel.add(new Button(this, "WIP", 					Screen.CREATE_RACE, true), 1, 0, true);
+			panel.add(new Button( "Skapa tävling", 			guiCallback, Screen.CREATE_RACE  	), 0, 1, true);
+
+			panel.add(new Button( "Lägg till tävlande",		guiCallback, Screen.RGSTR_SKIER   	), 1, 0, true);
+			panel.add(new Button( "WIP",					guiCallback, Screen.PRINT_STRTLIST  ), 1, 0, true);
 			panel.addVertSpcr(400);
-			panel.add(new Button(this, "OK",  			 		Screen.ACPT, false), -2, 1, true);
-			panel.add(new Button(this, "Avsluta",     			Screen.EXIT, false), 2, 0, true);
+			panel.add(new Button( "OK",						guiCallback, Screen.ACPT 			), -2, 1, true);
+			panel.add(new Button( "Avsluta",				guiCallback, Screen.EXIT 			), 2, 0, true);
 
 			bodyText("Var god gör ett val:");
 			panel.addVertSpcr(1);
@@ -99,7 +101,6 @@ public class GUI implements UI {
 			title = "Ny tävling";
 
 			panel.removeAll();
-//			String title = currScreen == Screen.RGSTR_SKIER ? "Registrera tävlande" : "Ny tävling";
 			titleText(title);
 		
 			bodyText("");
@@ -107,22 +108,16 @@ public class GUI implements UI {
 			panel.add(elemGnrt.getTextArea(), 0, 1);
 			panel.add(elemGnrt.getTextField(), 1, 1);
 			panel.addVertSpcr(200);
-			panel.add(new Button(this, "OK",  			 	Screen.ACPT, true), 0, 3);
-			panel.add(new Button(this, "Avsluta",     		Screen.EXIT, false), 2, 3);
+
+			panel.add(new Button( "Avbryt",					guiCallback, Screen.BACK 			), 1, 0, true);
+			panel.add(new Button( "Avsluta",				guiCallback, Screen.EXIT 			), 1, 0, true);
 			bodyText("");
 
 			panel.updateUI();
+			break;
 
 		case PRINT_STRTLIST:
 			break;
-
-			
-		case BACK:
-			showScreen(getLastScreen());
-			break;
-
-		case EXIT:
-			System.exit(0);
 
 		default:
 			System.out.println("Screen not handled!");
@@ -143,12 +138,6 @@ public class GUI implements UI {
 		//    	   textArea.setBackground(new Color(0,0,0,0));
 	}
 
-	void readUsrInp() {
-		usrInp = elemGnrt.getTextField().getText();
-		elemGnrt.getTextField().setText("");
-		newValExists=true;
-	}
-
 	public void runClock() {
 		Clock clk = new Clock();
 
@@ -163,150 +152,76 @@ public class GUI implements UI {
 	    }, 0, 20, TimeUnit.MILLISECONDS);
 	}
 
-	@Override
-	public void showIntroScreen() {
-		panel.removeAll();
-	}
-
-	@Override
 	public Skier addSkierDialog(int playerNumber) {
 		playerNumber++;
 
-		String name = getUserStrng("Vad heter spelare nummer " + playerNumber);
+//		String name = getUserStrng("Vad heter spelare nummer " + playerNumber);
 
-		Double speed = getUserDouble("Hur snabb är " + name + "? (Svara i m/s) ");
+//		Double speed = getUserDouble("Hur snabb är " + name + "? (Svara i m/s) ");
+//
+//		Double position = getUserDouble("Vart börjar " + name + "? (Svara i meter på banan) ");
+//
+//		int[] sTime = new int[3];
+//		for (int j = 0; j < sTime.length; j++) {
+//			sTime[j] = getUserInt("När börjar " + name
+//				+ "? (Starting time, svara först timme, tryck enter och skriv minut, sen sekund) ");
+//		}
 
-		Double position = getUserDouble("Vart börjar " + name + "? (Svara i meter på banan) ");
-
-		int[] sTime = new int[3];
-		for (int j = 0; j < sTime.length; j++) {
-			sTime[j] = getUserInt("När börjar " + name
-				+ "? (Starting time, svara först timme, tryck enter och skriv minut, sen sekund) ");
-		}
-
-		return new Skier(name, playerNumber, speed, position, sTime);
+		return new Skier();
 	}
 
-	@Override
 	public void postMsg(String msg) {
 		bodyText += "\n" + msg;
 		bodyText(bodyText);
 	}
 
-	@Override
 	public void clearMsgScreen() {
 		bodyText = "";
 		bodyText(bodyText);
 	}
 
-	@Override
-	public int getUserInt(String msg) {
-//		if ( intrptBlock )
-//			return -1;
-		try {
-			return Integer.parseInt( getWhenAvail(msg) );
-		} catch ( Exception e ) {
-			return getUserInt("Du måste ange tal i siffor!");
-		}
-	}
-
-	@Override
 	public String getUserStrng(String msg) {
-//		panel.add(elemGnrt.getTextArea(), 0, 0, false);
-//		panel.add(elemGnrt.getTextField(), 0, 1, true);
-		return getWhenAvail(msg);
-	}
-
-	@Override
-	public Double getUserDouble(String msg) {
-		try {
-			return Double.parseDouble( getWhenAvail(msg) );
-		} catch ( Exception e ) {
-			return getUserDouble("Du måste ange tal i siffor!");
-		}
-	}
-
-	@Override
-	public Screen getNextScreen() {
-		System.out.println("getNextScreen()");
-		blockUntilValAvail();
-//		return (Screen) usrInput.getValue();
-		return currScreen;
-	}
-
-	public void setNextScreen(Screen nxtScn) {
-			currScreen = nxtScn;
-	}
-
-	public void setNextScreen(Screen nxtScn, boolean async) {
-		if ( async ) {
-			currScreen = nxtScn;
-			newValExists=true;
-		} else {
-			currScreen = nxtScn;
-			newValExists=true;
-		}
-	}
-	
-	private boolean blockUntilValAvail() {
-		while (!newValExists || intrptBlock)
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e1) { }
-
-		newValExists=false;
-
-		return true;
-//		if (intrptBlock) {
-//			System.out.println("blockUntilValAvail: interrupted");
-//			return false;
-//		} else {
-//			System.out.println("xit");
-//			return true;
-//		}
-	}
-
-	private String getWhenAvail(String msg) {
 		postMsg(msg);
-		if ( blockUntilValAvail() ) {
-			String val = usrInp;
-			return val;
-		} else {
-			System.out.println("interrupted");
-			return null;
-		}
-	}
-	
-	public void setIntrptBlock(boolean val) {
-		intrptBlock = val;
+		elemGnrt.setTextFieldCback(guiCallback);
+		elemGnrt.getTextField().setText("");
+		
+		return null;
+
 	}
 }
 
+/*
+ * Addition to the JButton cllass so that action listeners are added at creatinong o fobjects.
+ */
 class Button extends JButton {
 	private static final long serialVersionUID = 1849303325697245859L;
 	GUI ui;
+	static Thread caller;
 	
-	public Button(GUI ui, String label, Screen actn, boolean sync) {
+	public Button(String label, GuiCallback callback, Screen nextScrn) {
 		super(label);
-		this.ui 	= ui;
+//		this.ui 	= ui;
 		this.setBounds(0, 0, 50, 50);
 
 		addActionListener( new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if ( sync ) {
-					ui.setNextScreen(actn, false);
-				} else {
-					Thread thread = new Thread(){
-						public void run(){
-							System.out.println("Thread Running");
-							ui.showScreen(actn);
-						}
-					};
-					thread.start();
+			public void actionPerformed(ActionEvent e) { 
+				callback.onNewScrn(nextScrn); 
 				}
-			}
 		});
 	}
+
+	public Button(String label, GuiCallback callback) {
+		super(label);
+//		this.ui 	= ui;
+		this.setBounds(0, 0, 50, 50);
+
+		addActionListener( new ActionListener() {
+			public void actionPerformed(ActionEvent e) { 
+				callback.onSuccess(); 
+				}
+		});
+	}
+
 }
 
 /*
@@ -435,11 +350,18 @@ class ElemGnrt {
 	private void gnrtTextField() {
 		textField = new JTextField("", 20);
 		textField.setMinimumSize(new Dimension(400,20));
+	}
 
-		EventListener actnLsnrEnterKey = new KeyListener() {
+	public void setTextFieldCback(GuiCallback callback) {
+		if ( callback == null )
+			return;
+
+		EventListener textFieldKeyListner = new KeyListener() {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode()==KeyEvent.VK_ENTER){
-					ui.readUsrInp();
+					callback.onNewUsrInp(textField.getText());
+				} else if ( e.getKeyCode() == KeyEvent.VK_ESCAPE ) {
+					callback.onCancel();
 				}
 			}
 
@@ -447,7 +369,9 @@ class ElemGnrt {
 			@Override public void keyTyped(KeyEvent arg0) { }
 		};
 
-		textField.addKeyListener((KeyListener) actnLsnrEnterKey);
+		for ( KeyListener kLsnter : textField.getKeyListeners() )
+			textField.removeKeyListener(kLsnter);
+		textField.addKeyListener((KeyListener) textFieldKeyListner);
 	}
 
 	private void gnrtTextArea() {
