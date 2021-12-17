@@ -9,9 +9,11 @@ public enum Screen {
 	CHECKPOINT_WATCHER(false),
 	FINISHING_WATCHER(false),
 	RGSTR_SKIER(false),
+	RGSTR_SKIER_REPEAT(true),
+	RGSTR_SKIER_VERIFY(true),
+	RGSTR_SKIER_FINISH(true),
 	ACPT(true),
 	BACK(true),
-	RGSTR_SKIER_VERIFY(true),
 	EXIT(true);
 
 	public final boolean isVirt;

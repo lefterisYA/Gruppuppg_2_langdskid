@@ -75,9 +75,18 @@ public class ProgLogic {
 				screenHandler(Screen.INTRO); // next screen
 			}
 			break;
+		
+		case RGSTR_SKIER_REPEAT,RGSTR_SKIER_FINISH:
+			if ( parseSkierArray() )
+				if ( scrn == Screen.RGSTR_SKIER_FINISH )
+					ui.showScreen(Screen.INTRO);
+				else
+					screenHandler(Screen.RGSTR_SKIER);
+			else
+				repHand.retry("Du måste ange åldern i siffor!");
+			break;
 
 		case RGSTR_SKIER:
-
 			if ( !isNewScrn ) {
 				ui.showScreen(scrn);
 				repHand.sendMsgsSync( scrn, new String[] { 
@@ -86,23 +95,7 @@ public class ProgLogic {
 						"Ange ålder på tävlande:"
 				});
 			} else {
-				try {
-					int age = Integer.parseInt(usrReplies[2]);
-
-					String[] name = usrReplies[0].split(" ");
-					String firstName = name[0];
-					String lastName = name.length > 1 ? name[name.length-1] : "";
-
-					Skier newSkier = new Skier( firstName, lastName, usrReplies[1], age );
-
-					System.out.println(usrReplies[0]+" "+age);
-					skierList.addSkiertoList(newSkier);
-
-					ui.showScreen(Screen.RGSTR_SKIER_VERIFY); // next screen
-				} catch (Exception e) {
-					repHand.retry("Du måste ange åldern i siffor!");
-					return;
-				}
+				ui.showScreen(Screen.RGSTR_SKIER_VERIFY); // next screen
 			}
 			break;
 
@@ -123,6 +116,23 @@ public class ProgLogic {
 	}
 	
 
+	private boolean parseSkierArray() {
+		String[] usrReplies = repHand.getPrevUserReplies();
+		try {
+			int age = Integer.parseInt(usrReplies[2]);
+
+			String[] name = usrReplies[0].split(" ");
+			String firstName = name[0];
+			String lastName = name.length > 1 ? name[name.length-1] : "";
+
+			skierList.addSkiertoList( new Skier( firstName, lastName, usrReplies[1], age ));
+			System.out.println(name+" "+age+" added!");
+			return true;
+		} catch (Exception e) {
+			System.out.println(usrReplies[2]+" failed to parse int!!!");
+			return false;
+		}
+	}
 }
 
 class UserReplyHandler {
@@ -154,14 +164,17 @@ class UserReplyHandler {
 		ui.getUserStrng(newMsg);
 	};
 	
+	public String[] getPrevUserReplies() {
+		return usrRpls;
+	}
 	public void guiCallback(String val) {
 		usrRpls[msgIdx] = val;
 		if ( msgIdx < usrMsgs.length-1 )
 			ui.getUserStrng(usrMsgs[++msgIdx]);
 		else
 			lgc.usrInpFnsh(usrRpls, callScrn);
+	}
 //			for ( int i=0; i<usrRpls.length; i++) {
 //				System.out.println(usrRpls[i]);
 //			}
-	}
 }

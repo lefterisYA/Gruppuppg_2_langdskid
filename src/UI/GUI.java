@@ -115,6 +115,9 @@ public class GUI {
 		case RGSTR_SKIER,CREATE_RACE:
 			panel.removeAll();
 			clearMsgScreen();
+
+		case RGSTR_SKIER_REPEAT:
+			panel.removeLast();
 			elemGnrt.getTextField().setText("");
 
 			title = currScreen == Screen.CREATE_RACE ? "Ny tävling" : "Registrera tävlande";
@@ -136,11 +139,13 @@ public class GUI {
 		case RGSTR_SKIER_VERIFY:
 			title="Klart?";
 			titleText(title);
-			panel.add(new Button( "Lägg till",				guiCallback, Screen.BACK 			), 1, 0, true);
-			panel.add(new Button( "Lägg till fler",			guiCallback, Screen.EXIT 			), -2, 0, true);
+			
+			elemGnrt.removeTextFieldCbacks();
+			panel.add(new Button( "Lägg till",				guiCallback, Screen.RGSTR_SKIER_FINISH	), 1, 0, true);
+			panel.add(new Button( "Lägg till fler",			guiCallback, Screen.RGSTR_SKIER_REPEAT	), -2, 0, true);
 			panel.updateUI();
 			break;
-
+			
 		case PRINT_STRTLIST:
 			break;
 
@@ -227,7 +232,6 @@ public class GUI {
 class Button extends JButton {
 	private static final long serialVersionUID = 1849303325697245859L;
 	GUI ui;
-	static Thread caller;
 	
 	public Button(String label, GuiCallback callback, Screen nextScrn) {
 		super(label);
@@ -421,9 +425,14 @@ class ElemGnrt {
 			@Override public void keyTyped(KeyEvent arg0) { }
 		};
 
+		removeTextFieldCbacks(idx);
+		textFields.get(idx).addKeyListener((KeyListener) textFieldKeyListner);
+	}
+	
+	public void removeTextFieldCbacks(){ removeTextFieldCbacks(0); }
+	public void removeTextFieldCbacks(int idx) {
 		for ( KeyListener kLsnter : textFields.get(idx).getKeyListeners() )
 			textFields.get(idx).removeKeyListener(kLsnter);
-		textFields.get(idx).addKeyListener((KeyListener) textFieldKeyListner);
 	}
 	
 	//
