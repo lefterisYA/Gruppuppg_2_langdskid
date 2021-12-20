@@ -1,8 +1,8 @@
 package UI;
 
 public interface GuiCallback {
-	void onSuccess();
-	void onCancel();
-	void onNewScrn(Screen newScrn);
-	void onNewUsrInp(String val);
+	default void onSuccess() { };
+	default void onCancel() { };
+	default void onNewUsrInp(String val) { };
+	default void onNewScrn(Screen newScrn) { };
 }
