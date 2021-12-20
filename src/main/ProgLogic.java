@@ -1,5 +1,9 @@
 package main;
 
+import java.awt.Component;
+
+import javax.swing.JComponent;
+
 import UI.GUI;
 import UI.GuiCallback;
 import UI.Screen;
@@ -71,6 +75,7 @@ public class ProgLogic {
 			}
 			break;
 
+		case RGSTR_SKIER_REPEAT: // RGSTR_SKIER,CREATE_RACE: fallthrough too:
 		case RGSTR_SKIER:
 			if ( isCallback ) {
 				screenHandler(Screen.RGSTR_SKIER_VERIFY);
@@ -79,61 +84,52 @@ public class ProgLogic {
 				ui.update();
 			}
 
-		case RGSTR_SKIER_REPEAT: // RGSTR_SKIER,CREATE_RACE: fallthrough too:
 			ui.clrUsrInpField();
 			ui.setTitle(scrn == Screen.CREATE_RACE ? "Ny tävling" : "Registrera tävlande");
 
 			ui.addVertSpcr(20);
 
-			ui.addInpField("Namn på tävlande:", InputField.Type.STRNG, false, 1, 1, true);
-			ui.addInpField("Kön:", InputField.Type.STRNG, false, 0, 1, true);
-			ui.addInpField("Ålder:", InputField.Type.INTGR, false, 0, 1, true);
+			GuiCallback onClickCback = new GuiCallback() {
+				@Override public void onClick()  	{ screenHandler(Screen.RGSTR_SKIER_FINISH);  }
+			};
+			ui.addButton( "Lägg Till",				onClickCback,	 	-3, 3, true);
+			Component lastComp = ui.getLastComp();
+			lastComp.setEnabled(false);
+			GuiCallback cback = new GuiCallback() {
+				@Override public void onValidFields()  	{ lastComp.setEnabled(true);  }
+				@Override public void onInvalidFields() { lastComp.setEnabled(false); }
+			};
 
+			ui.addButton( "Avbryt",					Screen.BACK,	 	1, 0, true);
+			ui.addButton( "Avsluta",				Screen.EXIT, 		2, 0, true);
+
+			ui.addInpField("Namn på tävlande:", InputField.Type.STRNG, false, cback, 1, 2, false);
+			ui.addInpField("Kön:", InputField.Type.STRNG, false, cback, 0, 1, true);
+			ui.addInpField("Ålder:", InputField.Type.INTGR, false, cback, 0, 1, true);
 			ui.addVertSpcr(200);
 
-			ui.addButton( "Avbryt",					Screen.BACK,	 	-1, 1, true);
-			ui.addButton( "Avsluta",				Screen.EXIT, 		2, 0, true);
-//			repHand.sendMsgsSync( scrn, new String[] { 
-//					"Ange namn på tävlande:",
-//					"Ange kön på tävlande:",
-//					"Ange ålder på tävlande:"
-//			});
 			ui.update();
 			break;
 
 		case CREATE_RACE:
 			break;
 
+		case RGSTR_SKIER_FINISH:
+			String[] inpFldVals = ui.getInpFieldVals();
+			String[] name = inpFldVals[0].split(" ");
+			String firstName = name[0];
+			String lastName = name.length > 1 ? name[name.length-1] : "";
+			int age = Integer.parseInt(inpFldVals[2]);
+			String gender = inpFldVals[1];
+
+			skierList.addSkiertoList( new Skier( firstName, lastName, gender, age ));
+			System.out.println(firstName+" "+age+" added!"+" It's a"+gender+"!");
+
 		case RGSTR_SKIER_VERIFY:
 			ui.setTitle("Klart?");
 			
-			ui.addButton( "Bekräfta",						Screen.RGSTR_SKIER_FINISH,	 	1, 0, true);
-			ui.addButton( "Bekräfta och lägg till fler",	Screen.RGSTR_SKIER_REPEAT,	 	-2, 0, true);
+			ui.addButton( "Lägg till fler",	Screen.RGSTR_SKIER_REPEAT,	 	-3, 0, true);
 			break;
-
-		case RGSTR_SKIER_FINISH:
-			if ( parseSkierArray() )
-				if ( scrn == Screen.RGSTR_SKIER_FINISH )
-					screenHandler(Screen.INTRO);
-				else
-					screenHandler(Screen.RGSTR_SKIER);
-			else
-				repHand.retry("Du måste ange åldern i siffor!");
-			break;
-
-//		case CREATE_RACE:
-//			if ( !isCallback ) {
-//				ui.showScreen(scrn);
-//				repHand.sendMsgsSync( scrn, new String[] { 
-//						"Välj klass:", 
-//						"Ange starttid", 
-//						"Ange startIntervall:", 
-//						"Ange första åkares startnummer" 
-//				});
-//			} else { 
-//				screenHandler(Screen.INTRO); // next screen
-//			}
-//			break;
 
 		case PRINT_STRTLIST:
 			if ( !isCallback ) {

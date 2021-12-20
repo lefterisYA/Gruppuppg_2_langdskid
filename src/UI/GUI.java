@@ -108,6 +108,9 @@ public class GUI {
 	public void clrUsrInpField() {
 		elemGnrt.getTextField().setText("");
 	}
+	public void removeLast() {
+		panel.removeLast();
+	}
 
 	public void setTitle(String text) {
 		elemGnrt.getLabel().setText(text);
@@ -122,22 +125,38 @@ public class GUI {
 	public void addButton(String label, GuiCallback cBack, int x, int y, boolean absPos) {
 		panel.add(new Button( label, cBack), x, y, absPos);
 	}
+
+	public Component getLastComp() {
+		return panel.getComponent(panel.getComponentCount()-1);
+	}
+
 	public void addVertSpcr(int hght) {
 		panel.addVertSpcr(hght);
 	}
-	public void addInpField(String title, InputField.Type type, boolean emptyAllowed, int x, int y, boolean absPos) {
+	public void addInpField(
+			String title, 
+			InputField.Type type, 
+			boolean emptyAllowed, 
+			GuiCallback validityCback, 
+			int x, 
+			int y, 
+			boolean absPos) 
+	{
 		Panel iPanel = new Panel(new GridLayout(1,2));
 		iPanel.add(new JLabel(title));
 
-		iPanel.add(inpFldHandler.gnrt("title", type, emptyAllowed));
+		iPanel.add(inpFldHandler.gnrt("title", type, emptyAllowed, validityCback));
 
 		panel.add(iPanel, x, y, absPos);
 	}
 
+	public String[] getInpFieldVals() {
+		return inpFldHandler.getInpFldVals(); 
+	}
+	
 	public void update() {
 		panel.updateUI();
 	}
-	
 	
 	public void showScreen(Screen currScreen) {
 		boolean block = true;
@@ -349,7 +368,7 @@ class Button extends JButton {
 		this.setBounds(0, 0, 50, 50);
 
 		addActionListener( new ActionListener() {
-			public void actionPerformed(ActionEvent e) { callback.onSuccess(); }
+			public void actionPerformed(ActionEvent e) { callback.onClick(); }
 		});
 	}
 }
@@ -418,7 +437,7 @@ class Panel extends JPanel {
 	}
 	
 	public boolean removeLast() {
-		remove(getComponents().length);
+		remove(getComponents().length-1);
 		return true;
 //		try {
 //			remove(lastAdded);

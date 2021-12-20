@@ -70,6 +70,7 @@ public class InputField extends JTextField {
 			}
 		} catch (Exception e) {
 			hasValidValue=false;
+			return;
 		}
 		hasValidValue=true;
 	}
@@ -88,13 +89,18 @@ class InputFieldHandler {
 		this.ui = ui;
 	}
 	
-	public InputField gnrt(String label, InputField.Type type, boolean emptyAllowed) {
+	public InputField gnrt(String label, InputField.Type type, boolean emptyAllowed, GuiCallback validityCback) {
 		InputField newInpFld = new InputField(ui, type, emptyAllowed);
 		inpFlds.add(newInpFld);
 		
 		newInpFld.addFocusListener( new FocusListener() {
 			@Override public void focusLost(FocusEvent e) {
-				allFieldsAreValid();	
+				if ( allFieldsAreValid() ) {
+					validityCback.onValidFields();
+				}
+				else {
+					validityCback.onInvalidFields();
+				}
 			}
 			
 			@Override public void focusGained(FocusEvent e) { }
@@ -109,6 +115,14 @@ class InputFieldHandler {
 				return false;
 			}
 		return true;
+	}
+	
+	public String[] getInpFldVals() {
+		String[] ret = new String[inpFlds.size()];
+		int i=0;
+		for ( InputField fld : inpFlds )
+			ret[i++] = fld.getText();
+		return ret;
 	}
 }
 
