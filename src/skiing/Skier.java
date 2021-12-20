@@ -11,7 +11,7 @@ public class Skier extends Person implements Comparable<Skier> {
 	public int playerNumber; // Sparar personens tävlingsnummer
 	public int[] startingTime = new int[3]; // Starttiden H,M,S
 	public int goalTime;
-	public int[] checkpointTime;
+	public Integer checkpointTime;
 	private Clock clock;
 	public String skiingClass;
 	
@@ -24,8 +24,8 @@ public class Skier extends Person implements Comparable<Skier> {
 
 	public int getPlayerNumber() {return playerNumber;}
 	public void setPlayerNumber(int playerNumber) {this.playerNumber = playerNumber;}
-	public int[] getCheckpointTime() {return checkpointTime;}
-	public void setCheckpointTime(int[] checkpointTime) {this.checkpointTime = checkpointTime;}
+	public Integer getCheckpointTime() {return checkpointTime;}
+	public void setCheckpointTime(Integer checkpointTime) {this.checkpointTime = checkpointTime;}
 	public int getGoalTime() {return goalTime;}
 	public void setGoalTime(int val) { goalTime = val;}
 	
@@ -62,7 +62,7 @@ public class Skier extends Person implements Comparable<Skier> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + Arrays.hashCode(checkpointTime);
+		result = prime * result + Objects.hashCode(checkpointTime);
 		result = prime * result + Arrays.hashCode(startingTime);
 		result = prime * result + Objects.hash(playerNumber, skiingClass);
 		return result;
@@ -76,7 +76,7 @@ public class Skier extends Person implements Comparable<Skier> {
 		if (getClass() != obj.getClass())
 			return false;
 		Skier other = (Skier) obj;
-		return Arrays.equals(checkpointTime, other.checkpointTime) && playerNumber == other.playerNumber
+		return Objects.equals(checkpointTime, other.checkpointTime) && playerNumber == other.playerNumber
 				&& Objects.equals(skiingClass, other.skiingClass) && Arrays.equals(startingTime, other.startingTime);
 	}
 
