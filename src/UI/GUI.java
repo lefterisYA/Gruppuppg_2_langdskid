@@ -88,7 +88,7 @@ public class GUI {
 	}
 	
 	public final GuiCallback clockStart = new GuiCallback() {
-		public void onSuccess() { runClock(); }
+		public void onClick() { runClock(); }
 	};
 
 	

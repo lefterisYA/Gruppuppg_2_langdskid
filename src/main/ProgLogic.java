@@ -132,11 +132,11 @@ public class ProgLogic {
 			break;
 
 		case PRINT_STRTLIST:
-			if ( !isCallback ) {
-				screenHandler(scrn);
-			} else {
-				screenHandler(Screen.INTRO); // next screen
-			}
+//			if ( isCallback ) {
+//				screenHandler(Screen.INTRO); // next screen
+//			} else {
+//				screenHandler(scrn);
+//			}
 			break;
 		
 		case EXIT:
