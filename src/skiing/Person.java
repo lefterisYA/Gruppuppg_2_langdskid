@@ -3,17 +3,19 @@ package skiing;
 import java.util.Objects;
 
 public class Person {
-	public String firstName;
-	public String lastName;
-	public String name;
-	public String gender; //TODO enum //Vet inte riktigt hur jag ska göra det och det är lite sent nu
+	private String firstName;
+	private String lastName;
+	private String name;
+	private String gender; //TODO enum //Vet inte riktigt hur jag ska göra det och det är lite sent nu
 //	private gender gender;
 //	public enum gender{
 //		HERR, DAM;
 //		
 //	}
-	public int age;
+	private int age;
 	
+	public int getAge() {return age;}
+	public void setAge(int age) {this.age = age;}
 	public String getFirstName() {return firstName;}
 	public void setFirstName(String firstName) {this.firstName = firstName;}
 	public String getLastName() {return lastName;}
