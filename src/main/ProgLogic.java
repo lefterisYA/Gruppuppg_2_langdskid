@@ -1,171 +1,220 @@
 package main;
 
+import java.awt.Component;
+
+import javax.swing.JComponent;
+
+import UI.GUI;
+import UI.GuiCallback;
 import UI.Screen;
-import UI.UI;
-import skiing.SkiSlope;
+import UI.InputField;
 import skiing.Skier;
+import skiing.SkierList;
 
 public class ProgLogic {
-	private final UI ui;
-	static Thread runningThread;
-	static private boolean doIntrp = false;
-	// Race race;
+	private final GUI ui;
+	UserReplyHandler repHand;
 
-	public ProgLogic(UI ui) {
+	public final SkierList skierList = new SkierList();
+
+	public ProgLogic(GUI ui) {
 		this.ui=ui;
-	}
+		repHand = new UserReplyHandler(ui, this);
 
+		GuiCallback cBack = new GuiCallback() {
+			public void onNewScrn(Screen nextScrn) 		{ screenHandler(nextScrn); 		}
+			public void onNewUsrInp(String val) 		{ repHand.guiCallback(val); 	}
+		};
+		ui.rgsrCallback( cBack );
+	}
+	
 	public void run() {
-        Screen currScreen = Screen.INTRO;
-
-		while ( true ) {
-			System.out.println( Thread.currentThread().getStackTrace()[1] + ": " + ( currScreen != null ? currScreen.name() : "null" ));
-			currScreen = screenPickerInNewThread(currScreen);
-			if (currScreen == null)
-				currScreen = ui.getNextScreen();
-		}
+		screenHandler(Screen.INTRO); // next screen
+	}
+	
+	// outgoing, show new screen
+	public void screenHandler(Screen currScrn) { 
+		screenHandler(currScrn, null); 
 	}
 
-	public Screen screenPickerInNewThread(Screen currScren) {
-        try {
-        	ScrnPickLogic screenPicker;
-        	screenPicker = new ScrnPickLogic(ui, currScren);
-        	runningThread = new Thread(screenPicker);
-        	ui.registerCallingThread(this);
+	// ingoing, get/process/handle user input:
+	public void usrInpFnsh(String[] usrReplies, Screen callScrn) {
+		screenHandler(callScrn, usrReplies);
+	}
 
-//        	for ( int i=0; i<10; i++) {
-//        		screenPicker = new ScrnPickLogic(ui, currScren);
-//        		System.out.println( screenPicker.getId() );
-//        	}
+	// both of methods above call the following. This is just so we have outgoing and ingoing information from the user
+	// gathered in the same switch case statements.
+	private void screenHandler(Screen scrn, String[] usrReplies) {
+		System.out.println( Thread.currentThread().getStackTrace()[1] + ": " + ( scrn != null ? scrn.name() : "null" ));
 
-        	runningThread.run();
-        	while ( !runningThread.isInterrupted() ) {
-        		runningThread.join(300);
-        		if ( doIntrp ) {
-        			runningThread.interrupt();
-        			System.out.println( "INTERRUPT!!!" );
-        			break;
-        		}
-        	}
-        	doIntrp=false;
+		// set to true when called by GUI. Eventual user processing/verifying/handling happens when its true.
+		boolean isCallback = usrReplies == null ? false : true; 
+		
+		ui.addToScreenStack(scrn);
+		
+		switch (scrn) {
+		case INTRO:
+			if ( isCallback ) { 				// Nothing to be done,
+				screenHandler(Screen.INTRO); 	// just show next screen.
+			} else {
+				ui.clrScrn();
+				ui.setTitle("Välkommen");
+				ui.addButton( "Skapa tävling", 			Screen.CREATE_RACE, 		0, 1, true);
+				ui.addButton( "Lägg till tävlande",		Screen.RGSTR_SKIER, 		1, 0, true);
+				ui.addButton( "Visa slutresultat",		Screen.PRINT_STRTLIST,	 	1, 0, true);
+				ui.addButton( "Se tävling", 			Screen.PRINT_STRTLIST,	 	-2, 1, true);
+				ui.addButton( "Starta klocka",			ui.clockStart, 				1, 0, true);
+				ui.addButton( "WIP",					Screen.PRINT_STRTLIST,	 	1, 0, true);
+				ui.addVertSpcr(400);
+				ui.addButton( "OK",						Screen.ACPT, 				-2, 1, true);
+				ui.addButton( "Avsluta",				Screen.EXIT, 				2, 0, true);
 
-        	System.out.println( "DONE" );
-			return screenPicker.getNextScrn();
-		} catch (Exception e) {
-			System.out.println( "INTERRUPT" );
-			e.printStackTrace();
-			return null;
+				ui.setBodyText("Var god gör ett val:");
+				ui.addVertSpcr(1);
+				ui.update();
+			}
+			break;
+
+		case RGSTR_SKIER_REPEAT: // RGSTR_SKIER,CREATE_RACE: fallthrough too:
+		case RGSTR_SKIER:
+			if ( isCallback ) {
+				screenHandler(Screen.RGSTR_SKIER_VERIFY);
+			} else {
+				ui.clrScrn();
+				ui.update();
+			}
+
+			ui.clrUsrInpField();
+			ui.setTitle(scrn == Screen.CREATE_RACE ? "Ny tävling" : "Registrera tävlande");
+
+			ui.addVertSpcr(20);
+
+			GuiCallback onClickCback = new GuiCallback() {
+				@Override public void onClick()  	{ screenHandler(Screen.RGSTR_SKIER_FINISH);  }
+			};
+			ui.addButton( "Lägg Till",				onClickCback,	 	-3, 3, true);
+			Component lastComp = ui.getLastComp();
+			lastComp.setEnabled(false);
+			GuiCallback cback = new GuiCallback() {
+				@Override public void onValidFields()  	{ lastComp.setEnabled(true);  }
+				@Override public void onInvalidFields() { lastComp.setEnabled(false); }
+			};
+
+			ui.addButton( "Avbryt",					Screen.BACK,	 	1, 0, true);
+			ui.addButton( "Avsluta",				Screen.EXIT, 		2, 0, true);
+
+			ui.addInpField("Namn på tävlande:", InputField.Type.STRNG, false, cback, 1, 2, false);
+			ui.addInpField("Kön:", InputField.Type.STRNG, false, cback, 0, 1, true);
+			ui.addInpField("Ålder:", InputField.Type.INTGR, false, cback, 0, 1, true);
+			ui.addVertSpcr(200);
+
+			ui.update();
+			break;
+
+		case CREATE_RACE:
+			break;
+
+		case RGSTR_SKIER_FINISH:
+			String[] inpFldVals = ui.getInpFieldVals();
+			String[] name = inpFldVals[0].split(" ");
+			String firstName = name[0];
+			String lastName = name.length > 1 ? name[name.length-1] : "";
+			int age = Integer.parseInt(inpFldVals[2]);
+			String gender = inpFldVals[1];
+
+			skierList.addSkiertoList( new Skier( firstName, lastName, gender, age ));
+			System.out.println(firstName+" "+age+" added!"+" It's a"+gender+"!");
+
+		case RGSTR_SKIER_VERIFY:
+			ui.setTitle("Klart?");
+			
+			ui.addButton( "Lägg till fler",	Screen.RGSTR_SKIER_REPEAT,	 	-3, 0, true);
+			break;
+
+		case PRINT_STRTLIST:
+//			if ( isCallback ) {
+//				screenHandler(Screen.INTRO); // next screen
+//			} else {
+//				screenHandler(scrn);
+//			}
+			break;
+		
+		case EXIT:
+			System.exit(0);
+
+		case BACK:
+			if ( !isCallback ) {
+				screenHandler(ui.getLastScreen());
+			} else {
+				screenHandler(Screen.INTRO); // next screen
+			}
+			break;
+
+		default:
+			break;
 		}
 	}
 	
-	static public void interrupt() {
-		doIntrp = true;
-		runningThread.interrupt();
-	}
 
-	// Deklarerar skidåkare
-	public Skier[] playerDeclaration(int amountOfPlayers) {
-		Skier[] list = new Skier[amountOfPlayers];
-		for (int i = 0; i < list.length; i++) { // Går igenom så många skidåkare som valts och ger dom ett nummer
-			ui.postMsg("Beskriv spelare nummer " + (i + 1));
-			Skier skier = ui.addSkierDialog(i);
-			list[i] = skier;
-		}
-		return list;
-	}
+	private boolean parseSkierArray() {
+		String[] usrReplies = repHand.getPrevUserReplies();
+		try {
+			int age = Integer.parseInt(usrReplies[2]);
 
-	private static void Race(Skier[] list, SkiSlope skiSlope) {
-		// Håller koll på tiden som har gått
-		int secondsPassedTotal = 0;
+			String[] name = usrReplies[0].split(" ");
+			String firstName = name[0];
+			String lastName = name.length > 1 ? name[name.length-1] : "";
 
-		// Den förstå for-loopen räknar tiden, baserat på hur lång banan är
-		for (double i = 0; i <= skiSlope.trackLength + 1; i++) { // Den andra går igenom listan och
-			for (int j = 0; j < list.length; j++) { // ökar individuellt alla skidåkares
-				list[j].position = list[j].position + list[j].speed; // position med deras hastighet, en gång per
-																		// sekund.
-				for (int k = 0; k < skiSlope.checkpoints.length; k++) {
-					if (list[j].position >= skiSlope.checkpoints[k] && Boolean.parseBoolean(list[j].checkpointCheckList.get(k)) == false) {
-						list[j].checkpointTime[k] = secondsPassedTotal; // Den tredje går igenom checkpointsen,
-																		// kollar ifall de
-						list[j].checkpointCheckList.set(k, "true"); // har gått igenom en checkpoint och sparar tiden
-					}
-				}
-				if (list[j].position >= skiSlope.trackLength && list[j].goal == false) {
-//					list[j].goalTime = secondsPassedTotal; // Den här if-satsen kollar ifall de har gått i mål.
-					list[j].setGoalTime( secondsPassedTotal ); // Den här if-satsen kollar ifall de har gått i mål.
-					list[j].goal = true;
-				}
-			}
-
-			// Räknar tid
-			secondsPassedTotal++;
+			skierList.addSkiertoList( new Skier( firstName, lastName, usrReplies[1], age ));
+			System.out.println(name+" "+age+" added!");
+			return true;
+		} catch (Exception e) {
+			System.out.println(usrReplies[2]+" failed to parse int!!!");
+			return false;
 		}
 	}
 }
 
-class ScrnPickLogic implements Runnable {
-	private Screen currScrn;
-	private Screen nextScrn;
-	private UI ui;
-
-	public ScrnPickLogic(UI ui, Screen currScrn) {
-		this.ui 		= ui;
-		this.currScrn 	= currScrn;
-		
-//		ui.registerCallingThread(Thread.currentThread());
-		// Thread.currentThread().interrupt();
+class UserReplyHandler {
+	String[] usrMsgs;
+	String[] usrRpls;
+	int msgIdx;
+	GUI ui;
+	ProgLogic lgc;
+	Screen callScrn;
+	
+	public UserReplyHandler(GUI ui, ProgLogic lgc) {
+		this.ui		=	ui;
+		this.lgc 	= 	lgc;
+	}
+	
+	public void sendMsgsAsync(Screen callScrn, String[] msgs) {
+		// TODO
 	}
 
-	@Override
-	public void run() {
-		System.out.println("HEREthred: " + Thread.currentThread().getId());
-		nextScrn = screenPicker();
-		System.out.println("Thread finishing");
+	public void sendMsgsSync(Screen callScrn, String[] msgs) {
+		usrMsgs = msgs;
+		usrRpls = new String[usrMsgs.length];
+		msgIdx=0;
+		this.callScrn = callScrn;
+		ui.getUserStrng(usrMsgs[0]);
 	}
-
-	public Screen getNextScrn() {
-		return nextScrn;
+	
+	public void retry(String newMsg) {
+		ui.getUserStrng(newMsg);
+	};
+	
+	public String[] getPrevUserReplies() {
+		return usrRpls;
 	}
-
-	private Screen screenPicker() {
-		switch (currScrn) {
-		case CREATE_RACE:
-			ui.showScreen(Screen.CREATE_RACE);
-			String level = ui.getUserStrng("Ange Klass:");
-			ProgLogic.interrupt();
-			String time = ui.getUserStrng(". Ange starttid:");
-			String time_interval = ui.getUserStrng("Ange startintervall:");
-			int first_startnumber  = ui.getUserInt("Ange första startnummer");
-			return Screen.INTRO;
-			//				ui.setNextScreen(Screen.INTRO);
-			// race = new Race(level, time, time_interval); // TODO
-
-		case INTRO:
-			ui.showScreen(currScrn);
-			return null;
-
-		case PRINT_STRTLIST:
-			return null;
-
-		case RGSTR_SKIER:
-			ui.showScreen(Screen.RGSTR_SKIER);
-			String name = ui.getUserStrng("Ange namn på tävlande.");
-			String club = ui.getUserStrng("Ange tävlandes klubb");
-			return Screen.INTRO;
-
-		case EXIT:
-			System.exit(0);
-
-		case ACPT:
-			System.out.println("ACPT pressed");
-			return null;
-
-		case BACK:
-			return null;
-
-		default:
-			return null;
-
-		}
+	public void guiCallback(String val) {
+		usrRpls[msgIdx] = val;
+		if ( msgIdx < usrMsgs.length-1 )
+			ui.getUserStrng(usrMsgs[++msgIdx]);
+		else
+			lgc.usrInpFnsh(usrRpls, callScrn);
 	}
+//			for ( int i=0; i<usrRpls.length; i++) {
+//				System.out.println(usrRpls[i]);
+//			}
 }

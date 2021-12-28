@@ -12,17 +12,18 @@ public class SkierDeclaration {
 		Skier skier = new Skier();
 		ui.postMsg("Ange förnamn:");
 //		skier.firstName=scan.nextLine();
-		skier.firstName="Olle";
+		skier.setFirstName("Olle");
 		ui.postMsg("Ange efternamn:");
 //		skier.lastName=scan.nextLine();
-		skier.lastName="Karlsson";
+		skier.setLastName("Karlsson");
 		ui.postMsg("Ange kön (Dam eller Herr):");
 //		skier.gender=scan.nextLine();
-		skier.gender="Herr";
+		skier.setGender("Herr");
 		ui.postMsg("Ange ålder:");
-		skier.age=scan.nextInt();
+		skier.setAge(scan.nextInt());
 //		skier.age=24;
-		Skier newskier = new Skier(skier.firstName, skier.lastName, skier.gender, skier.age);
+		Skier newskier = new Skier(skier.getFirstName(), skier.getLastName(), skier.getGender(), skier.getAge());
 		return newskier;
+		
 	}
 }

@@ -1,8 +1,6 @@
 package main;
 
 import UI.GUI;
-import UI.Screen;
-import UI.UI;
 import common.Utils;
 import skiing.SkierList;
 
