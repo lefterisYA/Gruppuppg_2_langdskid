@@ -368,9 +368,19 @@ class Button extends JButton {
 		this.setBounds(0, 0, 50, 50);
 
 		addActionListener( new ActionListener() {
-			public void actionPerformed(ActionEvent e) { callback.onClick(); }
+			public void actionPerformed(ActionEvent e) { callback.onClick(label); }
 		});
 	}
+
+	public Button(String label, GuiCallback callback, boolean returnLabel) {
+		super(label);
+		this.setBounds(0, 0, 50, 50);
+
+		addActionListener( new ActionListener() {
+			public void actionPerformed(ActionEvent e) { callback.onClick(label); }
+		});
+	}
+
 }
 
 /*

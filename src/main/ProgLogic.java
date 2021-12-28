@@ -1,23 +1,37 @@
 package main;
 
 import java.awt.Component;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JComponent;
 
 import UI.GUI;
 import UI.GuiCallback;
 import UI.Screen;
+import UI.UI;
 import UI.InputField;
+import skiing.ClassList;
 import skiing.Skier;
 import skiing.SkierList;
+import skiing.StartList;
 
 public class ProgLogic {
 	private final GUI ui;
 	UserReplyHandler repHand;
 
-	public final SkierList skierList = new SkierList();
+	private final SkierList skierList = new SkierList();
+	private final LinkedList<String> uniqueClasses = new LinkedList<String>();
 
 	public ProgLogic(GUI ui) {
+		
+		// TEMP CODE:
+		uniqueClasses.add("D11");
+		uniqueClasses.add("D61");
+		uniqueClasses.add("D13");
+		uniqueClasses.add("H11");
+		uniqueClasses.add("H21");
+		uniqueClasses.add("H13");
 		this.ui=ui;
 		repHand = new UserReplyHandler(ui, this);
 
@@ -58,7 +72,7 @@ public class ProgLogic {
 				screenHandler(Screen.INTRO); 	// just show next screen.
 			} else {
 				ui.clrScrn();
-				ui.setTitle("Välkommen");
+				ui.setTitle( "Välkommen" );
 				ui.addButton( "Skapa tävling", 			Screen.CREATE_RACE, 		0, 1, true);
 				ui.addButton( "Lägg till tävlande",		Screen.RGSTR_SKIER, 		1, 0, true);
 				ui.addButton( "Visa slutresultat",		Screen.PRINT_STRTLIST,	 	1, 0, true);
@@ -90,7 +104,7 @@ public class ProgLogic {
 			ui.addVertSpcr(20);
 
 			GuiCallback onClickCback = new GuiCallback() {
-				@Override public void onClick()  	{ screenHandler(Screen.RGSTR_SKIER_FINISH);  }
+				@Override public void onClick(String temp)  	{ screenHandler(Screen.RGSTR_SKIER_FINISH);  }
 			};
 			ui.addButton( "Lägg Till",				onClickCback,	 	-3, 3, true);
 			Component lastComp = ui.getLastComp();
@@ -112,6 +126,31 @@ public class ProgLogic {
 			break;
 
 		case CREATE_RACE:
+			if ( isCallback ) {
+				ClassList classlist = StartList.classConfig(skierList, "TODO: group in string");
+				break;
+			} else {
+				
+				GuiCallback cbackCrtRace = new GuiCallback() {
+
+					
+				};
+				
+				ui.clrScrn();
+				ui.clrUsrInpField();
+				ui.update();
+				
+				List<String> groups = skierList.getUniqueClassesList();
+				
+				int yRelPos=0;
+				for ( String skiGroup : groups ) {
+					System.out.println(skiGroup);
+					ui.setTitle("Var god välj skid-klass");
+					ui.addButton( skiGroup,					Screen.BACK,	 	0, yRelPos++, true);
+				}
+				
+			}
+			
 			break;
 
 		case RGSTR_SKIER_FINISH:
@@ -123,7 +162,7 @@ public class ProgLogic {
 			String gender = inpFldVals[1];
 
 			skierList.addSkiertoList( new Skier( firstName, lastName, gender, age ));
-			System.out.println(firstName+" "+age+" added!"+" It's a"+gender+"!");
+			System.out.println(firstName+" "+age+" added!"+" It's a "+gender+"!");
 
 		case RGSTR_SKIER_VERIFY:
 			ui.setTitle("Klart?");
@@ -154,6 +193,10 @@ public class ProgLogic {
 			break;
 		}
 	}
+	
+//	private GuiCallback(String callback) {
+//		
+//	}
 	
 
 	private boolean parseSkierArray() {
