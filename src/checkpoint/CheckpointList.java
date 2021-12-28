@@ -13,7 +13,7 @@ public class CheckpointList {
 	
 	public void test(List<Skier> skierList) {
 				
-		Collections.sort(skierList, new Compare());
+		Collections.sort(skierList, new CompareSkierPlacingCheckpoint());
 		
 		ui.postMsg("MELLANTIDER");
 			

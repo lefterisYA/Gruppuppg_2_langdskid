@@ -88,7 +88,7 @@ public class SkierList {
 		return "This list contains: "+skierString;
 	}
 	
-	public List<String> getUniqueGroupesList() {
+	public List<String> getUniqueGroupsList() {
 		String currentGroup;
 		List<String> uniqueGroupsList = new LinkedList<String>(); 
 		for (int i = 0; i < skierLinkedList.size(); i++) {

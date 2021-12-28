@@ -1,11 +1,13 @@
 package skiing;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
+import checkpoint.CompareSkierPlacingCheckpoint;
 import common.Utils;
 
 public class GroupList extends SkierList {
@@ -24,7 +26,15 @@ public class GroupList extends SkierList {
 	public int getFirstPlayerNumber() {return firstPlayerNumber;}
 	public void setFirstPlayerNumber(int firstPlayerNumber) {this.firstPlayerNumber = firstPlayerNumber;}
 	public void setSkiingGroup (String skiingGroup){this.skiingGroup=skiingGroup;}
+	/**
+	 * @param indexnumret på den skidåkaren du vill hämta
+	 * @return skidåkaren som är på det indexnumret
+	 */
 	public Skier getSkier(int skierNumber) {return groupList.get(skierNumber);}
+	/**
+	 * @param skidåkaren du vill setta
+	 * @param indexnumret på den skidåkaren du vill setta
+	 */
 	public void setSkier(Skier skier, int indexnumber) {groupList.set(indexnumber, skier);}
 	public void setSkierList(Skier[] skierlist) {groupList = Arrays.asList(skierlist);}
 	
@@ -127,10 +137,20 @@ public class GroupList extends SkierList {
 		groupList.set(groupList.indexOf(skier), skier);
 	}
 	@Override
+	/**
+	 * Sorterar listan beroende på deras playernumber
+	 */
 	public void sortList() {
 		Skier[] skierList = getSkierList();
 		Arrays.sort(skierList);
 		setSkierList(skierList);
+	}
+	/**
+	 * Sorterar listan beroende på deras placering vid checkpoint
+	 */
+	public void sortListPlacingCheckpoint() {
+		CompareSkierPlacingCheckpoint compare = new CompareSkierPlacingCheckpoint();
+		Collections.sort(groupList, compare);
 	}
 	@Override
 	public void assignAllPlayerNumbersRandom() {

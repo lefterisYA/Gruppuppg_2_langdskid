@@ -5,7 +5,7 @@ import java.util.Comparator;
 
 import common.Utils;
 
-public class Compare implements Comparator<Skier>{
+public class CompareSkierPlacingCheckpoint implements Comparator<Skier>{
 
 	@Override
 	public int compare(Skier skier1, Skier skier2) {
