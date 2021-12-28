@@ -88,4 +88,16 @@ public class SkierList {
 		return "This list contains: "+skierString;
 	}
 	
+	public List<String> getUniqueClassesList() {
+		String currentClass;
+		List<String> uniqueClassesList = new LinkedList<String>(); 
+		for (int i = 0; i < skierLinkedList.size(); i++) {
+			currentClass = getSkiingClassAtIndex(i);
+			if(uniqueClassesList.contains(currentClass)==false) {
+				uniqueClassesList.add(currentClass);
+			}
+		}
+		return uniqueClassesList;
+	}
+	
 }

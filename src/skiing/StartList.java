@@ -11,15 +11,17 @@ import common.Utils;
 public class StartList {
 
 	public static void main(String[] args) {
-		SkierList skierlist = skierConfig();
+		Scanner scan = new Scanner(System.in);
+		SkierList skierlist = skierConfig(scan);
 		
 		ClassList classlist = classConfig(skierlist);
+		scan.close();
 	}
 
-	private static SkierList skierConfig() {
+	private static SkierList skierConfig(Scanner scan) {
 		//anmälning individer
 		SkierList skierlist = new SkierList();
-		Scanner scan = new Scanner(System.in);
+//		Scanner scan = new Scanner(System.in);
 		System.out.println("Hur många skidåkare vill du registrera?");
 		int amountOfSkiers = scan.nextInt();
 		for (int i = 0; i < amountOfSkiers; i++) {

@@ -24,5 +24,6 @@ public class SkierDeclaration {
 //		skier.age=24;
 		Skier newskier = new Skier(skier.getFirstName(), skier.getLastName(), skier.getGender(), skier.getAge());
 		return newskier;
+		
 	}
 }
