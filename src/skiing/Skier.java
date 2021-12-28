@@ -86,6 +86,4 @@ public class Skier extends Person implements Comparable<Skier> {
 				&& goalTime == other.goalTime && playerNumber == other.playerNumber
 				&& Objects.equals(skiingGroup, other.skiingGroup) && Arrays.equals(startingTime, other.startingTime);
 	}
-
-
 }
