@@ -371,6 +371,7 @@ class Button extends JButton {
 			public void actionPerformed(ActionEvent e) { callback.onClick(); }
 		});
 	}
+
 }
 
 /*

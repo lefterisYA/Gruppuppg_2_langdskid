@@ -30,7 +30,7 @@ public class StartList {
 		return skierlist;
 	}
 
-	private static ClassList classConfig(SkierList skierlist) {
+	public static ClassList classConfig(SkierList skierlist) {
 		//anmälan klass
 		System.out.println("Vilken klass gäller det? t.ex H21 eller D24");
 //		String chosenClass = scan.nextLine();

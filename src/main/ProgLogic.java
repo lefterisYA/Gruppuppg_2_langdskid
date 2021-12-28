@@ -1,23 +1,35 @@
 package main;
 
 import java.awt.Component;
+import java.util.LinkedList;
 
 import javax.swing.JComponent;
 
 import UI.GUI;
 import UI.GuiCallback;
 import UI.Screen;
+import UI.UI;
 import UI.InputField;
 import skiing.Skier;
 import skiing.SkierList;
+import skiing.StartList;
 
 public class ProgLogic {
 	private final GUI ui;
 	UserReplyHandler repHand;
 
-	public final SkierList skierList = new SkierList();
+	private final SkierList skierList = new SkierList();
+	private final LinkedList<String> uniqueClasses = new LinkedList<String>();
 
 	public ProgLogic(GUI ui) {
+		
+		// TEMP CODE:
+		uniqueClasses.add("D11");
+		uniqueClasses.add("D61");
+		uniqueClasses.add("D13");
+		uniqueClasses.add("H11");
+		uniqueClasses.add("H21");
+		uniqueClasses.add("H13");
 		this.ui=ui;
 		repHand = new UserReplyHandler(ui, this);
 
@@ -58,7 +70,7 @@ public class ProgLogic {
 				screenHandler(Screen.INTRO); 	// just show next screen.
 			} else {
 				ui.clrScrn();
-				ui.setTitle("Välkommen");
+				ui.setTitle( "Välkommen" );
 				ui.addButton( "Skapa tävling", 			Screen.CREATE_RACE, 		0, 1, true);
 				ui.addButton( "Lägg till tävlande",		Screen.RGSTR_SKIER, 		1, 0, true);
 				ui.addButton( "Visa slutresultat",		Screen.PRINT_STRTLIST,	 	1, 0, true);
@@ -112,6 +124,34 @@ public class ProgLogic {
 			break;
 
 		case CREATE_RACE:
+			if ( isCallback ) {
+				break;
+			} else {
+				
+				GuiCallback cbackCrtRace = new GuiCallback() {
+					@Override public void onClick() {
+						
+					}
+					
+				};
+				
+				ui.clrScrn();
+				ui.clrUsrInpField();
+				ui.update();
+				
+				int yRelPos=0;
+				for ( String skiGroup : uniqueClasses ) {
+					ui.setTitle("Var god välj skid-klass");
+					ui.addButton( skiGroup,					Screen.BACK,	 	0, yRelPos++, true);
+				}
+				
+				StartList.classConfig(skierList);
+
+				
+				
+				
+			}
+			
 			break;
 
 		case RGSTR_SKIER_FINISH:
