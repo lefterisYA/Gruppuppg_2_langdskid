@@ -41,7 +41,7 @@ public class StartList {
 		for (int i = 0; i < skierlist.getSkierLinkedListSize(); i++) {
 			if (chosenClass.equals(skierlist.getSkiingClassAtIndex(i))) {
 				while (x <= 0) {
-					timeConfigInput(classlist);
+					classlist.timeConfigInput(classlist);
 					x++;
 				}
 				classlist.addToClassList(skierlist.getSkier(i));
@@ -54,25 +54,4 @@ public class StartList {
 		}
 		return classlist;
 	}
-
-	private static void timeConfigInput(ClassList classlist) {
-		Scanner scan1 = new Scanner(System.in);
-		System.out.println("När ska den första starttiden vara? input timme: ");
-//				firstStart[0] = scan1.nextInt();
-		classlist.setFirstStart(0, 12);
-		System.out.println("input minut: ");
-		classlist.setFirstStart(1, 30);
-//				firstStart[1] =scan1.nextInt();
-		System.out.println("input sekund: ");
-		classlist.setFirstStart(2, 0);
-//				firstStart[2] = scan1.nextInt();
-		System.out.println("Ange startinteravll i sekunder: ");
-//				int startInterval = scan1.nextInt();
-		classlist.setStartInterval(30);
-		System.out.println("Ange första spelarens nummer, resterande spelares nummer kommer baseras på det"
-				+ "här. Så om du väljer t.ex 101, kommer spelare två vara 102, tre 103, osv.");
-//				int firstPlayerNumber = scan1.nextInt();
-		classlist.setFirstPlayerNumber(101);
-	}
-
 }
