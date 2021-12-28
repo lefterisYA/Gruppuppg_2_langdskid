@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Scanner;
 
 import common.Utils;
 
@@ -86,5 +87,19 @@ public class ClassList extends SkierList {
 				&& Arrays.equals(firstStart, other.firstStart) && Objects.equals(skiingClass, other.skiingClass)
 				&& startInterval == other.startInterval;
 	}
-
+	
+	public void timeConfigInput(ClassList classlist) {
+		Scanner scan1 = new Scanner(System.in);
+		System.out.println("När ska den första starttiden vara? input timme: ");
+				setFirstStart(0, scanner);
+		System.out.println("input minut: ");
+				setFirstStart(1, scanner);
+		System.out.println("input sekund: ");
+				setFirstStart(2, scanner);
+		System.out.println("Ange startinteravll i sekunder: ");
+				setStartInterval(scanner);
+		System.out.println("Ange första spelarens nummer, resterande spelares nummer kommer baseras på det"
+				+ "här. Så om du väljer t.ex 101, kommer spelare två vara 102, tre 103, osv.");
+				setFirstPlayerNumber(scanner);
+	}
 	}
