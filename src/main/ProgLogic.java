@@ -46,17 +46,24 @@ public class ProgLogic {
 		skierList.addSkiertoList( new Skier( "Åsa", "Laft", "dam", 23 ));
 		skierList.addSkiertoList( new Skier( "Britt", "Laft", "dam", 23 ));
 		
-		
 		group = new GroupList();
-		group.generateGroupList(skierList, "h33");
+		group.generateGroupList(skierList, "herr");
 		group.generateGroupListTime(new int[] {10,00,00}, 30, 100);
 		screenHandler(Screen.INTRO);
 		
+		System.out.println("skierList.getUniqueGroupsList():");
 		for ( String group : skierList.getUniqueGroupsList() )
 			System.out.println(group);
 
-		for ( Skier skier : skierList.getSkierList() )
-			System.out.println(skier.getFirstName());
+		System.out.println("Med SkierList skierList.getSkierList():");
+		for ( Skier skier : skierList.getSkierList() ) {
+			System.out.println(skier.getPlayerNumber() + " " + skier.getFirstName());
+		}
+
+		System.out.println("Med Grouplist group.getSkierList():");
+		for ( Skier skier : group.getSkierList() ) {
+			System.out.println(skier.getPlayerNumber() + " " + skier.getFirstName());
+		}
 	}
 
 	public ProgLogic(GUI ui) {
@@ -228,6 +235,8 @@ public class ProgLogic {
 				);
 			
 
+			for ( Skier skr : group.getSkierList() )
+				System.out.println(skr.getFirstName());
 			screenHandler(Screen.INTRO);
 			break;
 			
@@ -302,29 +311,6 @@ public class ProgLogic {
 
 		default:
 			break;
-		}
-	}
-	
-//	private GuiCallback(String callback) {
-//		
-//	}
-	
-
-	private boolean parseSkierArray() {
-		String[] usrReplies = repHand.getPrevUserReplies();
-		try {
-			int age = Integer.parseInt(usrReplies[2]);
-
-			String[] name = usrReplies[0].split(" ");
-			String firstName = name[0];
-			String lastName = name.length > 1 ? name[name.length-1] : "";
-
-			skierList.addSkiertoList( new Skier( firstName, lastName, usrReplies[1], age ));
-			System.out.println(name+" "+age+" added!");
-			return true;
-		} catch (Exception e) {
-			System.out.println(usrReplies[2]+" failed to parse int!!!");
-			return false;
 		}
 	}
 }
