@@ -88,18 +88,18 @@ public class ClassList extends SkierList {
 				&& startInterval == other.startInterval;
 	}
 	
-	public void timeConfigInput(ClassList classlist) {
+	public void timeConfigInput(ClassList classlist, int[] firstStart, int startInterval, int firstSkier) {
 		Scanner scan1 = new Scanner(System.in);
 		System.out.println("När ska den första starttiden vara? input timme: ");
-				setFirstStart(0, scanner);
+				setFirstStart(0, firstStart[0]);
 		System.out.println("input minut: ");
-				setFirstStart(1, scanner);
+				setFirstStart(1, firstStart[1]);
 		System.out.println("input sekund: ");
-				setFirstStart(2, scanner);
+				setFirstStart(2, firstStart[2]);
 		System.out.println("Ange startinteravll i sekunder: ");
-				setStartInterval(scanner);
+				setStartInterval(startInterval);
 		System.out.println("Ange första spelarens nummer, resterande spelares nummer kommer baseras på det"
 				+ "här. Så om du väljer t.ex 101, kommer spelare två vara 102, tre 103, osv.");
-				setFirstPlayerNumber(scanner);
+				setFirstPlayerNumber(firstSkier);
 	}
 	}
