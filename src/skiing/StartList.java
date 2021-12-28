@@ -14,7 +14,7 @@ public class StartList {
 		Scanner scan = new Scanner(System.in);
 		SkierList skierlist = skierConfig(scan);
 		
-		ClassList classlist = classConfig(skierlist);
+		ClassList classlist = classConfig(skierlist, "H24");
 		scan.close();
 	}
 
@@ -30,11 +30,10 @@ public class StartList {
 		return skierlist;
 	}
 
-	public static ClassList classConfig(SkierList skierlist) {
+	public static ClassList classConfig(SkierList skierlist, String chosenClass) {
 		//anmälan klass
 		System.out.println("Vilken klass gäller det? t.ex H21 eller D24");
 //		String chosenClass = scan.nextLine();
-		String chosenClass = "H24";
 		ClassList classlist = new ClassList();
 		classlist.setSkiingClass(chosenClass);
 		int x = 0;
