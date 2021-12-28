@@ -18,16 +18,16 @@ public class SkierList {
 	public void addSkiertoList(Skier skier) {skierLinkedList.add(skier);}
 	public void setSkierList(Skier[] skierlist) {skierLinkedList = Arrays.asList(skierlist);}
 	
-	public String getSkiingClass(Skier skier) {
+	public String getSkiingGroup(Skier skier) {
 		return Character.toUpperCase(skier.getGender().charAt(0)) + Integer.toString(skier.getAge());
 	}
 	public int getSkierLinkedListSize() {
 		return skierLinkedList.size();
 	}
 	
-	public String getSkiingClassAtIndex(int i) {
+	public String getSkiingGroupAtIndex(int i) {
 		Skier skier = skierLinkedList.get(i);
-		return getSkiingClass(skier);
+		return getSkiingGroup(skier);
 	}
 	
 	public Skier[] getSkierList() {
@@ -88,16 +88,16 @@ public class SkierList {
 		return "This list contains: "+skierString;
 	}
 	
-	public List<String> getUniqueClassesList() {
-		String currentClass;
-		List<String> uniqueClassesList = new LinkedList<String>(); 
+	public List<String> getUniqueGroupesList() {
+		String currentGroup;
+		List<String> uniqueGroupsList = new LinkedList<String>(); 
 		for (int i = 0; i < skierLinkedList.size(); i++) {
-			currentClass = getSkiingClassAtIndex(i);
-			if(uniqueClassesList.contains(currentClass)==false) {
-				uniqueClassesList.add(currentClass);
+			currentGroup = getSkiingGroupAtIndex(i);
+			if(uniqueGroupsList.contains(currentGroup)==false) {
+				uniqueGroupsList.add(currentGroup);
 			}
 		}
-		return uniqueClassesList;
+		return uniqueGroupsList;
 	}
 	
 }
