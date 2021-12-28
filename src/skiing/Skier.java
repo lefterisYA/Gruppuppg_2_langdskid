@@ -67,23 +67,25 @@ public class Skier extends Person implements Comparable<Skier> {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
+		int result = super.hashCode();
 		result = prime * result + Arrays.hashCode(checkpointTime);
 		result = prime * result + Arrays.hashCode(startingTime);
-		result = prime * result + Objects.hash(playerNumber, skiingClass);
+		result = prime * result + Objects.hash(clock, goalTime, playerNumber, skiingClass);
 		return result;
 	}
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		Skier other = (Skier) obj;
-		return Arrays.equals(checkpointTime, other.checkpointTime) && playerNumber == other.playerNumber
+		return Arrays.equals(checkpointTime, other.checkpointTime) && Objects.equals(clock, other.clock)
+				&& goalTime == other.goalTime && playerNumber == other.playerNumber
 				&& Objects.equals(skiingClass, other.skiingClass) && Arrays.equals(startingTime, other.startingTime);
 	}
+
 
 }

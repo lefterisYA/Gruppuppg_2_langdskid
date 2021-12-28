@@ -1,9 +1,11 @@
 package skiing;
 
+//TODO: Sätt javadoc kommentarer med /** på mina metoder
+
 import java.util.Objects;
 
 public class Person {
-	private String firstName;
+	private String firstName; //TODO ta bort firstname/lastname?
 	private String lastName;
 	private String name;
 	private String gender; //TODO enum //Vet inte riktigt hur jag ska göra det och det är lite sent nu
