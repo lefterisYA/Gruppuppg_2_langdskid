@@ -3,6 +3,7 @@ package UI;
 public enum Screen {
 	INTRO(true),
 	CREATE_RACE(false),
+	CREATE_RACE_2(false),
 	PRINT_STRTLIST(false),
 	EDIT_CHECKPOINTS(false),
 	SEE_RACE(false),

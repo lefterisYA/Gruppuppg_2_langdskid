@@ -136,6 +136,19 @@ public class GUI {
 	public void addInpField(
 			String title, 
 			InputField.Type type, 
+			int x, 
+			int y, 
+			boolean absPos) 
+	{
+		Panel iPanel = new Panel(new GridLayout(1,2));
+		iPanel.add(new JLabel(title));
+		iPanel.add(new InputField(this, InputField.Type.STRNG, false));
+
+		panel.add(iPanel, x, y, absPos);
+	}
+	public void addInpField(
+			String title, 
+			InputField.Type type, 
 			boolean emptyAllowed, 
 			GuiCallback validityCback, 
 			int x, 

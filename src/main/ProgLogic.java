@@ -11,7 +11,7 @@ import UI.GuiCallback;
 import UI.Screen;
 import UI.UI;
 import UI.InputField;
-import skiing.ClassList;
+import skiing.GroupList;
 import skiing.Skier;
 import skiing.SkierList;
 import skiing.StartList;
@@ -127,30 +127,64 @@ public class ProgLogic {
 
 		case CREATE_RACE:
 			if ( isCallback ) {
-				ClassList classlist = StartList.classConfig(skierList, "TODO: group in string");
+				System.out.println(usrReplies[0] + "Was chosen");
+
+				GroupList group = new GroupList();
+				group.generateGroupList(skierList, usrReplies[0]);
+
+				ui.clrScrn();
+				ui.clrUsrInpField();
+				ui.update();
+				ui.setTitle("Var god välj skid-klass");
+
+				GuiCallback cbackCreateRace = new GuiCallback() {
+					@Override public void onClick(String ignore)  	{ screenHandler(null, null);  }
+				};
+
+				GuiCallback cbackCreateRaceR = new GuiCallback() {
+					@Override public void onClick(String ignore)  	{ screenHandler(Screen.CREATE_RACE_2);  }
+				};
+				
+				ui.addInpField("Ange starttid (Första åktid):", InputField.Type.STRNG, 1, 2, false);
+				ui.addInpField("Ange startiinterfall:", InputField.Type.STRNG, 0, 1, true);
+				ui.addInpField("Ange första skid-åkares nummer:", InputField.Type.INTGR, 0, 1, true);
+
+				ui.addButton( "Avbryt",					Screen.BACK,	 	1, 0, true);
+				ui.addButton( "Fortsätt",				cbackCreateRaceR, 		2, 0, true);
+
 				break;
 			} else {
-				
 				GuiCallback cbackCrtRace = new GuiCallback() {
+					public void onClick(String label){
+						screenHandler(Screen.CREATE_RACE, new String[] {label});
 
-					
+					}
 				};
 				
 				ui.clrScrn();
 				ui.clrUsrInpField();
 				ui.update();
 				
-				List<String> groups = skierList.getUniqueClassesList();
+//				List<String> groups = skierList.getUniqueClassesList();
 				
 				int yRelPos=0;
+				ui.setTitle("Var god välj skid-klass");
 				for ( String skiGroup : groups ) {
 					System.out.println(skiGroup);
-					ui.setTitle("Var god välj skid-klass");
-					ui.addButton( skiGroup,					Screen.BACK,	 	0, yRelPos++, true);
+					ui.addButton( skiGroup,					cbackCrtRace,	 	0, yRelPos++, true);
 				}
 				
 			}
 			
+			break;
+
+		case CREATE_RACE_2:
+			if ( isCallback ) {
+
+			} else {
+				
+			}
+
 			break;
 
 		case RGSTR_SKIER_FINISH:
