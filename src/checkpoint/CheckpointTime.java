@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import UI.Console;
 import UI.UI;
+import common.Utils;
 import skiing.*;
 
 public class CheckpointTime{
@@ -18,7 +19,7 @@ public class CheckpointTime{
 		
 		Skier[] skiers = list.getSkierList();
 		for(int i=0; i<skiers.length; i++) { 
-			if(skiers[i].playerNumber == playerNumber && skiers[i].checkpointTime.equals(0)) { 
+			if(skiers[i].getPlayerNumber() == playerNumber && Utils.timeConverter(skiers[i].getCheckpointTime()) == 0) { 
 				setCheckpointTime(skiers[i]); 
 			}
 		}return null;		
