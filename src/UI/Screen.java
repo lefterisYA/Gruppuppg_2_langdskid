@@ -7,6 +7,7 @@ public enum Screen {
 	PRINT_STRTLIST(false),
 	EDIT_CHECKPOINTS(false),
 	SEE_RACE(false),
+	SEE_RACE_UPDATE_SKIER(true),
 	CHECKPOINT_WATCHER(false),
 	FINISHING_WATCHER(false),
 	RGSTR_SKIER(false),

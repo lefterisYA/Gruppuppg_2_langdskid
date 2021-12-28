@@ -89,6 +89,13 @@ class InputFieldHandler {
 		this.ui = ui;
 	}
 	
+	public InputField gnrt(String label, InputField.Type type) {
+		InputField newInpFld = new InputField(ui, type, true);
+		inpFlds.add(newInpFld);
+
+		return newInpFld;
+	}
+
 	public InputField gnrt(String label, InputField.Type type, boolean emptyAllowed, GuiCallback validityCback) {
 		InputField newInpFld = new InputField(ui, type, emptyAllowed);
 		inpFlds.add(newInpFld);
@@ -123,6 +130,10 @@ class InputFieldHandler {
 		for ( InputField fld : inpFlds )
 			ret[i++] = fld.getText();
 		return ret;
+	}
+	
+	public void clrInpFlds() {
+		inpFlds.clear();
 	}
 }
 

@@ -39,7 +39,7 @@ class SkierListTest {
 	
 	@Test
 	void testSortList() {
-		System.out.println(skierlist.getUniqueClassesList());
+//		System.out.println(skierlist.getUniqueClassesList());
 	}
 
 }

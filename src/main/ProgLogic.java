@@ -19,9 +19,45 @@ import skiing.StartList;
 public class ProgLogic {
 	private final GUI ui;
 	UserReplyHandler repHand;
+	GroupList group;
+	String chosenGroup;
 
 	private final SkierList skierList = new SkierList();
 	private final LinkedList<String> uniqueClasses = new LinkedList<String>();
+	List<String> groups;
+	
+	public static void main(String[] args) {
+		ProgLogic gLogic = new ProgLogic(new GUI());
+		gLogic.test();
+	}
+	
+	private void test() {
+		skierList.addSkiertoList( new Skier( "Left", "Laft", "herr", 33 ));
+		skierList.addSkiertoList( new Skier( "Otto", "Laft", "herr", 33 ));
+		skierList.addSkiertoList( new Skier( "Jessica", "Laft", "herr", 33 ));
+		skierList.addSkiertoList( new Skier( "Joacim", "Laft", "herr", 33 ));
+		skierList.addSkiertoList( new Skier( "namn2", "Laft", "herr", 33 ));
+		skierList.addSkiertoList( new Skier( "Namn3", "Laft", "herr", 33 ));
+		skierList.addSkiertoList( new Skier( "Namn5", "Laft", "herr", 33 ));
+		skierList.addSkiertoList( new Skier( "Namn7", "Laft", "herr", 33 ));
+		skierList.addSkiertoList( new Skier( "Namn8", "Laft", "herr", 33 ));
+		skierList.addSkiertoList( new Skier( "Namn9", "Laft", "herr", 33 ));
+		skierList.addSkiertoList( new Skier( "Asa", "Laft", "dam", 23 ));
+		skierList.addSkiertoList( new Skier( "Åsa", "Laft", "dam", 23 ));
+		skierList.addSkiertoList( new Skier( "Britt", "Laft", "dam", 23 ));
+		
+		
+		group = new GroupList();
+		group.generateGroupList(skierList, "h33");
+		group.generateGroupListTime(new int[] {10,00,00}, 30, 100);
+		screenHandler(Screen.INTRO);
+		
+		for ( String group : skierList.getUniqueGroupsList() )
+			System.out.println(group);
+
+		for ( Skier skier : skierList.getSkierList() )
+			System.out.println(skier.getFirstName());
+	}
 
 	public ProgLogic(GUI ui) {
 		
@@ -76,7 +112,7 @@ public class ProgLogic {
 				ui.addButton( "Skapa tävling", 			Screen.CREATE_RACE, 		0, 1, true);
 				ui.addButton( "Lägg till tävlande",		Screen.RGSTR_SKIER, 		1, 0, true);
 				ui.addButton( "Visa slutresultat",		Screen.PRINT_STRTLIST,	 	1, 0, true);
-				ui.addButton( "Se tävling", 			Screen.PRINT_STRTLIST,	 	-2, 1, true);
+				ui.addButton( "Se tävling", 			Screen.SEE_RACE,		 	-2, 1, true);
 				ui.addButton( "Starta klocka",			ui.clockStart, 				1, 0, true);
 				ui.addButton( "WIP",					Screen.PRINT_STRTLIST,	 	1, 0, true);
 				ui.addVertSpcr(400);
@@ -127,19 +163,17 @@ public class ProgLogic {
 
 		case CREATE_RACE:
 			if ( isCallback ) {
-				System.out.println(usrReplies[0] + "Was chosen");
 
-				GroupList group = new GroupList();
-				group.generateGroupList(skierList, usrReplies[0]);
+				chosenGroup = usrReplies[0];
+				System.out.println(chosenGroup + "Was chosen");
+
+				group = new GroupList();
+				group.generateGroupList(skierList, chosenGroup);
 
 				ui.clrScrn();
 				ui.clrUsrInpField();
 				ui.update();
 				ui.setTitle("Var god välj skid-klass");
-
-				GuiCallback cbackCreateRace = new GuiCallback() {
-					@Override public void onClick(String ignore)  	{ screenHandler(null, null);  }
-				};
 
 				GuiCallback cbackCreateRaceR = new GuiCallback() {
 					@Override public void onClick(String ignore)  	{ screenHandler(Screen.CREATE_RACE_2);  }
@@ -165,7 +199,7 @@ public class ProgLogic {
 				ui.clrUsrInpField();
 				ui.update();
 				
-//				List<String> groups = skierList.getUniqueClassesList();
+				List<String> groups = skierList.getUniqueGroupsList();
 				
 				int yRelPos=0;
 				ui.setTitle("Var god välj skid-klass");
@@ -179,12 +213,55 @@ public class ProgLogic {
 			break;
 
 		case CREATE_RACE_2:
-			if ( isCallback ) {
+			String[] inpFldVals2 = ui.getInpFieldVals();
+			for ( String rep : inpFldVals2 ){
+				System.out.println(rep);
+			}
+			
+			int[] parts = new int[3];
+			int i = 0;
+			for ( String part : inpFldVals2[0].split(":") )
+				parts[i++]=Integer.parseInt(part);
 
-			} else {
-				
+			group.generateGroupListTime(
+					parts, Integer.parseInt(inpFldVals2[1]), Integer.parseInt(inpFldVals2[2]) 
+				);
+			
+
+			screenHandler(Screen.INTRO);
+			break;
+			
+		case SEE_RACE:
+			ui.clrScrn();
+			ui.clrUsrInpField();
+			ui.update();
+			ui.setTitle(chosenGroup);
+			ui.runClock();
+			
+			ui.setBodyText(chosenGroup);
+			
+			GuiCallback chkPntCback = new GuiCallback() {
+				@Override
+				public void onClick(int skierNum) { ui.updateSkierLinepass(skierNum, GUI.Linetype.CHECKPOINT); }
+			};
+			GuiCallback fnshCback = new GuiCallback() {
+				@Override
+				public void onClick(int skierNum) { 
+					ui.updateSkierLinepass(skierNum, GUI.Linetype.FINISHLINE); 
+					}
+			};
+			
+			
+			ui.addVertSpcr(10, -2, 1, true);
+			int skierNum=0;
+			for ( Skier skier : skierList.getSkierList() ) {
+				System.out.println("adding "+skier.getName() + " " + skier.getPlayerNumber());
+				ui.addSeeRaceTableRow(skier.getFirstName(), skierNum++, chkPntCback, fnshCback, 0, 1, true);
 			}
 
+			break;
+			
+		case SEE_RACE_UPDATE_SKIER:
 			break;
 
 		case RGSTR_SKIER_FINISH:

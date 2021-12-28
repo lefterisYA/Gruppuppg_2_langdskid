@@ -25,8 +25,10 @@ import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
@@ -53,7 +55,8 @@ public class GUI {
 		frame.getContentPane().add(panel);
 		frame.pack(); // resize frame to panel
 		frame.setVisible(true);
-
+		
+		
 		inpFldHandler = new InputFieldHandler(this);
 	}
 	
@@ -106,6 +109,7 @@ public class GUI {
 		setBodyText(bodyText);
 	}
 	public void clrUsrInpField() {
+		inpFldHandler.clrInpFlds();
 		elemGnrt.getTextField().setText("");
 	}
 	public void removeLast() {
@@ -133,6 +137,10 @@ public class GUI {
 	public void addVertSpcr(int hght) {
 		panel.addVertSpcr(hght);
 	}
+	public void addVertSpcr(int hght, int x, int y, boolean absPos) {
+		panel.addVertSpcr(hght, x, y, absPos);
+	}
+
 	public void addInpField(
 			String title, 
 			InputField.Type type, 
@@ -142,7 +150,7 @@ public class GUI {
 	{
 		Panel iPanel = new Panel(new GridLayout(1,2));
 		iPanel.add(new JLabel(title));
-		iPanel.add(new InputField(this, InputField.Type.STRNG, false));
+		iPanel.add(inpFldHandler.gnrt("title", type));
 
 		panel.add(iPanel, x, y, absPos);
 	}
@@ -157,7 +165,6 @@ public class GUI {
 	{
 		Panel iPanel = new Panel(new GridLayout(1,2));
 		iPanel.add(new JLabel(title));
-
 		iPanel.add(inpFldHandler.gnrt("title", type, emptyAllowed, validityCback));
 
 		panel.add(iPanel, x, y, absPos);
@@ -167,90 +174,39 @@ public class GUI {
 		return inpFldHandler.getInpFldVals(); 
 	}
 	
+	HashMap<Integer, Button[]> skiersTable = new HashMap<Integer, Button[]>();
+	public void addSeeRaceTableRow(
+			String skierName, int skierNum, GuiCallback chckPntCback, GuiCallback fnshCback, int x, int y, boolean absPos
+			) {
+		Button checkpointButton = new Button("Checkpoint", chckPntCback, skierNum);
+		Button finishlineButton = new Button("Slutlinje", fnshCback, skierNum);
+
+		Panel iPanel = new Panel(new GridLayout(1,4));
+		iPanel.add(new JLabel(skierName));
+		iPanel.add(checkpointButton);
+		iPanel.add(new JLabel(""));
+		iPanel.add(finishlineButton);
+
+		skiersTable.put(skierNum, new Button[] {checkpointButton, finishlineButton});
+
+		panel.add( iPanel, x, y, absPos );
+	}
+	
+	public enum Linetype { CHECKPOINT, FINISHLINE };
+	public void updateSkierLinepass(int skierNum, GUI.Linetype linetype) {
+		System.out.println("wtfmate" + clk.getCurrTime() + " " + skierNum );
+		int bttnIndx =  linetype == Linetype.CHECKPOINT ? 0 : 1;
+		skiersTable.get(skierNum)[bttnIndx].setEnabled(false);
+		skiersTable.get(skierNum)[bttnIndx].setText(clk.getCurrTime());
+	}
+	
 	public void update() {
 		panel.updateUI();
 	}
 	
-	public void showScreen(Screen currScreen) {
-		boolean block = true;
-		if ( block ) {
-			System.out.println("DAMN IT LEFTERIS");
-			return;
-		}
-		
-//		addToScreenStack(currScreen);
-//		String title;
-//	
-//		String sname = currScreen != null ? currScreen.name() : "null";
-//		System.out.println( Thread.currentThread().getStackTrace()[1] + sname+" threadId:"+Thread.currentThread().getId()); 
-//		switch (currScreen){
-//		case INTRO:
-//			clrScrn();
-//			title="Välkommen";
-//			setTitle(title);
-//			panel.add(elemGnrt.getLabel(), 1, 0, 1);
-//			panel.add(elemGnrt.getTextArea(), -1, 1, true);
-//			panel.add(new Button( "Skapa tävling", 			guiCallback, Screen.CREATE_RACE  	), 0, 1, true);
-//			panel.add(new Button( "Lägg till tävlande",		guiCallback, Screen.RGSTR_SKIER   	), 1, 0, true);
-//			panel.add(new Button( "Visa slutresultat",		guiCallback, Screen.PRINT_STRTLIST  ), 1, 0, true);
-//			panel.add(new Button( "Se tävling", 			guiCallback, Screen.PRINT_STRTLIST  ), -2, 1, true);
-//			panel.add(new Button( "Starta klocka",			clockStart 							), 1, 0, true);
-//			panel.add(new Button( "WIP",					guiCallback, Screen.PRINT_STRTLIST  ), 1, 0, true);
-//			panel.addVertSpcr(400);
-//			panel.add(new Button( "OK",						guiCallback, Screen.ACPT 			), -2, 1, true);
-//			panel.add(new Button( "Avsluta",				guiCallback, Screen.EXIT 			), 2, 0, true);
-//
-//			setBodyText("Var god gör ett val:");
-//			panel.addVertSpcr(1);
-//			panel.updateUI();
-//			break;
-//
-//		case RGSTR_SKIER,CREATE_RACE:
-//			panel.removeAll();
-//			clrBody();
-//
-//		case RGSTR_SKIER_REPEAT: // RGSTR_SKIER,CREATE_RACE: fallthrough too:
-////			panel.add(elemGnrt.getTextField(), 1, 0, true);
-//
-//			panel.removeLast();
-//			elemGnrt.getTextField().setText("");
-//
-//			title = currScreen == Screen.CREATE_RACE ? "Ny tävling" : "Registrera tävlande";
-//			setTitle(title);
-//		
-//			setBodyText("");
-//			panel.add(elemGnrt.getLabel(), 0, 0, 3);
-//
-//			panel.add(elemGnrt.getTextArea(), 0, 1);
-//			panel.add(elemGnrt.getTextField(), 1, 0, true);
-//			panel.addVertSpcr(200);
-//
-//			panel.add(new Button( "Avbryt",					guiCallback, Screen.BACK 			), 1, 0, true);
-//			setBodyText("");
-//
-//			panel.updateUI();
-//			break;
-//
-//		case RGSTR_SKIER_VERIFY:
-//			title="Klart?";
-//			setTitle(title);
-//			
-//			elemGnrt.removeTextFieldCbacks();
-//			panel.add(new Button( "Lägg till",				guiCallback, Screen.RGSTR_SKIER_FINISH	), 1, 0, true);
-//			panel.add(new Button( "Lägg till fler",			guiCallback, Screen.RGSTR_SKIER_REPEAT	), -2, 0, true);
-//			panel.updateUI();
-//			break;
-//			
-//		case PRINT_STRTLIST:
-//			break;
-//
-//		default:
-//			System.out.println("Screen not handled!");
-//		}
-	}
-
+	Clock clk;
 	public void runClock() {
-		Clock clk = new Clock();
+		clk = new Clock();
 
 	    ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
 	    exec.scheduleAtFixedRate(new Runnable() {
@@ -295,71 +251,6 @@ public class GUI {
 	}
 }
 
-
-//interface InputFieldVerifier {
-//	boolean hasVldVal(String input);
-//}
-//	private static InputFieldVerifier intVerifier = new InputFieldVerifier() {
-//		@Override public boolean hasVldVal(String input) {
-//			try {
-//				Integer.parseInt(input);
-//				return true;
-//			} catch (Exception e ) {
-//				return false;
-//			}
-//
-//		}
-//	};
-//
-//	private static InputFieldVerifier hasValVerifier = new InputFieldVerifier() {
-//		@Override public boolean hasVldVal(String input) {
-//			return !input.isEmpty();
-//		}
-//	};
-//	public InputField() { 
-//		textField.setMinimumSize(new Dimension(400,20));
-//		setPreferredSize(new Dimension(300, 20));
-//		this = textField;
-//		textField.setBackground(new Color(255,255,255));
-//		textField.setSize(200, 30);
-//	}
-//	public InputField(GuiCallback callback) { this.setTextFieldCback(callback); }
-
-	
-//	private void setTextFieldCback(GuiCallback callback) {
-//		for ( KeyListener kLsnter : this.getKeyListeners() )
-//			this.removeKeyListener(kLsnter);
-//
-//		if ( callback == null )
-//			return;
-//
-//		EventListener textFieldKeyListner = new KeyListener() {
-//			public void keyPressed(KeyEvent e) {
-//				if (e.getKeyCode()==KeyEvent.VK_ENTER){
-////					callback.onNewUsrInp(textFields.get(idx).getText());
-//				} else if ( e.getKeyCode() == KeyEvent.VK_ESCAPE ) {
-//					callback.onCancel();
-//				}
-//			}
-//
-//			@Override public void keyReleased(KeyEvent arg0) { }
-//			@Override public void keyTyped(KeyEvent arg0) { }
-//		};
-//		
-//		this.addKeyListener((KeyListener) textFieldKeyListner);
-//	}
-
-class ButtonGnrt {
-	GuiCallback cBack;
-	public ButtonGnrt(GuiCallback cBack) {
-		this.cBack = cBack;
-	}
-
-	public Button crt(String label, Screen nextScrn) {
-		return new Button(label, cBack, nextScrn);
-	}
-}
-
 /*
  * Addition to the JButton cllass so that action listeners are added at creatinong o fobjects.
  */
@@ -369,7 +260,7 @@ class Button extends JButton {
 	
 	public Button(String label, GuiCallback callback, Screen nextScrn) {
 		super(label);
-		this.setBounds(0, 0, 50, 50);
+		setCommonProps();
 
 		addActionListener( new ActionListener() {
 			public void actionPerformed(ActionEvent e) { callback.onNewScrn(nextScrn); }
@@ -378,7 +269,7 @@ class Button extends JButton {
 
 	public Button(String label, GuiCallback callback) {
 		super(label);
-		this.setBounds(0, 0, 50, 50);
+		setCommonProps();
 
 		addActionListener( new ActionListener() {
 			public void actionPerformed(ActionEvent e) { callback.onClick(label); }
@@ -387,13 +278,30 @@ class Button extends JButton {
 
 	public Button(String label, GuiCallback callback, boolean returnLabel) {
 		super(label);
-		this.setBounds(0, 0, 50, 50);
+		setCommonProps();
 
 		addActionListener( new ActionListener() {
 			public void actionPerformed(ActionEvent e) { callback.onClick(label); }
 		});
 	}
 
+	public Button(String label, GuiCallback callback, int cBackVal) {
+		super(label);
+		setCommonProps();
+
+		addActionListener( new ActionListener() {
+			public void actionPerformed(ActionEvent e) { 
+				callback.onClick(cBackVal); 
+
+				}
+		});
+	}
+	
+	private void setCommonProps() {
+		this.setBounds(0, 0, 50, 50);
+		this.setBackground(new Color(220,220,220));
+		this.setBorder(new EmptyBorder(4, 20, 4, 20));
+	}
 }
 
 /*
@@ -451,6 +359,13 @@ class Panel extends JPanel {
 		add(element, x, y, 1, false);
 	}
 
+	public void addVertSpcr(int height, int x, int y, boolean relative) {
+		JPanel spacer = new JPanel();
+		spacer.setBorder(BorderFactory.createEmptyBorder(height, 1, 1, 1));
+		cnst.gridy++;
+		add(spacer, x, y, 1, relative);
+
+	}
 	public void addVertSpcr(int height) {
 		JPanel spacer = new JPanel();
 		spacer.setBorder(BorderFactory.createEmptyBorder(height, 1, 1, 1));
