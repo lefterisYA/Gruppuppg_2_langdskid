@@ -1,6 +1,5 @@
 package ui;
 
-import skiing.Skier;
 import ui.elements.Button;
 import ui.elements.InputField;
 import ui.elements.InputFieldHandler;
@@ -12,7 +11,6 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.TextArea;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -21,7 +19,6 @@ import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
-import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.CaretEvent;
@@ -37,11 +34,13 @@ import java.util.concurrent.TimeUnit;
 public class GUI {
 	private JFrame frame = new JFrame("My First GUI");
 	private Panel panel = new Panel(new GridBagLayout(), new GridBagConstraints());
-	private ElemGnrt elemGnrt = new ElemGnrt(this);
-	private String bodyText = "";
 	private GuiCallback guiCallback;
 	private LinkedList<Screen> screenStack = new LinkedList<Screen>();
 	private InputFieldHandler inpFldHandler;
+
+	private JLabel title;
+	private JTextArea body;
+	private String bodyText = "";
 
 	public GUI() {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -51,6 +50,8 @@ public class GUI {
 		frame.pack(); // resize frame to panel
 		frame.setVisible(true);
 		
+		title = new Label(new Font(Font.SANS_SERIF, Font.PLAIN, 44));
+		body = new TextArea(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
 		
 		inpFldHandler = new InputFieldHandler(this);
 	}
@@ -72,17 +73,9 @@ public class GUI {
 			return Screen.INTRO;
 	}
 	
-	public void goBack() {
-		
-	}
-
 	// Callback methods:
 	public void rgsrCallback( GuiCallback guiCallback ) {
 		this.guiCallback = guiCallback;
-	}
-	
-	public void txtFldCbck() {
-		
 	}
 	
 	public final GuiCallback clockStart = new GuiCallback() {
@@ -96,8 +89,8 @@ public class GUI {
 	public void clrScrn() {
 		panel.removeAll();
 		clrBody();
-		panel.add(elemGnrt.getLabel(), 1, 0, 1);
-		panel.add(elemGnrt.getTextArea(), -1, 1, true);
+		panel.add(title, 1, 0, 1);
+		panel.add(body, -1, 1, true);
 	}
 	public void clrBody() {
 		bodyText = "";
@@ -105,17 +98,17 @@ public class GUI {
 	}
 	public void clrUsrInpField() {
 		inpFldHandler.clrInpFlds();
-		elemGnrt.getTextField().setText("");
+//		elemGnrt.getTextField().setText("");
 	}
 	public void removeLast() {
 		panel.removeLast();
 	}
 
 	public void setTitle(String text) {
-		elemGnrt.getLabel().setText(text);
+		title.setText(text);
 	}
 	public void setBodyText(String text) {
-		elemGnrt.getTextArea().setText(text); //    	   textArea.setBackground(new Color(0,0,0,0));
+		body.setText(text); //    	   textArea.setBackground(new Color(0,0,0,0));
 	}
 
 	public void addButton(String label, Screen nextScrn, int x, int y, boolean absPos) {
@@ -219,17 +212,6 @@ public class GUI {
 		setBodyText(bodyText);
 	}
 
-	public String getUserStrng(String msg) {
-		setBodyText(elemGnrt.getTextArea().getText()+"\t"+elemGnrt.getTextField().getText()+"\n"+msg);
-//		bodyText(msg);
-//		postMsg(msg);
-		elemGnrt.setTextFieldCback(guiCallback);
-		elemGnrt.getTextField().setText("");
-
-		
-		return null;
-	}
-	
 	public void focusInpFldAtRelativeIdx(int relIdx) {
 		LinkedList<InputField> inpFlds = panel.getTextFields();
 		for ( int i=0; i<inpFlds.size(); i++ ) {
@@ -246,141 +228,17 @@ public class GUI {
 	}
 }
 
-/*
- * Each Window will likely have just:
- *
- * ┌──────────────────────────┐  ┌──────────────────────────┐   ┌──────────────────────────┐
- * │        PROG TITLE        │  │        PROG TITLE        │   │        PROG TITLE        │
- * │‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾│  │‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾│   │‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾│
- * │        MENU TITLE        │  │        MENU TITLE        │   │        MENU TITLE        │
- * │  ┌───────────────────┐   │  │                          │   │  ┌───────────────────┐   │
- * │  │                   │   │  │    [ BUTTON SEL 1 ]      │   │  │ QUESTION FR PROG  │   │
- * │  │     QUESTION      │   │  │    [ BUTTON SEL 2 ]      │   │  └───────────────────┘   │
- * │  │   FROM PROGRAM    │   │  │    [ BUTTON SEL 3 ]      │   │  ┌───────────────────┐   │
- * │  │                   │   │  │    [ BUTTON SEL 4 ]      │   │  │    USER INPUT     │   │
- * │  └───────────────────┘   │  │    [ ...          ]      │   │  └───────────────────┘   │
- * │                          │  │                          │   │                          │
- * │  [EXIT]          [OK]    │  │  [EXIT]          [BACK]  │   │  [BACK]          [OK]    │
- * │                          │  │                          │   │                          │
- * └──────────────────────────┘  └──────────────────────────┘   └──────────────────────────┘
- *
- * So we only need:
- *
- * 2 TextArea [ Menu title and info]
- * 1 TextField
- * 3 Buttons, Exit, ok, back +
- * 5 buttons each menu item.
- *
- * This class generates, keeps and updates all the JElement objects.
- */
-class ElemGnrt {
-	enum ActnLnrs {
-			ENTR_KEY,
-			EXIT,
-			NEWVAL,
-	};
-
-	JLabel label;
-	LinkedList<JTextField> textFields = new LinkedList<JTextField>();
-	JTextArea board;
-	JTextArea textArea;
-
-	GUI ui;
-
-	HashMap<ActnLnrs, EventListener> actnLnrs = new HashMap<ActnLnrs, EventListener>();
-
-	public ElemGnrt(GUI ui) {
-		this.ui=ui;
-		gnrtTextArea();
-		gnrtTextField();
-		gnrtLabel("");
+class Label extends JLabel {
+	public Label(Font font) {
+		setFont(font);	
 	}
-
-	// Getters:
-	JTextArea getTextArea() 		{ return textArea; }
-	JLabel getLabel() 				{ return label; }
-	JTextField getTextField() 		{ return textFields.getFirst(); }
-	JTextField getTextField(int i) 	{ return textFields.get(i); }
-
-	// Generators:
-	private void gnrtTextField() {
-		JTextField textField = new JTextField("", 20);
-		textField.setMinimumSize(new Dimension(400,20));
-		textFields.add(textField);
-	}
-
-	private void gnrtTextArea() {
-		textArea = new JTextArea();
-		textArea.setEditable(false);
-		textArea.setBounds(0, 0, 600, 200);
-//		textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 44));
-		textArea.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
-		//    	   textArea.setBackground(new Color(0,0,0,0));
-		textArea.setOpaque(false);
-
-	}
-
-	private void gnrtLabel(String txt) {
-		label = new JLabel(txt);
-		label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 44));
-	}
-	
-	// Setters:
-	public void setTextFieldCback(GuiCallback callback) {
-		setTextFieldCback(callback, 0);
-	}
-
-	public void setTextFieldCback(GuiCallback callback, int idx) {
-		if ( callback == null )
-			return;
-
-		EventListener textFieldKeyListner = new KeyListener() {
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode()==KeyEvent.VK_ENTER){
-					callback.onNewUsrInp(textFields.get(idx).getText());
-				} else if ( e.getKeyCode() == KeyEvent.VK_ESCAPE ) {
-					callback.onCancel();
-				}
-			}
-
-			@Override public void keyReleased(KeyEvent arg0) { }
-			@Override public void keyTyped(KeyEvent arg0) { }
-		};
-
-		removeTextFieldCbacks(idx);
-		textFields.get(idx).addKeyListener((KeyListener) textFieldKeyListner);
-	}
-	
-	public void removeTextFieldCbacks(){ removeTextFieldCbacks(0); }
-	public void removeTextFieldCbacks(int idx) {
-		for ( KeyListener kLsnter : textFields.get(idx).getKeyListeners() )
-			textFields.get(idx).removeKeyListener(kLsnter);
-	}
-	
-	//
-	public JTextField addTextField() {
-		gnrtTextField();
-		return textFields.getLast();
-	}
-
 }
 
-
-
-//	public Skier addSkierDialog(int playerNumber) {
-//		playerNumber++;
-
-//		String name = getUserStrng("Vad heter spelare nummer " + playerNumber);
-
-//		Double speed = getUserDouble("Hur snabb är " + name + "? (Svara i m/s) ");
-//
-//		Double position = getUserDouble("Vart börjar " + name + "? (Svara i meter på banan) ");
-//
-//		int[] sTime = new int[3];
-//		for (int j = 0; j < sTime.length; j++) {
-//			sTime[j] = getUserInt("När börjar " + name
-//				+ "? (Starting time, svara först timme, tryck enter och skriv minut, sen sekund) ");
-//		}
-
-//		return new Skier();
-//	}
+class TextArea extends JTextArea {
+	public TextArea(Font font) {
+		setEditable(false);
+		setBounds(0, 0, 600, 200);
+		setFont(font);
+		setOpaque(false);
+	}
+}
