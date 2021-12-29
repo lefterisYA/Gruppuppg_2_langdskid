@@ -49,6 +49,10 @@ public class GroupList extends SkierList {
 		}
 		return null;
 	}
+	public void sortSkierListCheckpointTime() {
+		CompareSkierPlacingCheckpoint compare = new CompareSkierPlacingCheckpoint();
+		Collections.sort(groupList, compare);
+	}
 	/**
 	 * @param indexnumret på den skidåkaren du vill hämta
 	 * @return skidåkaren som är på det indexnumret
@@ -190,4 +194,5 @@ public class GroupList extends SkierList {
 			groupList.set(i, skierList[i]);
 		}
 	}
+	
 }
