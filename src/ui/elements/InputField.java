@@ -28,7 +28,8 @@ public class InputField extends JTextField {
 		this.addKeyListener( new KeyListener() {
 			public void keyPressed(KeyEvent e) {
 				if ( e.getKeyCode() == KeyEvent.VK_ENTER ){ 
-					ui.txtFldCbck();
+					// TODO
+//					ui.txtFldCbck();
 				} else if ( e.getKeyCode() == KeyEvent.VK_TAB  ){ 
 					ui.focusInpFldAtRelativeIdx(e.isShiftDown() ? -1 : 1);
 				}
