@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 import checkpoint.CompareSkierPlacingCheckpoint;
 import common.Utils;
+import skiingresult.CompareSkierPlacingGoal;
 
 public class GroupList extends SkierList {
 	private List<Skier> groupList = new LinkedList<Skier>();
@@ -52,6 +53,10 @@ public class GroupList extends SkierList {
 	public void sortSkierListCheckpointTime() {
 		CompareSkierPlacingCheckpoint compare = new CompareSkierPlacingCheckpoint();
 		Collections.sort(groupList, compare);
+	}
+	public void sortSkierListGoalTime() {
+		CompareSkierPlacingGoal compare2 = new CompareSkierPlacingGoal();
+		Collections.sort(groupList, compare2);
 	}
 	/**
 	 * @param indexnumret på den skidåkaren du vill hämta
