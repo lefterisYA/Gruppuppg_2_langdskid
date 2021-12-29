@@ -17,8 +17,8 @@ public class ClockTest {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		testClock.setCheckPoint(); // sätter en mellantid och får tillbaka skillnaden från startTiden
-		System.out.println("Mellantid: " + testClock.getCheckPointTime());
+//		testClock.setCheckPoint(); // sätter en mellantid och får tillbaka skillnaden från startTiden
+//		System.out.println("Mellantid: " + testClock.getCheckPointTime());
 		
 		
 		try {

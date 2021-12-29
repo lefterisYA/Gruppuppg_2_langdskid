@@ -12,6 +12,8 @@ public class Skier extends Person implements Comparable<Skier> {
 	private int[] startingTime = new int[3]; // Starttiden H,M,S
 	private int[] goalTime;
 	private int[] checkpointTime;
+	private int checkpointRunningTime;
+	private int finishRaceRunningTime;
 	private Clock clock;
 	private String skiingGroup;
 	
@@ -31,9 +33,15 @@ public class Skier extends Person implements Comparable<Skier> {
 	public int getPlayerNumber() {return playerNumber;}
 	void setPlayerNumber(int playerNumber) {this.playerNumber = playerNumber;}
 	public int[] getCheckpointTime() {return checkpointTime;}
-	void setCheckpointTime(int[] checkpointTime) {this.checkpointTime = checkpointTime;}
+	void setCheckpointTime(int[] checkpointTime) {
+		this.checkpointTime = checkpointTime;
+		// TODO: REPORT RUNNING TIME.
+	}
 	public int[] getGoalTime() {return goalTime;}
 	public void setGoalTime(int[] goalTime) { this.goalTime = goalTime;}
+	
+	// TODO:
+	public int getRunningTimeSecs() { return 0; }
 	
 	public Skier(String firstName, String lastName, String gender, int age) {
 		super.setFirstName(firstName);
@@ -43,10 +51,6 @@ public class Skier extends Person implements Comparable<Skier> {
 		super.setAge(age);
 		this.skiingGroup = Character.toUpperCase(super.getGender().charAt(0)) + Integer.toString(super.getAge());
 		
-	}
-
-	public int getRunningTimeSeconds() {
-		return clock.getRunningTimeMillis()/1000;
 	}
 
 	// En constructor som jag använder för att deklarera en array (list) med
