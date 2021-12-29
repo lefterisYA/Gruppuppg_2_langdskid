@@ -1,21 +1,36 @@
 package ui;
 
 public class UserInput<T> {
-	T value;
+	enum ValueType { STRING, INT };
+	private final T value;
+	private final ValueType type;
 	
-	public UserInput() {
-//		this.value = value;
+	@SuppressWarnings("unchecked")
+	public UserInput(String value) {
+		this.value = (T) value;
+		type = ValueType.STRING;
+	}
+
+	@SuppressWarnings("unchecked")
+	public UserInput(Integer value) {
+		this.value = (T) value;
+		type = ValueType.STRING;
 	}
 	
-	public T getValue(){
+	public T getVal(){
 		return value;
 	}
 	
-	public void setValue(T value) {
-		this.value = value;
+	public int getIntValue(){
+		return (int) value;
 	}
 	
-	public String getStrgValu() {
+	public String getStrVal() {
 		return (String) value;
+		
+	}
+
+	public ValueType getValueType() {
+		return type;
 	}
 }

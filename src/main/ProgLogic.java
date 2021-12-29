@@ -1,23 +1,30 @@
 package main;
 
 import java.awt.Component;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.JButton;
+
+import checkpoint.CompareSkierPlacingCheckpoint;
 import skiing.GroupList;
 import skiing.Skier;
 import skiing.SkierList;
 import ui.GUI;
 import ui.GuiCallback;
 import ui.Screen;
-import ui.UI;
+import ui.UserInput;
 import ui.elements.InputField;
 
 public class ProgLogic {
 	private final GUI ui;
-	GroupList group;
 	String chosenGroup;
 
+	GroupList group;
 	private final SkierList skierList = new SkierList();
 	private final LinkedList<String> uniqueClasses = new LinkedList<String>();
 	List<String> groups;
@@ -114,7 +121,7 @@ public class ProgLogic {
 				ui.addButton( "Lägg till tävlande",		Screen.RGSTR_SKIER, 		1, 0, true);
 				ui.addButton( "Visa slutresultat",		Screen.PRINT_STRTLIST,	 	1, 0, true);
 				ui.addButton( "Se tävling", 			Screen.SEE_RACE,		 	-2, 1, true);
-				ui.addButton( "Starta klocka",			ui.clockStart, 				1, 0, true);
+				ui.addButton( "Resultattavla",			Screen.LIVE_SCOREBOARD,			1, 0, true);
 				ui.addButton( "WIP",					Screen.PRINT_STRTLIST,	 	1, 0, true);
 				ui.addVertSpcr(400);
 				ui.addButton( "OK",						Screen.ACPT, 				-2, 1, true);
@@ -172,9 +179,8 @@ public class ProgLogic {
 				group.generateGroupList(skierList, chosenGroup);
 
 				ui.clrScrn();
-				ui.clrUsrInpField();
-				ui.update();
 				ui.setTitle("Var god välj skid-klass");
+				ui.update();
 
 				GuiCallback cbackCreateRaceR = new GuiCallback() {
 					@Override public void onClick(String ignore)  	{ screenHandler(Screen.CREATE_RACE_2);  }
@@ -236,38 +242,107 @@ public class ProgLogic {
 			
 		case SEE_RACE:
 			ui.clrScrn();
-			ui.clrUsrInpField();
-			ui.update();
 			ui.setTitle(chosenGroup);
-			ui.runClock();
-			
 			ui.setBodyText(chosenGroup);
+			ui.runClock();
+			ui.update();
 			
 			GuiCallback chkPntCback = new GuiCallback() {
 				@Override
-				public void onClick(int skierNum) { ui.updateSkierLinepass(skierNum, GUI.Linetype.CHECKPOINT); }
+				public void onClick(int skierNum) { 
+//					ui.updateSkierLinepass(skierNum, GUI.Linetype.CHECKPOINT); 
+					( (JButton) ui.getTblCmp(skierNum, 0) ).setText(ui.getCurrTime());
+					( (JButton) ui.getTblCmp(skierNum, 0) ).setEnabled(false);
+
+//					group.getSkier(skierNum).setCheckpointTime(ui.getCurrTimeInts());
+
+					group.setSkierCheckpointTimeFromPlayerNumber(skierNum, ui.getCurrTimeInts());
+
+//					for ( int comp : ui.getCurrTimeInts() )
+//					System.out.println(comp);
+				}
 			};
+
 			GuiCallback fnshCback = new GuiCallback() {
 				@Override
 				public void onClick(int skierNum) { 
-					ui.updateSkierLinepass(skierNum, GUI.Linetype.FINISHLINE); 
-					}
+					( (JButton) ui.getTblCmp(skierNum, 1) ).setText(ui.getCurrTime());
+					( (JButton) ui.getTblCmp(skierNum, 1) ).setEnabled(false);
+
+					// TODO
+//					group.getSkier(skierNum).setGoalTime(ui.getCurrTimeInts());
+					group.setSkierGoalTimeFromPlayerNumber(skierNum, ui.getCurrTimeInts());
+				}
 			};
 			
-			
+
 			ui.addVertSpcr(10, -2, 1, true);
-			int skierNum=0;
-			for ( Skier skier : skierList.getSkierList() ) {
+			for ( Skier skier : group.getSkierList() ) {
 				System.out.println("adding "+skier.getName() + " " + skier.getPlayerNumber());
-				ui.addSeeRaceTableRow(skier.getFirstName(), skierNum++, chkPntCback, fnshCback, 0, 1, true);
+				ui.addSeeRaceTableRow(skier.getFirstName(), skier.getPlayerNumber(), chkPntCback, fnshCback, 0, 1, true);
 			}
 
-			ui.addButton( "Avbryt",					Screen.BACK,	 	-1, 1, true);
-			ui.addButton( "Fortsätt",				Screen.BACK, 		1, 0, true);
+			ui.addButton( "Bakåt",					Screen.BACK,	 	0, 1, true);
+			ui.addButton( "Fortsätt",				Screen.LIVE_SCOREBOARD,	1, 0, true);
 
 			break;
 			
-		case SEE_RACE_UPDATE_SKIER:
+			// TODO:
+//		case SET_SKIER_FINTIME:
+//			( (JButton) ui.getTblCmp(skierNum, 1) ).setText(ui.getCurrTime());
+//			( (JButton) ui.getTblCmp(skierNum, 0) ).setEnabled(false);
+//			break;
+//			
+//		case SET_SKIER_MIDTIME:
+//			break;
+			
+		case LIVE_SCOREBOARD:
+			ui.clrScrn();
+
+			ui.setTitle(chosenGroup);
+			ui.setBodyText(chosenGroup);
+			ui.addTable(new String[] { "Åkarnummer", "Namn", "Mellanmål", "Slutmål" }, 1, 1, true);
+
+			group.sortSkierListCheckpointTime();
+
+			for ( Skier skier : group.getSkierList() ) {
+				System.out.println("adding "+skier.getName() + " " + skier.getPlayerNumber());
+				String checkPTime = String.format("%02d:%02d:%02d", 
+						skier.getCheckpointTime()[0] , skier.getCheckpointTime()[1] , skier.getCheckpointTime()[2] );
+				String finishTime = String.format("%02d:%02d:%02d",  
+						skier.getGoalTime()[0] , skier.getGoalTime()[1] , skier.getGoalTime()[2] );
+
+				String skierNumber = String.valueOf(skier.getPlayerNumber());
+				ui.addTableRow(new String[] { skierNumber, skier.getFirstName(), checkPTime, finishTime }); // , 0, 1, true);
+			}
+			ui.update();
+			ui.addButton( "Bakåt",					Screen.BACK,	 	0, 1, true);
+
+			break;
+			
+		case FINISH_SCOREBOARD:
+			ui.clrScrn();
+
+			ui.setTitle(chosenGroup);
+			ui.setBodyText(chosenGroup);
+			ui.addTable(new String[] { "Åkarnummer", "Namn", "Mellanmål", "Slutmål" }, 1, 1, true);
+
+			group.sortSkierListCheckpointTime();
+
+			for ( Skier skier : group.getSkierList() ) {
+				System.out.println("adding "+skier.getName() + " " + skier.getPlayerNumber());
+				// TODO:
+				String checkPTime = String.format("%02d:%02d:%02d", 
+						skier.getCheckpointTime()[0] , skier.getCheckpointTime()[1] , skier.getCheckpointTime()[2] );
+				String finishTime = String.format("%02d:%02d:%02d",  
+						skier.getGoalTime()[0] , skier.getGoalTime()[1] , skier.getGoalTime()[2] );
+				String skierNumber = String.valueOf(skier.getPlayerNumber());
+
+				ui.addTableRow(new String[] { skierNumber, skier.getFirstName(), checkPTime, finishTime }); // , 0, 1, true);
+			}
+			ui.update();
+			ui.addButton( "Bakåt",					Screen.BACK,	 	0, 1, true);
+
 			break;
 
 		case RGSTR_SKIER_FINISH:
@@ -289,11 +364,6 @@ public class ProgLogic {
 			break;
 
 		case PRINT_STRTLIST:
-//			if ( isCallback ) {
-//				screenHandler(Screen.INTRO); // next screen
-//			} else {
-//				screenHandler(scrn);
-//			}
 			break;
 		
 		case EXIT:

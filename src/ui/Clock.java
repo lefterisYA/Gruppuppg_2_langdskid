@@ -121,6 +121,15 @@ public class Clock {
 
 		return time;
 	}
+	
+	public int[] getCurrTimeInts() {
+		cdr.setTimeInMillis(System.currentTimeMillis());
+		return new int[] { 
+				cdr.get(Calendar.HOUR_OF_DAY), 
+				cdr.get(Calendar.MINUTE), 
+				cdr.get(Calendar.SECOND), 
+		};
+	}
 
 	private String gnrtAsciiChars(int[] digtGrps) {
 		sb.setLength(0); // Clear stringbuilder

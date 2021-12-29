@@ -16,17 +16,25 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 import java.util.EventListener;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -41,6 +49,9 @@ public class GUI {
 	private JLabel title;
 	private JTextArea body;
 	private String bodyText = "";
+	
+	private Font bodyFont = new Font(Font.SANS_SERIF, Font.PLAIN, 16);
+	private Font titleFont = new Font(Font.SANS_SERIF, Font.PLAIN, 44);
 
 	public GUI() {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -50,8 +61,8 @@ public class GUI {
 		frame.pack(); // resize frame to panel
 		frame.setVisible(true);
 		
-		title = new Label(new Font(Font.SANS_SERIF, Font.PLAIN, 44));
-		body = new TextArea(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
+		title = new Label(titleFont);
+		body = new TextArea(bodyFont);
 		
 		inpFldHandler = new InputFieldHandler(this);
 	}
@@ -91,6 +102,7 @@ public class GUI {
 		clrBody();
 		panel.add(title, 1, 0, 1);
 		panel.add(body, -1, 1, true);
+		clrUsrInpField();
 	}
 	public void clrBody() {
 		bodyText = "";
@@ -100,6 +112,11 @@ public class GUI {
 		inpFldHandler.clrInpFlds();
 //		elemGnrt.getTextField().setText("");
 	}
+
+	public void update() {
+		panel.updateUI();
+	}
+
 	public void removeLast() {
 		panel.removeLast();
 	}
@@ -162,7 +179,9 @@ public class GUI {
 		return inpFldHandler.getInpFldVals(); 
 	}
 	
-	HashMap<Integer, Button[]> skiersTable = new HashMap<Integer, Button[]>();
+	
+	// TABLE TODO FLYTTA UT:
+	Map<Integer, Button[]> skiersTable = new HashMap<Integer, Button[]>();
 	public void addSeeRaceTableRow(
 			String skierName, int skierNum, GuiCallback chckPntCback, GuiCallback fnshCback, int x, int y, boolean absPos
 			) {
@@ -180,19 +199,47 @@ public class GUI {
 		panel.add( iPanel, x, y, absPos );
 	}
 	
+//	JTable table;
+	DefaultTableModel tableModel;
+	public void addTable(String[] colTitles, int x, int y, boolean absPos ) {
+		tableModel = new DefaultTableModel(colTitles, 0);
+		JTable table = new JTable(tableModel);
+		table.setDefaultEditor(Object.class, null);
+		panel.add(new JScrollPane(table), x, y, absPos);
+	}
+
+	public void addTableRow(String[] fields) { //, int x, int y, boolean absPos) {
+		tableModel.addRow(fields);
+	}
+	
 	public enum Linetype { CHECKPOINT, FINISHLINE };
 	public void updateSkierLinepass(int skierNum, GUI.Linetype linetype) {
-		System.out.println("wtfmate" + clk.getCurrTime() + " " + skierNum );
 		int bttnIndx =  linetype == Linetype.CHECKPOINT ? 0 : 1;
 		skiersTable.get(skierNum)[bttnIndx].setEnabled(false);
 		skiersTable.get(skierNum)[bttnIndx].setText(clk.getCurrTime());
 	}
 	
-	public void update() {
-		panel.updateUI();
+	public void disableTableComponent( int key, int btnIdx ) {
+		System.out.println("wtfmate" + clk.getCurrTime() + " " + key );
+		
+		skiersTable.get(key)[btnIdx].setEnabled(false);
+		skiersTable.get(key)[btnIdx].setText(clk.getCurrTime());
 	}
 	
-	Clock clk;
+	public JComponent getTblCmp( int key, int rowIdx ) {
+		return skiersTable.get(key)[rowIdx];
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	// TODO: flytte ut.
+	private Clock clk;
 	public void runClock() {
 		clk = new Clock();
 
@@ -200,11 +247,15 @@ public class GUI {
 	    exec.scheduleAtFixedRate(new Runnable() {
 	    	@Override
 	    	public void run() {
-//	    		System.out.println( Clock.getCurrTimeInAscii() );
-//	    		ui.bodyText( "\n" + clk.getCurrTimeInAscii() );
 	    		setTitle( "\n" + clk.getCurrTime() );
 	    	}
 	    }, 0, 20, TimeUnit.MILLISECONDS);
+	}
+	public String getCurrTime() {
+		return clk.getCurrTime();
+	}
+	public int[] getCurrTimeInts() {
+		return clk.getCurrTimeInts();
 	}
 
 	public void postMsg(String msg) {
@@ -229,6 +280,10 @@ public class GUI {
 }
 
 class Label extends JLabel {
+	public Label(String text, Font font) {
+		super(text);
+		setFont(font);	
+	}
 	public Label(Font font) {
 		setFont(font);	
 	}
