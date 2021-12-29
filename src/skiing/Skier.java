@@ -46,8 +46,18 @@ public class Skier extends Person implements Comparable<Skier> {
 	public int[] getGoalTime() {return goalTime;}
 	public void setGoalTime(int[] goalTime) { this.goalTime = goalTime;}
 	
-	// TODO:
-	public int getRunningTimeSecs() { return 0; }
+	/**
+	 * TODO
+	 * @return the difference between the finising time and the checkingpoint time.
+	 */
+	public int getGoalRunningTimeSecs() { return 0; }
+	/**
+	 * TODO
+	 * @return the difference between the finising time and the starting time.
+	 */
+	public int getCheckpointRunningTimeSecs() {
+		return 0;
+	}
 	
 	public Skier(String firstName, String lastName, String gender, int age) {
 		super.setFirstName(firstName);
