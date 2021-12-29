@@ -1,4 +1,4 @@
-package UI;
+package ui;
 
 import main.ProgLogic;
 import skiing.Skier;

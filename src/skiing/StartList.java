@@ -5,8 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
-import UI.UI;
 import common.Utils;
+import ui.UI;
 
 public class StartList {
 

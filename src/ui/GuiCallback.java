@@ -1,4 +1,4 @@
-package UI;
+package ui;
 
 public interface GuiCallback {
 	default void onClick(String buttonLabel) { };

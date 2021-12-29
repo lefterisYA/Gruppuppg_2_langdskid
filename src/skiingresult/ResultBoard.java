@@ -1,9 +1,7 @@
 package skiingresult;
 import skiing.*;
-import UI.Console;
-
-
-import UI.UI;
+import ui.Console;
+import ui.UI;
 import common.Utils;
 import skiing.*;
 

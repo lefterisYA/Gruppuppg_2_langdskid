@@ -1,7 +1,7 @@
 package test;
 
-import UI.*;
 import skiing.Skier;
+import ui.*;
 
 public class Test {
 	public static void main(String[] args) {

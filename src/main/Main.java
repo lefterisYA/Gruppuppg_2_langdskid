@@ -1,8 +1,8 @@
 package main;
 
-import UI.GUI;
 import common.Utils;
 import skiing.SkierList;
+import ui.GUI;
 
 public class Main {
 	SkierList skierList = new SkierList();

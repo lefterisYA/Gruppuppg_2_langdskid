@@ -2,8 +2,8 @@ package skiing;
 
 import java.util.Scanner;
 
-import UI.Console;
-import UI.UI;
+import ui.Console;
+import ui.UI;
 
 public class SkierDeclaration {
 	public static Skier SkierDeclare() {

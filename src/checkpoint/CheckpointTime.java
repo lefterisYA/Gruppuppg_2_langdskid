@@ -2,10 +2,10 @@ package checkpoint;
 
 import java.util.Scanner;
 
-import UI.Console;
-import UI.UI;
 import common.Utils;
 import skiing.*;
+import ui.Console;
+import ui.UI;
 
 public class CheckpointTime{
 	

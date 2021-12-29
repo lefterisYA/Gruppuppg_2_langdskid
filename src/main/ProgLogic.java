@@ -4,21 +4,17 @@ import java.awt.Component;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.swing.JComponent;
-
-import UI.GUI;
-import UI.GuiCallback;
-import UI.Screen;
-import UI.UI;
-import UI.InputField;
 import skiing.GroupList;
 import skiing.Skier;
 import skiing.SkierList;
-import skiing.StartList;
+import ui.GUI;
+import ui.GuiCallback;
+import ui.Screen;
+import ui.UI;
+import ui.elements.InputField;
 
 public class ProgLogic {
 	private final GUI ui;
-	UserReplyHandler repHand;
 	GroupList group;
 	String chosenGroup;
 
@@ -76,11 +72,9 @@ public class ProgLogic {
 		uniqueClasses.add("H21");
 		uniqueClasses.add("H13");
 		this.ui=ui;
-		repHand = new UserReplyHandler(ui, this);
 
 		GuiCallback cBack = new GuiCallback() {
 			public void onNewScrn(Screen nextScrn) 		{ screenHandler(nextScrn); 		}
-			public void onNewUsrInp(String val) 		{ repHand.guiCallback(val); 	}
 		};
 		ui.rgsrCallback( cBack );
 	}
@@ -268,6 +262,9 @@ public class ProgLogic {
 				ui.addSeeRaceTableRow(skier.getFirstName(), skierNum++, chkPntCback, fnshCback, 0, 1, true);
 			}
 
+			ui.addButton( "Avbryt",					Screen.BACK,	 	-1, 1, true);
+			ui.addButton( "Fortsätt",				Screen.BACK, 		1, 0, true);
+
 			break;
 			
 		case SEE_RACE_UPDATE_SKIER:
@@ -288,6 +285,7 @@ public class ProgLogic {
 			ui.setTitle("Klart?");
 			
 			ui.addButton( "Lägg till fler",	Screen.RGSTR_SKIER_REPEAT,	 	-3, 0, true);
+			
 			break;
 
 		case PRINT_STRTLIST:
@@ -313,48 +311,4 @@ public class ProgLogic {
 			break;
 		}
 	}
-}
-
-class UserReplyHandler {
-	String[] usrMsgs;
-	String[] usrRpls;
-	int msgIdx;
-	GUI ui;
-	ProgLogic lgc;
-	Screen callScrn;
-	
-	public UserReplyHandler(GUI ui, ProgLogic lgc) {
-		this.ui		=	ui;
-		this.lgc 	= 	lgc;
-	}
-	
-	public void sendMsgsAsync(Screen callScrn, String[] msgs) {
-		// TODO
-	}
-
-	public void sendMsgsSync(Screen callScrn, String[] msgs) {
-		usrMsgs = msgs;
-		usrRpls = new String[usrMsgs.length];
-		msgIdx=0;
-		this.callScrn = callScrn;
-		ui.getUserStrng(usrMsgs[0]);
-	}
-	
-	public void retry(String newMsg) {
-		ui.getUserStrng(newMsg);
-	};
-	
-	public String[] getPrevUserReplies() {
-		return usrRpls;
-	}
-	public void guiCallback(String val) {
-		usrRpls[msgIdx] = val;
-		if ( msgIdx < usrMsgs.length-1 )
-			ui.getUserStrng(usrMsgs[++msgIdx]);
-		else
-			lgc.usrInpFnsh(usrRpls, callScrn);
-	}
-//			for ( int i=0; i<usrRpls.length; i++) {
-//				System.out.println(usrRpls[i]);
-//			}
 }

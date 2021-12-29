@@ -1,4 +1,4 @@
-package UI;
+package ui;
 
 import java.util.Calendar;
 import java.time.Instant;

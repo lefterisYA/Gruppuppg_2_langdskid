@@ -1,9 +1,10 @@
 package checkpoint;
 
-import UI.Console;
-import UI.UI;
 import common.Utils;
 import skiing.*;
+import ui.Console;
+import ui.UI;
+
 import java.util.*;
 
 
