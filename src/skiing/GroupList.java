@@ -47,7 +47,7 @@ public class GroupList extends SkierList {
 	}
 	
 	public void addToGroupList(Skier skier) {
-		if(skier.getSkiingGroup()==this.skiingGroup) {
+		if(skier.getSkiingGroup().equals(this.skiingGroup)) {
 			groupList.add(skier);
 		}
 		else

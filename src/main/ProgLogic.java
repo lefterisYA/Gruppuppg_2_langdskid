@@ -43,7 +43,7 @@ public class ProgLogic {
 		skierList.addSkiertoList( new Skier( "Britt", "Laft", "dam", 23 ));
 		
 		group = new GroupList();
-		group.generateGroupList(skierList, "herr");
+		group.generateGroupList(skierList, "H33");
 		group.generateGroupListTime(new int[] {10,00,00}, 30, 100);
 		screenHandler(Screen.INTRO);
 		
