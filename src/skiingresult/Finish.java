@@ -1,5 +1,6 @@
 package skiingresult;
 
+import common.Utils;
 import skiing.*;
 
 public class Finish {
@@ -19,7 +20,7 @@ public class Finish {
 		Clock clock = skier.getClock(); // TODO Skier object should have a running clock from starting point
 		clock.setFinish();
 		
-		skier.setGoalTime(clock.getFinishTimeMillis()); // skriver målgångstiden i millisekunder till åkaren
+		skier.setGoalTime(Utils.timeConverter(clock.getFinishTimeMillis()/1000)); // skriver målgångstiden i millisekunder till åkaren
 		System.out.println(skier.getClock().getFinishTime());
 		System.out.println(skier.getGoalTime());
 	}

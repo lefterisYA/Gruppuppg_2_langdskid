@@ -10,7 +10,7 @@ import java.util.Objects;
 public class Skier extends Person implements Comparable<Skier> {
 	private int playerNumber; // Sparar personens tävlingsnummer
 	private int[] startingTime = new int[3]; // Starttiden H,M,S
-	private int goalTime;
+	private int[] goalTime;
 	private int[] checkpointTime;
 	private Clock clock;
 	private String skiingGroup;
@@ -32,8 +32,8 @@ public class Skier extends Person implements Comparable<Skier> {
 	public void setPlayerNumber(int playerNumber) {this.playerNumber = playerNumber;}
 	public int[] getCheckpointTime() {return checkpointTime;}
 	public void setCheckpointTime(int[] checkpointTime) {this.checkpointTime = checkpointTime;}
-	public int getGoalTime() {return goalTime;}
-	public void setGoalTime(int val) { goalTime = val;}
+	public int[] getGoalTime() {return goalTime;}
+	public void setGoalTime(int[] goalTime) { this.goalTime = goalTime;}
 	
 	public Skier(String firstName, String lastName, String gender, int age) {
 		super.setFirstName(firstName);

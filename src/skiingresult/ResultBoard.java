@@ -27,7 +27,7 @@ public class ResultBoard {
 			ui.postMsg("Namn: " + skier.getGender());
 			ui.postMsg("Placering: " + (i+1));
 
-			String goalTime = Utils.toString(Utils.getInstance().timeConverter(skier.getGoalTime()));
+			String goalTime = Utils.toString(skier.getGoalTime());
 			ui.postMsg("Sluttid: " + goalTime);
 
 			ui.postMsg("===============================");
