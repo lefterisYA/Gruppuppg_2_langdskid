@@ -307,10 +307,14 @@ public class ProgLogic {
 
 			for ( Skier skier : group.getSkierList() ) {
 				System.out.println("adding "+skier.getName() + " " + skier.getPlayerNumber());
-				String checkPTime = String.format("%02d:%02d:%02d", 
-						skier.getCheckpointTime()[0] , skier.getCheckpointTime()[1] , skier.getCheckpointTime()[2] );
-				String finishTime = String.format("%02d:%02d:%02d",  
-						skier.getGoalTime()[0] , skier.getGoalTime()[1] , skier.getGoalTime()[2] );
+				String checkPTime = String.format("%02d:%02d:%02d", // (%04d)", 
+						skier.getCheckpointTime()[0], skier.getCheckpointTime()[1], skier.getCheckpointTime()[2]
+//						skier.getCheckpointRunningTime()
+						);
+				String finishTime = String.format("%02d:%02d:%02d", // (%04d)",   
+						skier.getGoalTime()[0] , skier.getGoalTime()[1] , skier.getGoalTime()[2] 
+//						skier.getCheckpointRunningTime()
+						);
 
 				String skierNumber = String.valueOf(skier.getPlayerNumber());
 				ui.addTableRow(new String[] { skierNumber, skier.getFirstName(), checkPTime, finishTime }); // , 0, 1, true);

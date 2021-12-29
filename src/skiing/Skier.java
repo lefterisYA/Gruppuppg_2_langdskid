@@ -15,23 +15,23 @@ public class Skier extends Person implements Comparable<Skier> {
 	private Clock clock;
 	private String skiingGroup;
 	
-	public void setClock(Clock clock) {
-		this.clock = clock;
-	}
-	public Clock getClock() {
-		return clock;
-	}
+//	public void setClock(Clock clock) {
+//		this.clock = clock;
+//	}
+//	public Clock getClock() {
+//		return clock;
+//	}
 	
 	
-	public String getSkiingGroup() {return skiingGroup;}
-	public void setSkiingGroup(String skiingGroup) {this.skiingGroup = skiingGroup;}
-	public int[] getStartingTime() {return startingTime;}
-	public void setStartingTime(int[] startingTime) {this.startingTime = startingTime;}
-	public void setStartingTime(int index, int startingTime) {this.startingTime[index] = startingTime;}
+	String getSkiingGroup() {return skiingGroup;}
+//	private void setSkiingGroup(String skiingGroup) {this.skiingGroup = skiingGroup;}
+//	private int[] getStartingTime() {return startingTime;}
+	void setStartingTime(int[] startingTime) {this.startingTime = startingTime;}
+//	private void setStartingTime(int index, int startingTime) {this.startingTime[index] = startingTime;}
 	public int getPlayerNumber() {return playerNumber;}
-	public void setPlayerNumber(int playerNumber) {this.playerNumber = playerNumber;}
+	void setPlayerNumber(int playerNumber) {this.playerNumber = playerNumber;}
 	public int[] getCheckpointTime() {return checkpointTime;}
-	public void setCheckpointTime(int[] checkpointTime) {this.checkpointTime = checkpointTime;}
+	void setCheckpointTime(int[] checkpointTime) {this.checkpointTime = checkpointTime;}
 	public int[] getGoalTime() {return goalTime;}
 	public void setGoalTime(int[] goalTime) { this.goalTime = goalTime;}
 	
@@ -43,6 +43,10 @@ public class Skier extends Person implements Comparable<Skier> {
 		super.setAge(age);
 		this.skiingGroup = Character.toUpperCase(super.getGender().charAt(0)) + Integer.toString(super.getAge());
 		
+	}
+
+	public int getRunningTimeSeconds() {
+		return clock.getRunningTimeMillis()/1000;
 	}
 
 	// En constructor som jag använder för att deklarera en array (list) med

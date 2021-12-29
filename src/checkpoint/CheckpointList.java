@@ -20,12 +20,12 @@ public class CheckpointList {
 			
 		for(int i=0; i<skierList.size(); i++) { 
 			
-			if(!(Utils.timeConverter(skierList.get(i).getCheckpointTime())==0)) {
-			ui.postMsg("Placering: " + (i+1));
-			ui.postMsg("Åkarnummer: " + skierList.get(i).getPlayerNumber());
-			ui.postMsg("Namn: " + skierList.get(i).getName());
-			ui.postMsg("Mellantid: " + skierList.get(i).getCheckpointTime());
-			}
+//			if(!(Utils.timeConverter(skierList.get(i).getCheckpointTime())==0)) {
+//			ui.postMsg("Placering: " + (i+1));
+//			ui.postMsg("Åkarnummer: " + skierList.get(i).getPlayerNumber());
+//			ui.postMsg("Namn: " + skierList.get(i).getName());
+//			ui.postMsg("Mellantid: " + skierList.get(i).getCheckpointTime());
+//			}
 		} 
 }
 }

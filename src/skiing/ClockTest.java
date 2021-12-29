@@ -8,9 +8,9 @@ public class ClockTest {
 		Clock testClock = new Clock(); // skapar upp klockan. 
 		
 		Skier skier = new Skier();
-		skier.setClock(testClock);
+//		skier.setClock(testClock);
 		
-		skier.getClock().getRunningTimeMillis(); // hur länge har åkaren varit ute o kört
+//		skier.getClock().getRunningTimeMillis(); // hur länge har åkaren varit ute o kört
 		
 		try {
 			Thread.sleep(3000); //väntar 3 sekunder
@@ -28,7 +28,7 @@ public class ClockTest {
 		} 
 		
 		Finish finish = new Finish();
-		finish.setFinishTime(skier);
+//		finish.setFinishTime(skier);
 		
 	}
 }
