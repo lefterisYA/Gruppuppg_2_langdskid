@@ -26,6 +26,29 @@ public class GroupList extends SkierList {
 	public int getFirstPlayerNumber() {return firstPlayerNumber;}
 	public void setFirstPlayerNumber(int firstPlayerNumber) {this.firstPlayerNumber = firstPlayerNumber;}
 	public void setSkiingGroup (String skiingGroup){this.skiingGroup=skiingGroup;}
+	
+	public int[] getSkierGoalTimeFromPlayerNumber(int playerNumber) {
+		return getSkierFromPlayerNumber(playerNumber).getGoalTime();
+	}
+	public int[] getSkierCheckpointTimeFromPlayerNumber(int playerNumber) {
+		return getSkierFromPlayerNumber(playerNumber).getCheckpointTime();
+	}
+	
+	public void setSkierGoalTimeFromPlayerNumber(int playerNumber, int[] goalTime) {
+		getSkierFromPlayerNumber(playerNumber).setGoalTime(goalTime);
+	}
+	public void setSkierCheckpointTimeFromPlayerNumber(int playerNumber, int[] checkpointTime) {
+		getSkierFromPlayerNumber(playerNumber).setCheckpointTime(checkpointTime);
+	}
+	public Skier getSkierFromPlayerNumber(int playerNumber) {
+		Skier[] skierlist = getSkierList();
+		for (int i = 0; i < skierlist.length; i++) {
+			if (skierlist[i].getPlayerNumber()==playerNumber) {
+				return skierlist[i];
+			}
+		}
+		return null;
+	}
 	/**
 	 * @param indexnumret på den skidåkaren du vill hämta
 	 * @return skidåkaren som är på det indexnumret
