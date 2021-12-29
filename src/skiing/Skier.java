@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+import common.Utils;
+
 	//TODO rensa gamla/oanvända metoder
 
 public class Skier extends Person implements Comparable<Skier> {
@@ -12,8 +14,10 @@ public class Skier extends Person implements Comparable<Skier> {
 	private int[] startingTime = new int[3]; // Starttiden H,M,S
 	private int[] goalTime;
 	private int[] checkpointTime;
-	private int checkpointRunningTime;
-	private int finishRaceRunningTime;
+	private int[] checkpointTimeFinish;
+	private int checkpointTimeFinishSeconds;
+	private int[] goalTimeFinish;
+	private int goalTimeFinishSeconds;
 	private Clock clock;
 	private String skiingGroup;
 	
@@ -26,15 +30,27 @@ public class Skier extends Person implements Comparable<Skier> {
 	
 	
 	String getSkiingGroup() {return skiingGroup;}
-//	private void setSkiingGroup(String skiingGroup) {this.skiingGroup = skiingGroup;}
-//	private int[] getStartingTime() {return startingTime;}
-	void setStartingTime(int[] startingTime) {
-		this.startingTime = startingTime;
-//		System.out.println("WKLJKLASDJKLASJDKLASJDKLAJDLKJASKLJDSA");
-		}
-//	private void setStartingTime(int index, int startingTime) {this.startingTime[index] = startingTime;}
+	public int[] getStartingTime() {return startingTime;}
+	public void setStartingTime(int[] startingTime) {this.startingTime = startingTime;}
+	public void setStartingTime(int index, int startingTime) {this.startingTime[index] = startingTime;}
+	public int getGoalTimeFinishSeconds() {
+		this.goalTimeFinishSeconds=Utils.timeConverter(goalTime)-Utils.timeConverter(startingTime);
+		return goalTimeFinishSeconds;
+	}
+	public int[] getGoalTimeFinish() {
+		goalTimeFinish = Utils.timeConverter(goalTimeFinishSeconds);
+		return goalTimeFinish;
+	}
+	public int getCheckpointTimeFinishSeconds() {
+		this.checkpointTimeFinishSeconds=Utils.timeConverter(checkpointTime)-Utils.timeConverter(startingTime);
+		return checkpointTimeFinishSeconds;
+	}
+	public int[] getCheckpointTimeFinish() {
+		this.checkpointTimeFinish=Utils.timeConverter(checkpointTimeFinishSeconds);
+		return checkpointTimeFinish;
+	}
 	public int getPlayerNumber() {return playerNumber;}
-	void setPlayerNumber(int playerNumber) {this.playerNumber = playerNumber;}
+	public void setPlayerNumber(int playerNumber) {this.playerNumber = playerNumber;}
 	public int[] getCheckpointTime() {return checkpointTime;}
 	/**
 	 * @param []{ HH,MM,SS }

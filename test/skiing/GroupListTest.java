@@ -62,6 +62,17 @@ class GroupListTest {
 		g1.setSkierGoalTimeFromPlayerNumber(100, arr2);
 		assertEquals(g1.getSkierGoalTimeFromPlayerNumber(100), arr2);
 	}
-
+	@Test
+	public void testSortList() {
+		g1.sortList();
+		
+	}
+	@Test
+	public void testSetStartingTimes() {
+		g1.setStartingTimes();
+		assertEquals(Arrays.toString(g1.getSkier(0).getStartingTime()), "[12, 12, 12]");
+		assertEquals(Arrays.toString(g1.getSkier(1).getStartingTime()), "[12, 12, 42]");
+		assertEquals(Arrays.toString(g1.getSkier(2).getStartingTime()), "[12, 13, 12]");
+	}
 
 }

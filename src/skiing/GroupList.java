@@ -97,8 +97,13 @@ public class GroupList extends SkierList {
 		for (int i = 0; i < groupList.size(); i++) {
 			Skier skiski = groupList.get(i);
 			skiski.setPlayerNumber(grouplist.firstPlayerNumber + i);
-			skiski.setStartingTime(Utils.timeAdder(grouplist.firstStart, Utils.timeConverter(grouplist.startInterval * i)));
+//			skiski.setStartingTime(Utils.timeAdder(grouplist.firstStart, Utils.timeConverter(grouplist.startInterval * i)));
 			groupList.set(i, skiski);
+		}
+	}
+	public void setStartingTimes() {
+		for (int i = 0; i < groupList.size(); i++) {
+			groupList.get(i).setStartingTime(Utils.timeAdder(this.firstStart, Utils.timeConverter(this.startInterval * i)));
 		}
 	}
 	@Override
