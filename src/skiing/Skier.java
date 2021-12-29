@@ -28,11 +28,17 @@ public class Skier extends Person implements Comparable<Skier> {
 	String getSkiingGroup() {return skiingGroup;}
 //	private void setSkiingGroup(String skiingGroup) {this.skiingGroup = skiingGroup;}
 //	private int[] getStartingTime() {return startingTime;}
-	void setStartingTime(int[] startingTime) {this.startingTime = startingTime;}
+	void setStartingTime(int[] startingTime) {
+		this.startingTime = startingTime;
+//		System.out.println("WKLJKLASDJKLASJDKLASJDKLAJDLKJASKLJDSA");
+		}
 //	private void setStartingTime(int index, int startingTime) {this.startingTime[index] = startingTime;}
 	public int getPlayerNumber() {return playerNumber;}
 	void setPlayerNumber(int playerNumber) {this.playerNumber = playerNumber;}
 	public int[] getCheckpointTime() {return checkpointTime;}
+	/**
+	 * @param []{ HH,MM,SS }
+	 */
 	void setCheckpointTime(int[] checkpointTime) {
 		this.checkpointTime = checkpointTime;
 		// TODO: REPORT RUNNING TIME.
