@@ -250,13 +250,17 @@ public class ProgLogic {
 			GuiCallback chkPntCback = new GuiCallback() {
 				@Override
 				public void onClick(int skierNum) { 
+					//otto raden under
+					group.setSkierCheckpointTimeFromPlayerNumber(skierNum, ui.getCurrTimeInts());
+					int[] arr =  group.getSkierFromPlayerNumber(skierNum).getCheckpointTimeFinish();
 //					ui.updateSkierLinepass(skierNum, GUI.Linetype.CHECKPOINT); 
-					( (JButton) ui.getTblCmp(skierNum, 0) ).setText(ui.getCurrTime());
+//					( (JButton) ui.getTblCmp(skierNum, 0) ).setText(ui.getCurrTime()); //kommenterade denna rad och la till den under //otto
+					( (JButton) ui.getTblCmp(skierNum, 0) ).setText(String.format("%02d:%02d:%02d", arr[0], arr[1], arr[2]));
 					( (JButton) ui.getTblCmp(skierNum, 0) ).setEnabled(false);
 
 //					group.getSkier(skierNum).setCheckpointTime(ui.getCurrTimeInts());
 
-					group.setSkierCheckpointTimeFromPlayerNumber(skierNum, ui.getCurrTimeInts());
+//					group.setSkierCheckpointTimeFromPlayerNumber(skierNum, ui.getCurrTimeInts()); /// denna kommenterade otto bort och flyttade upp till rad 254
 
 //					for ( int comp : ui.getCurrTimeInts() )
 //					System.out.println(comp);
@@ -266,12 +270,16 @@ public class ProgLogic {
 			GuiCallback fnshCback = new GuiCallback() {
 				@Override
 				public void onClick(int skierNum) { 
-					( (JButton) ui.getTblCmp(skierNum, 1) ).setText(ui.getCurrTime());
-					( (JButton) ui.getTblCmp(skierNum, 1) ).setEnabled(false);
 
+					group.setSkierGoalTimeFromPlayerNumber(skierNum, ui.getCurrTimeInts());
+					int[] arr =  group.getSkierFromPlayerNumber(skierNum).getGoalTimeFinish();
+//					( (JButton) ui.getTblCmp(skierNum, 1) ).setText(ui.getCurrTime()); //otto kommenterade denna rad och skrev in den under
+					( (JButton) ui.getTblCmp(skierNum, 1) ).setText(String.format("%02d:%02d:%02d", arr[0], arr[1], arr[2]));
+					( (JButton) ui.getTblCmp(skierNum, 1) ).setEnabled(false);
+					
+//					group.getSkier(skierNum).setGoalTime(ui.getCurrTimeInts()); //otto kommenterade denna och flyttade upp
 					// TODO
 //					group.getSkier(skierNum).setGoalTime(ui.getCurrTimeInts());
-					group.setSkierGoalTimeFromPlayerNumber(skierNum, ui.getCurrTimeInts());
 				}
 			};
 			
@@ -308,11 +316,11 @@ public class ProgLogic {
 			for ( Skier skier : group.getSkierList() ) {
 				System.out.println("adding "+skier.getName() + " " + skier.getPlayerNumber());
 				String checkPTime = String.format("%02d:%02d:%02d", // (%04d)", 
-						skier.getCheckpointTime()[0], skier.getCheckpointTime()[1], skier.getCheckpointTime()[2]
+						skier.getCheckpointTimeFinish()[0], skier.getCheckpointTimeFinish()[1], skier.getCheckpointTimeFinish()[2]
 //						skier.getCheckpointRunningTime()
 						);
 				String finishTime = String.format("%02d:%02d:%02d", // (%04d)",   
-						skier.getGoalTime()[0] , skier.getGoalTime()[1] , skier.getGoalTime()[2] 
+						skier.getGoalTimeFinish()[0] , skier.getGoalTimeFinish()[1] , skier.getGoalTimeFinish()[2] 
 //						skier.getCheckpointRunningTime()
 						);
 
@@ -339,7 +347,7 @@ public class ProgLogic {
 				String checkPTime = String.format("%02d:%02d:%02d", 
 						skier.getCheckpointTime()[0] , skier.getCheckpointTime()[1] , skier.getCheckpointTime()[2] );
 				String finishTime = String.format("%02d:%02d:%02d",  
-						skier.getGoalTime()[0] , skier.getGoalTime()[1] , skier.getGoalTime()[2] );
+						skier.getGoalTimeFinish()[0] , skier.getGoalTimeFinish()[1] , skier.getGoalTimeFinish()[2] );
 				String skierNumber = String.valueOf(skier.getPlayerNumber());
 
 				ui.addTableRow(new String[] { skierNumber, skier.getFirstName(), checkPTime, finishTime }); // , 0, 1, true);

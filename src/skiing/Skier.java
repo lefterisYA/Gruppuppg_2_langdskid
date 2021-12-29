@@ -34,46 +34,32 @@ public class Skier extends Person implements Comparable<Skier> {
 	public void setStartingTime(int[] startingTime) {this.startingTime = startingTime;}
 	public void setStartingTime(int index, int startingTime) {this.startingTime[index] = startingTime;}
 	public int getGoalTimeFinishSeconds() {
-		this.goalTimeFinishSeconds=Utils.timeConverter(goalTime)-Utils.timeConverter(startingTime);
 		return goalTimeFinishSeconds;
 	}
 	public int[] getGoalTimeFinish() {
-		goalTimeFinish = Utils.timeConverter(goalTimeFinishSeconds);
 		return goalTimeFinish;
 	}
 	public int getCheckpointTimeFinishSeconds() {
-		this.checkpointTimeFinishSeconds=Utils.timeConverter(checkpointTime)-Utils.timeConverter(startingTime);
 		return checkpointTimeFinishSeconds;
 	}
 	public int[] getCheckpointTimeFinish() {
-		this.checkpointTimeFinish=Utils.timeConverter(checkpointTimeFinishSeconds);
 		return checkpointTimeFinish;
 	}
 	public int getPlayerNumber() {return playerNumber;}
 	public void setPlayerNumber(int playerNumber) {this.playerNumber = playerNumber;}
 	public int[] getCheckpointTime() {return checkpointTime;}
-	/**
-	 * @param []{ HH,MM,SS }
-	 */
-	void setCheckpointTime(int[] checkpointTime) {
+	public void setCheckpointTime(int[] checkpointTime) {
 		this.checkpointTime = checkpointTime;
-		// TODO: REPORT RUNNING TIME.
+		this.checkpointTimeFinishSeconds=Utils.timeConverter(checkpointTime)-Utils.timeConverter(startingTime);
+		this.checkpointTimeFinish=Utils.timeConverter(checkpointTimeFinishSeconds);
 	}
 	public int[] getGoalTime() {return goalTime;}
-	public void setGoalTime(int[] goalTime) { this.goalTime = goalTime;}
-	
-	/**
-	 * TODO
-	 * @return the difference between the finising time and the checkingpoint time.
-	 */
-	public int getGoalRunningTimeSecs() { return 0; }
-	/**
-	 * TODO
-	 * @return the difference between the finising time and the starting time.
-	 */
-	public int getCheckpointRunningTimeSecs() {
-		return 0;
+	public void setGoalTime(int[] goalTime) { 
+		this.goalTime = goalTime;
+		this.goalTimeFinishSeconds=Utils.timeConverter(goalTime)-Utils.timeConverter(startingTime);
+		this.goalTimeFinish = Utils.timeConverter(goalTimeFinishSeconds);
 	}
+	
 	
 	public Skier(String firstName, String lastName, String gender, int age) {
 		super.setFirstName(firstName);
@@ -101,8 +87,13 @@ public class Skier extends Person implements Comparable<Skier> {
 	}
 	@Override
 	public String toString() {
-		return "Skidåkare som heter " + getName()  + ", starttid: " + Arrays.toString(startingTime)
-				+ ", klass: " + skiingGroup + ", startnummer: " + getPlayerNumber() + ", kön: " + getGender() + ", ålder :" + getAge() + "]";
+		String xstring = "Skidåkare som heter " + getName()  + ", starttid: " + Arrays.toString(startingTime);
+		if(checkpointTimeFinishSeconds>0)
+			xstring+=", mellantid sekunder: ";
+		if(goalTimeFinishSeconds>0)
+			xstring+=", måltid sekunder: ";
+		xstring+= ", klass: " + skiingGroup + ", startnummer: " + getPlayerNumber() + ", kön: " + getGender() + ", ålder :" + getAge() + "]";
+		return xstring;
 	}
 	@Override
 	public int hashCode() {

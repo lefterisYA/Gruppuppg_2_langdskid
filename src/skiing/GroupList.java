@@ -163,6 +163,7 @@ public class GroupList extends SkierList {
 		setFirstPlayerNumber(firstPlayerNumber);
 		assignAllPlayerNumbersRandom();
 		sortList();
+		setStartingTimes();
 		for (int i = 0; i < groupList.size(); i++) {
 			setPlayerNumber(firstPlayerNumber+i, i);
 		}
