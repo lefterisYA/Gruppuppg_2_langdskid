@@ -13,7 +13,7 @@ import javax.swing.JButton;
 import checkpoint.CompareSkierPlacingCheckpoint;
 import skiing.Group;
 import skiing.Skier;
-import skiing.SkierList;
+import skiing.SkierHandler;
 import ui.GUI;
 import ui.GuiCallback;
 import ui.Screen;
@@ -25,7 +25,7 @@ public class ProgLogic {
 	String chosenGroup;
 
 	Group group;
-	private final SkierList skierList = new SkierList();
+	private final SkierHandler skierList = new SkierHandler();
 	private final LinkedList<String> uniqueClasses = new LinkedList<String>();
 	List<String> groups;
 	
@@ -49,8 +49,9 @@ public class ProgLogic {
 		skierList.addSkiertoList( new Skier( "Åsa", "Laft", "dam", 23 ));
 		skierList.addSkiertoList( new Skier( "Britt", "Laft", "dam", 23 ));
 		
-		group = new Group();
-		group.generateGroupList(skierList, "H33");
+		skierList.generateAllGroups();
+		group = new Group("H33");
+//		group.generateGroupList(skierList, "H33");
 		group.generateGroupListTime(new int[] {10,00,00}, 30, 100);
 		screenHandler(Screen.INTRO);
 		
@@ -175,7 +176,7 @@ public class ProgLogic {
 				chosenGroup = usrReplies[0];
 				System.out.println(chosenGroup + "Was chosen");
 
-				group = new Group();
+				group = new Group(chosenGroup);
 				group.generateGroupList(skierList, chosenGroup);
 
 				ui.clrScrn();
@@ -251,7 +252,7 @@ public class ProgLogic {
 				@Override
 				public void onClick(int skierNum) { 
 					//otto raden under
-					group.setSkierCheckpointTimeFromPlayerNumber(skierNum, ui.getCurrTimeInts());
+					group.getSkierFromPlayerNumber(skierNum).setCheckpointTime(ui.getCurrTimeInts());
 					int[] arr =  group.getSkierFromPlayerNumber(skierNum).getCheckpointTimeFinish();
 //					ui.updateSkierLinepass(skierNum, GUI.Linetype.CHECKPOINT); 
 //					( (JButton) ui.getTblCmp(skierNum, 0) ).setText(ui.getCurrTime()); //kommenterade denna rad och la till den under //otto
@@ -270,8 +271,7 @@ public class ProgLogic {
 			GuiCallback fnshCback = new GuiCallback() {
 				@Override
 				public void onClick(int skierNum) { 
-
-					group.setSkierGoalTimeFromPlayerNumber(skierNum, ui.getCurrTimeInts());
+					group.getSkierFromPlayerNumber(skierNum).setGoalTime(ui.getCurrTimeInts());
 					int[] arr =  group.getSkierFromPlayerNumber(skierNum).getGoalTimeFinish();
 //					( (JButton) ui.getTblCmp(skierNum, 1) ).setText(ui.getCurrTime()); //otto kommenterade denna rad och skrev in den under
 					( (JButton) ui.getTblCmp(skierNum, 1) ).setText(String.format("%02d:%02d:%02d", arr[0], arr[1], arr[2]));

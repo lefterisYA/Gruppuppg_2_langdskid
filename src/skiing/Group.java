@@ -18,58 +18,74 @@ public class Group {
 	private int startInterval;
 	private int firstPlayerNumber;
 
-	public String getSkiingGroup() {return skiingGroup;}
-	public int[] getFirstStart() {return firstStart;}
-	public void setFirstStart(int index, int firstStart) {this.firstStart[index] = firstStart;}
-	public void setFirstStart(int[] firstStart) {this.firstStart = firstStart;}
-	public int getStartInterval() {return startInterval;}
-	public void setStartInterval(int startInterval) {this.startInterval = startInterval;}
-	public int getFirstPlayerNumber() {return firstPlayerNumber;}
-	public void setFirstPlayerNumber(int firstPlayerNumber) {this.firstPlayerNumber = firstPlayerNumber;}
-	public void setSkiingGroup (String skiingGroup){this.skiingGroup=skiingGroup;}
-	
-	public int[] getSkierGoalTimeFromPlayerNumber(int playerNumber) {
-		return getSkierFromPlayerNumber(playerNumber).getGoalTime();
+	public String getSkiingGroup() {
+		return skiingGroup;
 	}
-	public int[] getSkierCheckpointTimeFromPlayerNumber(int playerNumber) {
-		return getSkierFromPlayerNumber(playerNumber).getCheckpointTime();
+
+	public int[] getFirstStart() {
+		return firstStart;
 	}
-	
-	public void setSkierGoalTimeFromPlayerNumber(int playerNumber, int[] goalTime) {
-		getSkierFromPlayerNumber(playerNumber).setGoalTime(goalTime);
+
+	public int getStartInterval() {
+		return startInterval;
 	}
-	public void setSkierCheckpointTimeFromPlayerNumber(int playerNumber, int[] checkpointTime) {
-		getSkierFromPlayerNumber(playerNumber).setCheckpointTime(checkpointTime);
+
+	public void setStartInterval(int startInterval) {
+		this.startInterval = startInterval;
 	}
+
+	public int getFirstPlayerNumber() {
+		return firstPlayerNumber;
+	}
+
+	public List<Skier> getGroupList() {
+		return group;
+	}
+
+	public void setGroupList(List<Skier> group) {
+		this.group = group;
+	}
+
 	public Skier getSkierFromPlayerNumber(int playerNumber) {
 		Skier[] skierlist = getSkierList();
 		for (int i = 0; i < skierlist.length; i++) {
-			if (skierlist[i].getPlayerNumber()==playerNumber) {
+			if (skierlist[i].getPlayerNumber() == playerNumber) {
 				return skierlist[i];
 			}
 		}
 		return null;
 	}
+
 	public void sortSkierListCheckpointTime() {
 		CompareSkierPlacingCheckpoint compare = new CompareSkierPlacingCheckpoint();
 		Collections.sort(group, compare);
 	}
+
 	public void sortSkierListGoalTime() {
 		CompareSkierPlacingGoal compare2 = new CompareSkierPlacingGoal();
 		Collections.sort(group, compare2);
 	}
+
 	/**
 	 * @param indexnumret på den skidåkaren du vill hämta
 	 * @return skidåkaren som är på det indexnumret
 	 */
-	public Skier getSkier(int skierNumber) {return group.get(skierNumber);}
+	public Skier getSkier(int skierNumber) {
+		return group.get(skierNumber);
+	}
+
 	/**
-	 * @param skidåkaren du vill setta
+	 * @param skidåkaren  du vill setta
 	 * @param indexnumret på den skidåkaren du vill setta
 	 */
-	public void setSkier(Skier skier, int indexnumber) {group.set(indexnumber, skier);}
-	public void setSkierList(Skier[] skierlist) {group = Arrays.asList(skierlist);}
-	
+	public void setSkier(Skier skier, int indexnumber) {
+		group.set(indexnumber, skier);
+	}
+
+	public void setSkierList(Skier[] skierlist) {
+		group = Arrays.asList(skierlist);
+	}
+
 	public Skier[] getSkierList() {
 		Skier[] skierList = new Skier[group.size()];
 		for (int i = 0; i < group.size(); i++) {
@@ -77,110 +93,56 @@ public class Group {
 		}
 		return skierList;
 	}
-	
-	public void addToGroupList(Skier skier) {
-		if(skier.getSkiingGroup().equals(this.skiingGroup)) {
+
+	public void addToGroup(Skier skier) {
+		if (skier.getSkiingGroup().equals(this.skiingGroup) && (!(group.contains(skier)))) {
 			group.add(skier);
 		}
-		else
-			System.out.println("Wrong group");
 	}
-	
-	public void addAllToGroupList(SkierList grouplist) {
-		Skier[] skiers = grouplist.getSkierList();
-		for (int i = 0; i < skiers.length; i++) {
-			if(skiers[i].getSkiingGroup()==this.skiingGroup)
-				group.add(skiers[i]);
-		}
-	}
-	public void setPlayerNumber(Group grouplist) {
+
+	public void setPlayerNumber() {
 		for (int i = 0; i < group.size(); i++) {
-			Skier skiski = group.get(i);
-			skiski.setPlayerNumber(grouplist.firstPlayerNumber + i);
-//			skiski.setStartingTime(Utils.timeAdder(grouplist.firstStart, Utils.timeConverter(grouplist.startInterval * i)));
-			group.set(i, skiski);
+			group.get(i).setPlayerNumber(this.firstPlayerNumber + i);
 		}
 	}
-	public void setStartingTimes() {
-		for (int i = 0; i < group.size(); i++) {
-			group.get(i).setStartingTime(Utils.timeAdder(this.firstStart, Utils.timeConverter(this.startInterval * i)));
-		}
+
+	public Group(String skiingGroup) {
+		this.skiingGroup = skiingGroup;
 	}
-	@Override
-	public String toString() {
-		String skierString = "";
-		for (int i = 0; i < group.size(); i++) {
-			skierString = skierString+"Skier number " + i+1 +" - Name: "+group.get(i).getName()+", age: "+group.get(i).getAge()+", gender: "+group.get(i).getGender()+", playernumber: "+group.get(i).getPlayerNumber()+"\n";
-		}
-		return "This grouplist contains: "+skierString+"And their first start is "+Arrays.toString(firstStart)+", their startinterval is "+startInterval+" and their starting number is "+firstPlayerNumber;
+
+	public Group(Skier skier, String skiingGroup) {
+		group.add(skier);
+		this.skiingGroup = skiingGroup;
 	}
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + Arrays.hashCode(firstStart);
-		result = prime * result + Objects.hash(group, firstPlayerNumber, skiingGroup, startInterval);
-		return result;
-	}
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Group other = (Group) obj;
-		return Objects.equals(group, other.group) && firstPlayerNumber == other.firstPlayerNumber
-				&& Arrays.equals(firstStart, other.firstStart) && Objects.equals(skiingGroup, other.skiingGroup)
-				&& startInterval == other.startInterval;
-	}
-	
-	public void timeConfigInput(Group grouplist, int[] firstStart, int startInterval, int firstSkier) {
-		System.out.println("När ska den första starttiden vara? input timme: ");
-				setFirstStart(0, firstStart[0]);
-		System.out.println("input minut: ");
-				setFirstStart(1, firstStart[1]);
-		System.out.println("input sekund: ");
-				setFirstStart(2, firstStart[2]);
-		System.out.println("Ange startinteravll i sekunder: ");
-				setStartInterval(startInterval);
-		System.out.println("Ange första spelarens nummer, resterande spelares nummer kommer baseras på det"
-				+ "här. Så om du väljer t.ex 101, kommer spelare två vara 102, tre 103, osv.");
-				setFirstPlayerNumber(firstSkier);
-	}
-	public void generateGroupList(SkierList skierlist, String chosenGroup) {
-		setSkiingGroup(chosenGroup);
+
+	public void generateGroupList(SkierHandler skierlist, String chosenGroup) {
+		this.skiingGroup = chosenGroup;
 		for (int i = 0; i < skierlist.getSkierLinkedListSize(); i++) {
 			if (chosenGroup.equals(skierlist.getSkiingGroupAtIndex(i))) {
-				addToGroupList(skierlist.getSkier(i));
+				group.add(skierlist.getSkier(i));
 			}
 		}
 	}
+
 	public void generateGroupListTime(int[] firstStartTime, int startInterval, int firstPlayerNumber) {
-		setFirstStart(firstStartTime);
-		setStartInterval(startInterval);
-		setFirstPlayerNumber(firstPlayerNumber);
+		this.firstStart = firstStartTime;
+		this.startInterval = startInterval;
+		this.firstPlayerNumber = firstPlayerNumber;
 		assignAllPlayerNumbersRandom();
 		sortList();
-		setStartingTimes();
 		for (int i = 0; i < group.size(); i++) {
-			setPlayerNumber(firstPlayerNumber+i, i);
+			group.get(i).setStartingTime(Utils.timeAdder(this.firstStart, Utils.timeConverter(this.startInterval * i)));
+			group.get(i).setPlayerNumber(firstPlayerNumber + i);
 		}
 	}
-	public void setPlayerNumber(int playerNumber, int skierNumber) {
-		Skier skier = getSkier(skierNumber);
-		skier.setPlayerNumber(playerNumber);
-		group.set(group.indexOf(skier), skier);
-	}
+
 	/**
 	 * Sorterar listan beroende på deras playernumber
 	 */
 	public void sortList() {
-		Skier[] skierList = getSkierList();
-		Arrays.sort(skierList);
-		setSkierList(skierList);
+		Collections.sort(group);
 	}
+
 	/**
 	 * Sorterar listan beroende på deras placering vid checkpoint
 	 */
@@ -188,13 +150,14 @@ public class Group {
 		CompareSkierPlacingCheckpoint compare = new CompareSkierPlacingCheckpoint();
 		Collections.sort(group, compare);
 	}
+
 	public void assignAllPlayerNumbersRandom() {
 		Skier[] skierList = new Skier[group.size()];
 		double x = 0;
 		skierList = getSkierList();
 		for (int i = 0; i < skierList.length; i++) {
 			for (int j = 0; j < skierList.length; j++) {
-				if ((int)x == skierList[j].getPlayerNumber() || (int)x==0) {
+				if ((int) x == skierList[j].getPlayerNumber() || (int) x == 0) {
 					x = (Math.random() * 10000);
 				}
 			}
@@ -202,5 +165,17 @@ public class Group {
 			group.set(i, skierList[i]);
 		}
 	}
-	
+
+	@Override
+	public String toString() {
+		String skierString = "";
+		for (int i = 0; i < group.size(); i++) {
+			skierString = skierString + "Skier number " + i + 1 + " - Name: " + group.get(i).getName() + ", age: "
+					+ group.get(i).getAge() + ", gender: " + group.get(i).getGender() + ", playernumber: "
+					+ group.get(i).getPlayerNumber() + "\n";
+		}
+		return "This grouplist contains: " + skierString + "And their first start is " + Arrays.toString(firstStart)
+				+ ", their startinterval is " + startInterval + " and their starting number is " + firstPlayerNumber;
+	}
+
 }

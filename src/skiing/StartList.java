@@ -12,15 +12,15 @@ public class StartList {
 
 	public static void main(String[] args) {
 		Scanner scan = new Scanner(System.in);
-		SkierList skierlist = skierConfig(scan);
+		SkierHandler skierlist = skierConfig(scan);
 		
 //		ClassList classlist = classConfig(skierlist, "H24");
 		scan.close();
 	}
 
-	private static SkierList skierConfig(Scanner scan) {
+	private static SkierHandler skierConfig(Scanner scan) {
 		//anmälning individer
-		SkierList skierlist = new SkierList();
+		SkierHandler skierlist = new SkierHandler();
 //		Scanner scan = new Scanner(System.in);
 		System.out.println("Hur många skidåkare vill du registrera?");
 		int amountOfSkiers = scan.nextInt();
