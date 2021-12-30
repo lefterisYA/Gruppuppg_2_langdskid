@@ -1,79 +1,83 @@
 package ui.elements;
 
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.LinkedList;
 
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
 import ui.GUI;
+import ui.interfaces.FieldValidator;
 
-public class InputField extends JTextField {
+public class InputField extends JPanel {
 	private static final long serialVersionUID = -7247990876209927070L;
 	public enum Type { STRNG, INTGR, FLOAT };
-	private Type type;
-	private boolean emptyAllowed;
+
+//	private Type type;
+	private JTextField txtFld;
+	private InputFieldHandler handler;
+//	private boolean emptyAllowed;
 	private boolean hasValidValue;
-	
-	public InputField(GUI ui, Type type, boolean emptyAllowed) { 
-		this.type = type;
-		this.emptyAllowed = emptyAllowed;
-		
-		setPreferredSize(new Dimension(300, 20));
 
-		setFocusTraversalKeysEnabled(false); // So we can handle VK_TAB keyevent.
+	public InputField(String title, FieldValidator validator, InputFieldHandler handler) { 
+		super(new GridLayout(1,2));
+		txtFld = new JTextField();
 
-		this.addKeyListener( new KeyListener() {
-			public void keyPressed(KeyEvent e) {
-				if ( e.getKeyCode() == KeyEvent.VK_ENTER ){ 
-					// TODO
-//					ui.txtFldCbck();
-				} else if ( e.getKeyCode() == KeyEvent.VK_TAB  ){ 
-					ui.focusInpFldAtRelativeIdx(e.isShiftDown() ? -1 : 1);
-				}
-			}
+		txtFld.setPreferredSize(new Dimension(300, 20));
+		txtFld.setFocusTraversalKeysEnabled(false); // So we can handle VK_TAB keyevent.
 
-			@Override public void keyReleased(KeyEvent e) { }
-
-			@Override public void keyTyped(KeyEvent e) { }
-			
-		} );
-
-		this.addCaretListener( new CaretListener() {
+		txtFld.addCaretListener( (CaretListener) new CaretListener() {
 			@Override
 			public void caretUpdate(CaretEvent e) {
-				updateFieldValidity();	
+				validator.validate(txtFld.getText());
 			}
 		});
-
+		
+		add(new JLabel(title));
+		add(txtFld);
 	}
 
-	public void updateFieldValidity() {
-		String currText = getText();
-		if ( currText.isEmpty() ) {
-			hasValidValue=emptyAllowed;
-			return;
-		}
-
-		try {
-			switch (type) {
-			case FLOAT:
-				Float.parseFloat(currText);
-				break;
-			case INTGR:
-				Integer.parseInt(currText);
-				break;
-			default:
-				break;
-			}
-		} catch (Exception e) {
-			hasValidValue=false;
-			return;
-		}
-		hasValidValue=true;
+	public JTextField getTxtFld() {
+		return txtFld;
 	}
+	
+	public String getText() {
+		return txtFld.getText();
+	}
+
+	
+	
+	
+//	public void updateFieldValidity() {
+//		String currText = getText();
+//		if ( currText.isEmpty() ) {
+//			hasValidValue=emptyAllowed;
+//			return;
+//		}
+//
+//		try {
+//			switch (type) {
+//			case FLOAT:
+//				Float.parseFloat(currText);
+//				break;
+//			case INTGR:
+//				Integer.parseInt(currText);
+//				break;
+//			default:
+//				break;
+//			}
+//		} catch (Exception e) {
+//			hasValidValue=false;
+//			return;
+//		}
+//		hasValidValue=true;
+//	}
 	
 	public boolean hasValidValue() {
 		return hasValidValue;

@@ -11,6 +11,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import ui.ElmntPos;
+
 /*
  * An extension of JPanel so that we can add JElements relative to other elements without keeping track of the
  * GridBagConstraints object outside of this class.
@@ -31,8 +33,6 @@ public class Panel extends JPanel {
 	public Panel(GridBagLayout layout, GridBagConstraints cnst) {
 		super(layout);
 		this.cnst = cnst;
-//		cnst.weightx = 1;
-//		cnst.weighty = 1;
 		cnst.insets = new Insets(10, 10, 10, 10);
 		cnst.anchor = GridBagConstraints.SOUTH;
 	}
@@ -65,6 +65,14 @@ public class Panel extends JPanel {
 	public void add(JComponent element, int x, int y) {
 		add(element, x, y, 1, false);
 	}
+	
+	public void add(JComponent element, ElmntPos pos) {
+		int newX = pos.xIsRelative ? cnst.gridx+pos.x : pos.x;
+		int newY = pos.yIsRelative ? cnst.gridy+pos.y : pos.y;
+
+		setCnst(newX, newY, pos.width);
+		add(element, cnst);
+	}
 
 	public void addVertSpcr(int height, int x, int y, boolean relative) {
 		JPanel spacer = new JPanel();
@@ -76,7 +84,6 @@ public class Panel extends JPanel {
 	public void addVertSpcr(int height) {
 		JPanel spacer = new JPanel();
 		spacer.setBorder(BorderFactory.createEmptyBorder(height, 1, 1, 1));
-//		spacer.setBackground(new Color(0,0,0));
 		cnst.gridy++;
 		add(spacer, cnst);
 	}
@@ -84,35 +91,6 @@ public class Panel extends JPanel {
 	public boolean removeLast() {
 		remove(getComponents().length-1);
 		return true;
-//		try {
-//			remove(lastAdded);
-//			return true;
-//		} catch (Exception e) {
-//			return false;
-//		}
 	}
 	
-	public LinkedList<InputField> getTextFields() {
-		LinkedList<InputField> retVal = new LinkedList<InputField>();
-		for ( Component comp : getComponents() ) {
-			if ( comp instanceof InputField ) {
-				retVal.add((InputField) comp);
-			} else if ( comp instanceof Panel ) {
-				retVal.addAll( ( (Panel) comp ).getTextFields() );
-			}
-		}
-		return retVal;
-	}
-
-	public LinkedList<String> getTextFieldVals() {
-		LinkedList<String> retVal = new LinkedList<String>();
-		for ( Component comp : getComponents() ) {
-			if ( comp instanceof InputField ) {
-				retVal.add(((InputField) comp).getText());
-			} else if ( comp instanceof Panel ) {
-				retVal.addAll( ( (Panel) comp ).getTextFieldVals() );
-			}
-		}
-		return retVal;
-	}
 }

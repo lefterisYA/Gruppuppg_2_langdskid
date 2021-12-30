@@ -1,9 +1,12 @@
 package ui;
 
 import ui.elements.Button;
+import ui.elements.ButtonTable;
 import ui.elements.InputField;
 import ui.elements.InputFieldHandler;
 import ui.elements.Panel;
+import ui.elements.TextTable;
+import ui.interfaces.FieldValidator;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -16,24 +19,19 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.table.DefaultTableColumnModel;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 import java.util.EventListener;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -100,8 +98,8 @@ public class GUI {
 	public void clrScrn() {
 		panel.removeAll();
 		clrBody();
-		panel.add(title, 1, 0, 1);
-		panel.add(body, -1, 1, true);
+		panel.add(title, 0, 0, 3);
+		panel.add(body, 0, 1, 3);
 		clrUsrInpField();
 	}
 	public void clrBody() {
@@ -146,89 +144,33 @@ public class GUI {
 		panel.addVertSpcr(hght, x, y, absPos);
 	}
 
-	public void addInpField(
-			String title, 
-			InputField.Type type, 
-			int x, 
-			int y, 
-			boolean absPos) 
-	{
-		Panel iPanel = new Panel(new GridLayout(1,2));
-		iPanel.add(new JLabel(title));
-		iPanel.add(inpFldHandler.gnrt("title", type));
+	
+	
+	
+	
+	
+	
+	
+	// ********************************************
+//	public void addInpField( String title, InputField.Type type, int x, int y, boolean absPos) {
+//		panel.add(inpFldHandler.gnrt(title, type), x, y, absPos);
+//	}
 
-		panel.add(iPanel, x, y, absPos);
-	}
-	public void addInpField(
-			String title, 
-			InputField.Type type, 
-			boolean emptyAllowed, 
-			GuiCallback validityCback, 
-			int x, 
-			int y, 
-			boolean absPos) 
-	{
-		Panel iPanel = new Panel(new GridLayout(1,2));
-		iPanel.add(new JLabel(title));
-		iPanel.add(inpFldHandler.gnrt("title", type, emptyAllowed, validityCback));
+	public void addInpField ( String title, FieldValidator validityCback, ElmntPos pos ) {
+		panel.add(inpFldHandler.gnrt(title, validityCback), pos);
 
-		panel.add(iPanel, x, y, absPos);
+//		Panel iPanel = new Panel(new GridLayout(1,2));
+//		iPanel.add(new JLabel(title));
+//		iPanel.add(inpFldHandler.gnrt("title", type, emptyAllowed, validityCback));
+//		panel.add(iPanel, x, y, absPos);
+
 	}
 
 	public String[] getInpFieldVals() {
 		return inpFldHandler.getInpFldVals(); 
 	}
-	
-	
-	// TABLE TODO FLYTTA UT:
-	Map<Integer, Button[]> skiersTable = new HashMap<Integer, Button[]>();
-	public void addSeeRaceTableRow(
-			String skierName, int skierNum, GuiCallback chckPntCback, GuiCallback fnshCback, int x, int y, boolean absPos
-			) {
-		Button checkpointButton = new Button("Checkpoint", chckPntCback, skierNum);
-		Button finishlineButton = new Button("Slutlinje", fnshCback, skierNum);
+	// ********************************************
 
-		Panel iPanel = new Panel(new GridLayout(1,4));
-		iPanel.add(new JLabel(skierName));
-		iPanel.add(checkpointButton);
-		iPanel.add(new JLabel(""));
-		iPanel.add(finishlineButton);
-
-		skiersTable.put(skierNum, new Button[] {checkpointButton, finishlineButton});
-
-		panel.add( iPanel, x, y, absPos );
-	}
-	
-//	JTable table;
-	DefaultTableModel tableModel;
-	public void addTable(String[] colTitles, int x, int y, boolean absPos ) {
-		tableModel = new DefaultTableModel(colTitles, 0);
-		JTable table = new JTable(tableModel);
-		table.setDefaultEditor(Object.class, null);
-		panel.add(new JScrollPane(table), x, y, absPos);
-	}
-
-	public void addTableRow(String[] fields) { //, int x, int y, boolean absPos) {
-		tableModel.addRow(fields);
-	}
-	
-	public enum Linetype { CHECKPOINT, FINISHLINE };
-	public void updateSkierLinepass(int skierNum, GUI.Linetype linetype) {
-		int bttnIndx =  linetype == Linetype.CHECKPOINT ? 0 : 1;
-		skiersTable.get(skierNum)[bttnIndx].setEnabled(false);
-		skiersTable.get(skierNum)[bttnIndx].setText(clk.getCurrTime());
-	}
-	
-	public void disableTableComponent( int key, int btnIdx ) {
-		System.out.println("wtfmate" + clk.getCurrTime() + " " + key );
-		
-		skiersTable.get(key)[btnIdx].setEnabled(false);
-		skiersTable.get(key)[btnIdx].setText(clk.getCurrTime());
-	}
-	
-	public JComponent getTblCmp( int key, int rowIdx ) {
-		return skiersTable.get(key)[rowIdx];
-	}
 	
 	
 	
@@ -238,6 +180,14 @@ public class GUI {
 	
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	// ********************************************
 	// TODO: flytte ut.
 	private Clock clk;
 	public void runClock() {
@@ -258,28 +208,40 @@ public class GUI {
 		return clk.getCurrTimeInts();
 	}
 
+	
+
+
+	// ********************************************
+	// TODO: RADERA:
 	public void postMsg(String msg) {
-		bodyText += "\n" + msg;
-		setBodyText(bodyText);
+		System.out.println("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
 	}
 
-	public void focusInpFldAtRelativeIdx(int relIdx) {
-		LinkedList<InputField> inpFlds = panel.getTextFields();
-		for ( int i=0; i<inpFlds.size(); i++ ) {
-			if ( ! inpFlds.get(i).isFocusOwner() )
-				continue;
-			if ( i + relIdx >= inpFlds.size() )
-				inpFlds.getFirst().requestFocus();
-			else if ( i + relIdx < 0 )
-				inpFlds.getLast().requestFocus();
-			else
-				inpFlds.get(i+relIdx).requestFocus();
-			return;
-		}
+	// ***************************************
+
+	TextTable textTable;
+	public void addTable(String[] colTitles, int x, int y, boolean absPos ) {
+		textTable = new TextTable(colTitles);
+		panel.add(textTable, x, y, 3, absPos);
+		update();
 	}
+	public TextTable getTextTable() {
+		System.out.println("ffs");
+		return textTable;
+	}
+
+	ButtonTable buttonTable;
+	public void addButtonTable(int height, int x, int y, boolean absPos ) {
+		buttonTable = new ButtonTable(height);
+		panel.add( buttonTable, x, y, absPos );
+	}
+	public ButtonTable getButtonTable() {
+		return buttonTable;
+	}
+
 }
-
 class Label extends JLabel {
+	private static final long serialVersionUID = 7737583840566915828L;
 	public Label(String text, Font font) {
 		super(text);
 		setFont(font);	
@@ -290,6 +252,8 @@ class Label extends JLabel {
 }
 
 class TextArea extends JTextArea {
+	private static final long serialVersionUID = -3995422772846981975L;
+
 	public TextArea(Font font) {
 		setEditable(false);
 		setBounds(0, 0, 600, 200);

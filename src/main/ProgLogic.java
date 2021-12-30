@@ -15,11 +15,23 @@ import skiing.GroupList;
 import skiing.Skier;
 import skiing.SkierList;
 import ui.Clock;
+import ui.ElmntPos;
 import ui.GUI;
 import ui.GuiCallback;
 import ui.Screen;
 import ui.UserInput;
 import ui.elements.InputField;
+import ui.interfaces.FieldValidator;
+import ui.interfaces.FieldValidator.Type;
+
+//class TextValidator extends FieldValidator {
+//	public void onValidFields(String rawFldTxt)   { lastComp.setEnabled(true);  }
+//	public void onInvalidFields(String rawFldTx)  { lastComp.setEnabled(false); }
+//	@Override
+//	public FieldValidator clone() {
+//		return new TextValidator();
+//	}
+//}
 
 public class ProgLogic {
 	private final GUI ui;
@@ -40,18 +52,18 @@ public class ProgLogic {
 //		int[] test = clk.g
 		
 		
-		skierList.addSkiertoList( new Skier( "Left", "Laft", "herr", 33 ));
-		skierList.addSkiertoList( new Skier( "Otto", "Laft", "herr", 33 ));
-		skierList.addSkiertoList( new Skier( "Jessica", "Laft", "herr", 33 ));
-		skierList.addSkiertoList( new Skier( "Joacim", "Laft", "herr", 33 ));
-		skierList.addSkiertoList( new Skier( "namn2", "Laft", "herr", 33 ));
-		skierList.addSkiertoList( new Skier( "Namn3", "Laft", "herr", 33 ));
+//		skierList.addSkiertoList( new Skier( "Left", "Laft", "herr", 33 ));
+//		skierList.addSkiertoList( new Skier( "Otto", "Laft", "herr", 33 ));
+//		skierList.addSkiertoList( new Skier( "Jessica", "Laft", "herr", 33 ));
+//		skierList.addSkiertoList( new Skier( "Joacim", "Laft", "herr", 33 ));
+//		skierList.addSkiertoList( new Skier( "namn2", "Laft", "herr", 33 ));
+//		skierList.addSkiertoList( new Skier( "Namn3", "Laft", "herr", 33 ));
 		skierList.addSkiertoList( new Skier( "Namn5", "Laft", "herr", 33 ));
 		skierList.addSkiertoList( new Skier( "Namn7", "Laft", "herr", 33 ));
 		skierList.addSkiertoList( new Skier( "Namn8", "Laft", "herr", 33 ));
 		skierList.addSkiertoList( new Skier( "Namn9", "Laft", "herr", 33 ));
-		skierList.addSkiertoList( new Skier( "Asa", "Laft", "dam", 23 ));
-		skierList.addSkiertoList( new Skier( "Åsa", "Laft", "dam", 23 ));
+//		skierList.addSkiertoList( new Skier( "Asa", "Laft", "dam", 23 ));
+//		skierList.addSkiertoList( new Skier( "Åsa", "Laft", "dam", 23 ));
 		skierList.addSkiertoList( new Skier( "Britt", "Laft", "dam", 23 ));
 		
 		group = new GroupList();
@@ -158,17 +170,23 @@ public class ProgLogic {
 			ui.addButton( "Lägg Till",				onClickCback,	 	-3, 3, true);
 			Component lastComp = ui.getLastComp();
 			lastComp.setEnabled(false);
-			GuiCallback cback = new GuiCallback() {
-				@Override public void onValidFields()  	{ lastComp.setEnabled(true);  }
-				@Override public void onInvalidFields() { lastComp.setEnabled(false); }
+
+			FieldValidator textValidator = new FieldValidator(false, Type.STR) {
+				@Override public void onValidFields(String rawFldTxt)   	{ lastComp.setEnabled(true);  }
+				@Override public void onInvalidFields(String rawFldTxt)   	{ lastComp.setEnabled(false);  }
+			};
+
+			FieldValidator nmbrValidator = new FieldValidator(false, Type.INT) {
+				@Override public void onValidFields(String rawFldTxt)   	{ lastComp.setEnabled(true);  }
+				@Override public void onInvalidFields(String rawFldTxt)   	{ lastComp.setEnabled(false);  }
 			};
 
 			ui.addButton( "Avbryt",					Screen.BACK,	 	1, 0, true);
 			ui.addButton( "Avsluta",				Screen.EXIT, 		2, 0, true);
 
-			ui.addInpField("Namn på tävlande:", InputField.Type.STRNG, false, cback, 1, 2, false);
-			ui.addInpField("Kön:", InputField.Type.STRNG, false, cback, 0, 1, true);
-			ui.addInpField("Ålder:", InputField.Type.INTGR, false, cback, 0, 1, true);
+			ui.addInpField("Namn på tävlande:", textValidator, new ElmntPos(1,2, false));
+			ui.addInpField("Kön:", 				textValidator, new ElmntPos(0,1, false, true));
+			ui.addInpField("Ålder:", 			nmbrValidator, new ElmntPos(0,1, false, true));
 			ui.addVertSpcr(200);
 
 			ui.update();
@@ -190,13 +208,28 @@ public class ProgLogic {
 				GuiCallback cbackCreateRaceR = new GuiCallback() {
 					@Override public void onClick(String ignore)  	{ screenHandler(Screen.CREATE_RACE_2);  }
 				};
-				
-				ui.addInpField("Ange starttid (Första åktid):", InputField.Type.STRNG, 1, 2, false);
-				ui.addInpField("Ange startiinterfall:", InputField.Type.STRNG, 0, 1, true);
-				ui.addInpField("Ange första skid-åkares nummer:", InputField.Type.INTGR, 0, 1, true);
 
-				ui.addButton( "Avbryt",					Screen.BACK,	 	1, 0, true);
-				ui.addButton( "Fortsätt",				cbackCreateRaceR, 		2, 0, true);
+				ui.addButton( "Avbryt",					Screen.BACK,	 	0, 2, false);
+				ui.addButton( "Fortsätt",				cbackCreateRaceR, 	2, 0, true);
+
+				Component lastComp2 = ui.getLastComp();
+				lastComp2.setEnabled(false);
+
+				FieldValidator textValidator2 = new FieldValidator(false, Type.STR) {
+					@Override public void onValidFields(String rawFldTxt)   	{ lastComp2.setEnabled(true);  }
+					@Override public void onInvalidFields(String rawFldTxt)   	{ lastComp2.setEnabled(false);  }
+				};
+
+				FieldValidator nmbrValidator2 = new FieldValidator(false, Type.INT) {
+					@Override public void onValidFields(String rawFldTxt)   	{ lastComp2.setEnabled(true);  }
+					@Override public void onInvalidFields(String rawFldTxt)   	{ lastComp2.setEnabled(false);  }
+				};
+
+				
+				ui.addInpField("Ange starttid (Första åktid):", 	textValidator2, new ElmntPos(1,2, false));
+				ui.addInpField("Ange startiinterfall:",				textValidator2, new ElmntPos(0,1, false, true));
+				ui.addInpField("Ange första skid-åkares nummer:",	nmbrValidator2, new ElmntPos(0,1, false, true));
+
 
 				break;
 			} else {
@@ -246,12 +279,6 @@ public class ProgLogic {
 			break;
 			
 		case SEE_RACE:
-			ui.clrScrn();
-			ui.setTitle(chosenGroup);
-			ui.setBodyText(chosenGroup);
-			ui.runClock();
-			ui.update();
-			
 			GuiCallback chkPntCback = new GuiCallback() {
 				@Override
 				public void onClick(int skierNum) { 
@@ -260,8 +287,8 @@ public class ProgLogic {
 					int[] arr =  group.getSkierFromPlayerNumber(skierNum).getCheckpointTimeFinish();
 //					ui.updateSkierLinepass(skierNum, GUI.Linetype.CHECKPOINT); 
 //					( (JButton) ui.getTblCmp(skierNum, 0) ).setText(ui.getCurrTime()); //kommenterade denna rad och la till den under //otto
-					( (JButton) ui.getTblCmp(skierNum, 0) ).setText(String.format("%02d:%02d:%02d", arr[0], arr[1], arr[2]));
-					( (JButton) ui.getTblCmp(skierNum, 0) ).setEnabled(false);
+					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 0) ).setText(String.format("%02d:%02d:%02d", arr[0], arr[1], arr[2]));
+					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 0) ).setEnabled(false);
 
 //					group.getSkier(skierNum).setCheckpointTime(ui.getCurrTimeInts());
 
@@ -279,8 +306,8 @@ public class ProgLogic {
 					group.setSkierGoalTimeFromPlayerNumber(skierNum, ui.getCurrTimeInts());
 					int[] arr =  group.getSkierFromPlayerNumber(skierNum).getGoalTimeFinish();
 //					( (JButton) ui.getTblCmp(skierNum, 1) ).setText(ui.getCurrTime()); //otto kommenterade denna rad och skrev in den under
-					( (JButton) ui.getTblCmp(skierNum, 1) ).setText(String.format("%02d:%02d:%02d", arr[0], arr[1], arr[2]));
-					( (JButton) ui.getTblCmp(skierNum, 1) ).setEnabled(false);
+					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 1) ).setText(String.format("%02d:%02d:%02d", arr[0], arr[1], arr[2]));
+					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 1) ).setEnabled(false);
 					
 //					group.getSkier(skierNum).setGoalTime(ui.getCurrTimeInts()); //otto kommenterade denna och flyttade upp
 					// TODO
@@ -288,15 +315,22 @@ public class ProgLogic {
 				}
 			};
 			
+			ui.clrScrn();
+			ui.setTitle(chosenGroup);
+			ui.setBodyText(chosenGroup);
+			ui.runClock();
+			ui.update();
+			
 
-			ui.addVertSpcr(10, -2, 1, true);
+//			ui.addVertSpcr(10, -2, 1, true);
+			ui.addButtonTable( group.getSkierList().length, 0, 1, true );
 			for ( Skier skier : group.getSkierList() ) {
 				System.out.println("adding "+skier.getName() + " " + skier.getPlayerNumber());
-				ui.addSeeRaceTableRow(skier.getFirstName(), skier.getPlayerNumber(), chkPntCback, fnshCback, 0, 1, true);
+				ui.getButtonTable().addRow(skier.getFirstName(), skier.getPlayerNumber(), chkPntCback, fnshCback);
 			}
 
-			ui.addButton( "Bakåt",					Screen.BACK,	 	0, 1, true);
-			ui.addButton( "Fortsätt",				Screen.LIVE_SCOREBOARD,	1, 0, true);
+			ui.addButton( "Bakåt",					Screen.BACK,	 	0, 3, false);
+			ui.addButton( "Fortsätt",				Screen.LIVE_SCOREBOARD,	1, 3, false);
 
 			break;
 			
@@ -330,7 +364,7 @@ public class ProgLogic {
 						);
 
 				String skierNumber = String.valueOf(skier.getPlayerNumber());
-				ui.addTableRow(new String[] { skierNumber, skier.getFirstName(), checkPTime, finishTime }); // , 0, 1, true);
+				ui.getTextTable().addTableRow(new String[] { skierNumber, skier.getFirstName(), checkPTime, finishTime }); // , 0, 1, true);
 			}
 			ui.update();
 			ui.addButton( "Bakåt",					Screen.BACK,	 	0, 1, true);
@@ -355,7 +389,7 @@ public class ProgLogic {
 						skier.getGoalTimeFinish()[0] , skier.getGoalTimeFinish()[1] , skier.getGoalTimeFinish()[2] );
 				String skierNumber = String.valueOf(skier.getPlayerNumber());
 
-				ui.addTableRow(new String[] { skierNumber, skier.getFirstName(), checkPTime, finishTime }); // , 0, 1, true);
+				ui.getTextTable().addTableRow(new String[] { skierNumber, skier.getFirstName(), checkPTime, finishTime }); // , 0, 1, true);
 			}
 			ui.update();
 			ui.addButton( "Bakåt",					Screen.BACK,	 	0, 1, true);
