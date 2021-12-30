@@ -65,21 +65,6 @@ public class SkierList {
 		setSkierList(skierList);
 	}
 	@Override
-	public int hashCode() {
-		return Objects.hash(skierLinkedList);
-	}
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		SkierList other = (SkierList) obj;
-		return Objects.equals(skierLinkedList, other.skierLinkedList);
-	}
-	@Override
 	public String toString() {
 		String skierString = "";
 		for (int i = 0; i < skierLinkedList.size(); i++) {

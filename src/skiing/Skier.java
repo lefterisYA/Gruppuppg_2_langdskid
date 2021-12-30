@@ -18,49 +18,70 @@ public class Skier extends Person implements Comparable<Skier> {
 	private int checkpointTimeFinishSeconds;
 	private int[] goalTimeFinish;
 	private int goalTimeFinishSeconds;
-	private Clock clock;
 	private String skiingGroup;
 	
-//	public void setClock(Clock clock) {
-//		this.clock = clock;
-//	}
-//	public Clock getClock() {
-//		return clock;
-//	}
 	
 	
 	String getSkiingGroup() {return skiingGroup;}
-	public int[] getStartingTime() {return startingTime;}
+	/**
+	 * Set starttiden till en array HH,MM,SS
+	 * @param int[3] startingTime array
+	 */
 	public void setStartingTime(int[] startingTime) {this.startingTime = startingTime;}
+	/**
+	 * Set starttiden vid en specifik digit i arrayen
+	 * Index 0, H
+	 * Index 1, M
+	 * Index 2, S
+	 * @param index
+	 * @param int startinTime
+	 */
 	public void setStartingTime(int index, int startingTime) {this.startingTime[index] = startingTime;}
-	public int getGoalTimeFinishSeconds() {
-		return goalTimeFinishSeconds;
-	}
-	public int[] getGoalTimeFinish() {
-		return goalTimeFinish;
-	}
-	public int getCheckpointTimeFinishSeconds() {
-		return checkpointTimeFinishSeconds;
-	}
-	public int[] getCheckpointTimeFinish() {
-		return checkpointTimeFinish;
-	}
+	/**
+	 * Get mellanskillnaden mellan skidåkarens starttid och måltid i sekunder
+	 * @return
+	 */
+	public int getGoalTimeFinishSeconds() {return goalTimeFinishSeconds;}
+	/**
+	 * Get mellanskillnaden mellan skidåkarens starttid och måltid i en array
+	 * @return
+	 */
+	public int[] getGoalTimeFinish() {return goalTimeFinish;}
+	public int getCheckpointTimeFinishSeconds() {return checkpointTimeFinishSeconds;}
+	public int[] getCheckpointTimeFinish() {return checkpointTimeFinish;}
 	public int getPlayerNumber() {return playerNumber;}
 	public void setPlayerNumber(int playerNumber) {this.playerNumber = playerNumber;}
 	public int[] getCheckpointTime() {return checkpointTime;}
+	/**
+	 * Tar in tiden i array HH/MM/SS och set som checkpointTime, sedan jämför den med
+	 * startingTime och ger mellanskilladen till checkpointTimeFinishSeconds och checkpointTimeFinish
+	 * @param checkpointTime
+	 */
 	public void setCheckpointTime(int[] checkpointTime) {
 		this.checkpointTime = checkpointTime;
 		this.checkpointTimeFinishSeconds=Utils.timeConverter(checkpointTime)-Utils.timeConverter(startingTime);
 		this.checkpointTimeFinish=Utils.timeConverter(checkpointTimeFinishSeconds);
 	}
 	public int[] getGoalTime() {return goalTime;}
+	/**
+	 * Tar in tiden i array HH/MM/SS och set som goalTime, sedan jämför den med
+	 * startingTime och ger mellanskilladen till goalTimeFinishSeconds och goalTimeFinish
+	 * @param checkpointTime
+	 */
 	public void setGoalTime(int[] goalTime) { 
 		this.goalTime = goalTime;
 		this.goalTimeFinishSeconds=Utils.timeConverter(goalTime)-Utils.timeConverter(startingTime);
 		this.goalTimeFinish = Utils.timeConverter(goalTimeFinishSeconds);
+		
 	}
 	
-	
+	/**
+	 * konstruktor för skier
+	 * @param String firstName
+	 * @param String lastName
+	 * @param String gender herr/dam
+	 * @param int age
+	 */
 	public Skier(String firstName, String lastName, String gender, int age) {
 		super.setFirstName(firstName);
 		super.setLastName(lastName);
@@ -100,8 +121,12 @@ public class Skier extends Person implements Comparable<Skier> {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + Arrays.hashCode(checkpointTime);
+		result = prime * result + Arrays.hashCode(checkpointTimeFinish);
+		result = prime * result + Arrays.hashCode(goalTime);
+		result = prime * result + Arrays.hashCode(goalTimeFinish);
 		result = prime * result + Arrays.hashCode(startingTime);
-		result = prime * result + Objects.hash(clock, goalTime, playerNumber, skiingGroup);
+		result = prime * result
+				+ Objects.hash(checkpointTimeFinishSeconds, goalTimeFinishSeconds, playerNumber, skiingGroup);
 		return result;
 	}
 	@Override
@@ -113,8 +138,11 @@ public class Skier extends Person implements Comparable<Skier> {
 		if (getClass() != obj.getClass())
 			return false;
 		Skier other = (Skier) obj;
-		return Arrays.equals(checkpointTime, other.checkpointTime) && Objects.equals(clock, other.clock)
-				&& goalTime == other.goalTime && playerNumber == other.playerNumber
+		return Arrays.equals(checkpointTime, other.checkpointTime)
+				&& Arrays.equals(checkpointTimeFinish, other.checkpointTimeFinish)
+				&& checkpointTimeFinishSeconds == other.checkpointTimeFinishSeconds
+				&& Arrays.equals(goalTime, other.goalTime) && Arrays.equals(goalTimeFinish, other.goalTimeFinish)
+				&& goalTimeFinishSeconds == other.goalTimeFinishSeconds && playerNumber == other.playerNumber
 				&& Objects.equals(skiingGroup, other.skiingGroup) && Arrays.equals(startingTime, other.startingTime);
 	}
 }

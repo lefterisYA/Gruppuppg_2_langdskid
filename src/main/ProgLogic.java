@@ -12,6 +12,7 @@ import javax.swing.JButton;
 
 import checkpoint.CompareSkierPlacingCheckpoint;
 import skiing.GroupList;
+import skiing.ListMethods;
 import skiing.Skier;
 import skiing.SkierList;
 import ui.GUI;
@@ -231,7 +232,7 @@ public class ProgLogic {
 				parts[i++]=Integer.parseInt(part);
 
 			group.generateGroupListTime(
-					parts, Integer.parseInt(inpFldVals2[1]), Integer.parseInt(inpFldVals2[2]) 
+					parts, Integer.parseInt(inpFldVals2[1]), Integer.parseInt(inpFldVals2[2])
 				);
 			
 
@@ -247,7 +248,7 @@ public class ProgLogic {
 			ui.runClock();
 			ui.update();
 			
-			GuiCallback chkPntCback = new GuiCallback() {
+			GuiCallback checkpointCallback = new GuiCallback() {
 				@Override
 				public void onClick(int skierNum) { 
 					//otto raden under
@@ -287,7 +288,7 @@ public class ProgLogic {
 			ui.addVertSpcr(10, -2, 1, true);
 			for ( Skier skier : group.getSkierList() ) {
 				System.out.println("adding "+skier.getName() + " " + skier.getPlayerNumber());
-				ui.addSeeRaceTableRow(skier.getFirstName(), skier.getPlayerNumber(), chkPntCback, fnshCback, 0, 1, true);
+				ui.addSeeRaceTableRow(skier.getFirstName(), skier.getPlayerNumber(), checkpointCallback, fnshCback, 0, 1, true);
 			}
 
 			ui.addButton( "Bakåt",					Screen.BACK,	 	0, 1, true);
