@@ -14,6 +14,7 @@ import checkpoint.CompareSkierPlacingCheckpoint;
 import skiing.GroupList;
 import skiing.Skier;
 import skiing.SkierList;
+import ui.Clock;
 import ui.GUI;
 import ui.GuiCallback;
 import ui.Screen;
@@ -35,6 +36,10 @@ public class ProgLogic {
 	}
 	
 	private void test() {
+		Clock clk = new Clock();
+//		int[] test = clk.g
+		
+		
 		skierList.addSkiertoList( new Skier( "Left", "Laft", "herr", 33 ));
 		skierList.addSkiertoList( new Skier( "Otto", "Laft", "herr", 33 ));
 		skierList.addSkiertoList( new Skier( "Jessica", "Laft", "herr", 33 ));
