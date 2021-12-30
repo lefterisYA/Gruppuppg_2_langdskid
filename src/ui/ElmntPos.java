@@ -24,7 +24,7 @@ public class ElmntPos {
 	}
 	
 	public ElmntPos(int x, int y, boolean xRel, boolean yRel) {
-		this(x, y, 1, xRel, xRel);
+		this(x, y, 1, xRel, yRel);
 	}
 
 	public ElmntPos(int x, int y, int width, boolean xRel, boolean yRel) {

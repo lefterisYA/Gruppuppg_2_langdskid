@@ -14,48 +14,47 @@ import ui.Screen;
 /*
  * Addition to the JButton cllass so that action listeners are added at creatinong o fobjects.
  */
-public class Button extends JButton {
+public class Button<T> extends JButton {
 	private static final long serialVersionUID = 1849303325697245859L;
 	GUI ui;
 	
-	public Button(String label, GuiCallback callback, Screen nextScrn) {
+//	public Button(String label, GuiCallback callback, Screen nextScrn) {
+//		super(label);
+//		setCommonProps();
+//
+//		addActionListener( new ActionListener() {
+//			public void actionPerformed(ActionEvent e) { callback.onClick(nextScrn); }
+//		});
+//	}
+
+	public Button(String label, GuiCallback<T> cBack) {
 		super(label);
 		setCommonProps();
 
 		addActionListener( new ActionListener() {
-			public void actionPerformed(ActionEvent e) { callback.onNewScrn(nextScrn); }
+			@SuppressWarnings("unchecked")
+			public void actionPerformed(ActionEvent e) { cBack.onClick((T) label); }
 		});
 	}
 
-	public Button(String label, GuiCallback callback) {
+	public Button(String label, GuiCallback<T> callback, T cBackVal) {
 		super(label);
 		setCommonProps();
 
 		addActionListener( new ActionListener() {
-			public void actionPerformed(ActionEvent e) { callback.onClick(label); }
+			public void actionPerformed(ActionEvent e) { callback.onClick(cBackVal); }
 		});
 	}
 
-	public Button(String label, GuiCallback callback, boolean returnLabel) {
-		super(label);
-		setCommonProps();
-
-		addActionListener( new ActionListener() {
-			public void actionPerformed(ActionEvent e) { callback.onClick(label); }
-		});
-	}
-
-	public Button(String label, GuiCallback callback, int cBackVal) {
-		super(label);
-		setCommonProps();
-
-		addActionListener( new ActionListener() {
-			public void actionPerformed(ActionEvent e) { 
-				callback.onClick(cBackVal); 
-
-				}
-		});
-	}
+//	public Button(String label, GuiCallback callback, boolean returnLabel) {
+//		super(label);
+//		setCommonProps();
+//
+//		addActionListener( new ActionListener() {
+//			public void actionPerformed(ActionEvent e) { callback.onClick(label); }
+//		});
+//	}
+//
 	
 	private void setCommonProps() {
 		this.setBounds(0, 0, 50, 50);

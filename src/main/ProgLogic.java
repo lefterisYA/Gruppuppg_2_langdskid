@@ -1,16 +1,10 @@
 package main;
 
-import java.awt.Component;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JButton;
 
-import checkpoint.CompareSkierPlacingCheckpoint;
 import skiing.GroupList;
 import skiing.Skier;
 import skiing.SkierList;
@@ -19,19 +13,9 @@ import ui.ElmntPos;
 import ui.GUI;
 import ui.GuiCallback;
 import ui.Screen;
-import ui.UserInput;
-import ui.elements.InputField;
+import ui.elements.Button;
 import ui.interfaces.FieldValidator;
 import ui.interfaces.FieldValidator.Type;
-
-//class TextValidator extends FieldValidator {
-//	public void onValidFields(String rawFldTxt)   { lastComp.setEnabled(true);  }
-//	public void onInvalidFields(String rawFldTx)  { lastComp.setEnabled(false); }
-//	@Override
-//	public FieldValidator clone() {
-//		return new TextValidator();
-//	}
-//}
 
 public class ProgLogic {
 	private final GUI ui;
@@ -43,7 +27,7 @@ public class ProgLogic {
 	List<String> groups;
 	
 	public static void main(String[] args) {
-		ProgLogic gLogic = new ProgLogic(new GUI());
+		ProgLogic gLogic = new ProgLogic();
 		gLogic.test();
 	}
 	
@@ -86,8 +70,13 @@ public class ProgLogic {
 		}
 	}
 
-	public ProgLogic(GUI ui) {
-		
+	public ProgLogic() {
+		GuiCallback<Screen> newScrnCback;
+		newScrnCback = new GuiCallback<Screen>() {
+			@Override public void onClick(Screen nextScreen) { screenHandler(nextScreen); }
+		};
+
+		GUI ui = new GUI(newScrnCback);
 		// TEMP CODE:
 		uniqueClasses.add("D11");
 		uniqueClasses.add("D61");
@@ -96,11 +85,6 @@ public class ProgLogic {
 		uniqueClasses.add("H21");
 		uniqueClasses.add("H13");
 		this.ui=ui;
-
-		GuiCallback cBack = new GuiCallback() {
-			public void onNewScrn(Screen nextScrn) 		{ screenHandler(nextScrn); 		}
-		};
-		ui.rgsrCallback( cBack );
 	}
 	
 	public void run() {
@@ -112,15 +96,15 @@ public class ProgLogic {
 		screenHandler(currScrn, null); 
 	}
 
-	// ingoing, get/process/handle user input:
-	public void usrInpFnsh(String[] usrReplies, Screen callScrn) {
-		screenHandler(callScrn, usrReplies);
-	}
+	FieldValidator nmbrValidator;
+	FieldValidator textValidator;
+	FieldValidator timeValidator;
+	Button<Screen> acptBttn = null;
+	Button<Screen> backBttn = null;
 
-	// both of methods above call the following. This is just so we have outgoing and ingoing information from the user
-	// gathered in the same switch case statements.
 	private void screenHandler(Screen scrn, String[] usrReplies) {
 		System.out.println( Thread.currentThread().getStackTrace()[1] + ": " + ( scrn != null ? scrn.name() : "null" ));
+		Button<Screen> backBttn = ui.makeButton( "Avbryt", Screen.BACK);
 
 		// set to true when called by GUI. Eventual user processing/verifying/handling happens when its true.
 		boolean isCallback = usrReplies == null ? false : true; 
@@ -129,132 +113,135 @@ public class ProgLogic {
 		
 		switch (scrn) {
 		case INTRO:
-			if ( isCallback ) { 				// Nothing to be done,
-				screenHandler(Screen.INTRO); 	// just show next screen.
-			} else {
-				ui.clrScrn();
-				ui.setTitle( "Välkommen" );
-				ui.addButton( "Skapa tävling", 			Screen.CREATE_RACE, 		0, 1, true);
-				ui.addButton( "Lägg till tävlande",		Screen.RGSTR_SKIER, 		1, 0, true);
-				ui.addButton( "Visa slutresultat",		Screen.PRINT_STRTLIST,	 	1, 0, true);
-				ui.addButton( "Se tävling", 			Screen.SEE_RACE,		 	-2, 1, true);
-				ui.addButton( "Resultattavla",			Screen.LIVE_SCOREBOARD,			1, 0, true);
-				ui.addButton( "WIP",					Screen.PRINT_STRTLIST,	 	1, 0, true);
-				ui.addVertSpcr(400);
-				ui.addButton( "OK",						Screen.ACPT, 				-2, 1, true);
-				ui.addButton( "Avsluta",				Screen.EXIT, 				2, 0, true);
+			ui.clrScrn();
+			ui.setTitle( "Välkommen" );
+			ui.addButton( "Skapa tävling", 			Screen.CREATE_RACE_PICK_GROUP, 		new ElmntPos( 0, 1, true));
+			ui.addButton( "Lägg till tävlande",		Screen.RGSTR_SKIER, 				new ElmntPos( 1, 0, true));
+			ui.addButton( "Visa slutresultat",		Screen.PRINT_STRTLIST,	 			new ElmntPos( 1, 0, true));
+			ui.addButton( "Se tävling", 			Screen.SEE_RACE,		 			new ElmntPos( 0, 1, false, true));
+			ui.addButton( "Resultattavla",			Screen.LIVE_SCOREBOARD,				new ElmntPos( 1, 0, true));
+			ui.addButton( "WIP",					Screen.PRINT_STRTLIST,	 			new ElmntPos( 1, 0, true));
+			ui.addVertSpcr(400);
+			ui.addButton( "OK",						Screen.ACPT, 						new ElmntPos( 0, 1, false, true));
+			ui.addButton( "Avsluta",				Screen.EXIT, 						new ElmntPos( 2, 0, true));
 
-				ui.setBodyText("Var god gör ett val:");
-				ui.addVertSpcr(1);
-				ui.update();
-			}
-			break;
-
-		case RGSTR_SKIER_REPEAT: // RGSTR_SKIER,CREATE_RACE: fallthrough too:
-		case RGSTR_SKIER:
-			if ( isCallback ) {
-				screenHandler(Screen.RGSTR_SKIER_VERIFY);
-			} else {
-				ui.clrScrn();
-				ui.update();
-			}
-
-			ui.clrUsrInpField();
-			ui.setTitle(scrn == Screen.CREATE_RACE ? "Ny tävling" : "Registrera tävlande");
-
-			ui.addVertSpcr(20);
-
-			GuiCallback onClickCback = new GuiCallback() {
-				@Override public void onClick(String temp)  	{ screenHandler(Screen.RGSTR_SKIER_FINISH);  }
-			};
-			ui.addButton( "Lägg Till",				onClickCback,	 	-3, 3, true);
-			Component lastComp = ui.getLastComp();
-			lastComp.setEnabled(false);
-
-			FieldValidator textValidator = new FieldValidator(false, Type.STR) {
-				@Override public void onValidFields(String rawFldTxt)   	{ lastComp.setEnabled(true);  }
-				@Override public void onInvalidFields(String rawFldTxt)   	{ lastComp.setEnabled(false);  }
-			};
-
-			FieldValidator nmbrValidator = new FieldValidator(false, Type.INT) {
-				@Override public void onValidFields(String rawFldTxt)   	{ lastComp.setEnabled(true);  }
-				@Override public void onInvalidFields(String rawFldTxt)   	{ lastComp.setEnabled(false);  }
-			};
-
-			ui.addButton( "Avbryt",					Screen.BACK,	 	1, 0, true);
-			ui.addButton( "Avsluta",				Screen.EXIT, 		2, 0, true);
-
-			ui.addInpField("Namn på tävlande:", textValidator, new ElmntPos(1,2, false));
-			ui.addInpField("Kön:", 				textValidator, new ElmntPos(0,1, false, true));
-			ui.addInpField("Ålder:", 			nmbrValidator, new ElmntPos(0,1, false, true));
-			ui.addVertSpcr(200);
-
+			ui.setBodyText("Var god gör ett val:");
+			ui.addVertSpcr(1);
 			ui.update();
 			break;
 
-		case CREATE_RACE:
-			if ( isCallback ) {
+		case RGSTR_SKIER_REPEAT:
+		case RGSTR_SKIER:
+			ui.clrScrn();
+			ui.setTitle(scrn == Screen.CREATE_RACE ? "Ny tävling" : "Registrera tävlande");
+			ui.addVertSpcr(20);
 
-				chosenGroup = usrReplies[0];
-				System.out.println(chosenGroup + "Was chosen");
+			GuiCallback<String> onClickCback = new GuiCallback<String>() {
+				@Override public void onClick(java.lang.String val) { screenHandler(Screen.RGSTR_SKIER_FINISH);  }
+			};
 
-				group = new GroupList();
-				group.generateGroupList(skierList, chosenGroup);
+			acptBttn = ui.makeButton( "Lägg Till",	Screen.RGSTR_SKIER_FINISH);
+			acptBttn.setEnabled(false);
 
-				ui.clrScrn();
-				ui.setTitle("Var god välj skid-klass");
-				ui.update();
+			textValidator = new FieldValidator(false, Type.STR) {
+				@Override public void onValidFields(String rawFldTxt)   	{ acptBttn.setEnabled(true);  }
+				@Override public void onInvalidFields(String rawFldTxt)   	{ acptBttn.setEnabled(false);  }
+			};
 
-				GuiCallback cbackCreateRaceR = new GuiCallback() {
-					@Override public void onClick(String ignore)  	{ screenHandler(Screen.CREATE_RACE_2);  }
-				};
+			nmbrValidator = new FieldValidator(false, Type.INT) {
+				@Override public void onValidFields(String rawFldTxt)   	{ acptBttn.setEnabled(true);  }
+				@Override public void onInvalidFields(String rawFldTxt)   	{ acptBttn.setEnabled(false);  }
+			};
 
-				ui.addButton( "Avbryt",					Screen.BACK,	 	0, 2, false);
-				ui.addButton( "Fortsätt",				cbackCreateRaceR, 	2, 0, true);
+			ui.addInpField("Namn på tävlande:", textValidator, new ElmntPos(0, 1, 3, false, true));
+			ui.addInpField("Kön:", 				textValidator, new ElmntPos(0, 1, 3, false, true));
+			ui.addInpField("Ålder:", 			nmbrValidator, new ElmntPos(0, 1, 3, false, true));
+			ui.addVertSpcr(200);
 
-				Component lastComp2 = ui.getLastComp();
-				lastComp2.setEnabled(false);
-
-				FieldValidator textValidator2 = new FieldValidator(false, Type.STR) {
-					@Override public void onValidFields(String rawFldTxt)   	{ lastComp2.setEnabled(true);  }
-					@Override public void onInvalidFields(String rawFldTxt)   	{ lastComp2.setEnabled(false);  }
-				};
-
-				FieldValidator nmbrValidator2 = new FieldValidator(false, Type.INT) {
-					@Override public void onValidFields(String rawFldTxt)   	{ lastComp2.setEnabled(true);  }
-					@Override public void onInvalidFields(String rawFldTxt)   	{ lastComp2.setEnabled(false);  }
-				};
-
-				
-				ui.addInpField("Ange starttid (Första åktid):", 	textValidator2, new ElmntPos(1,2, false));
-				ui.addInpField("Ange startiinterfall:",				textValidator2, new ElmntPos(0,1, false, true));
-				ui.addInpField("Ange första skid-åkares nummer:",	nmbrValidator2, new ElmntPos(0,1, false, true));
-
-
-				break;
-			} else {
-				GuiCallback cbackCrtRace = new GuiCallback() {
-					public void onClick(String label){
-						screenHandler(Screen.CREATE_RACE, new String[] {label});
-
-					}
-				};
-				
-				ui.clrScrn();
-				ui.clrUsrInpField();
-				ui.update();
-				
-				List<String> groups = skierList.getUniqueGroupsList();
-				
-				int yRelPos=0;
-				ui.setTitle("Var god välj skid-klass");
-				for ( String skiGroup : groups ) {
-					System.out.println(skiGroup);
-					ui.addButton( skiGroup,					cbackCrtRace,	 	0, yRelPos++, true);
-				}
-				
-			}
+			ui.addButton( backBttn,						new ElmntPos(1, 1, false, true));
+			ui.addButton( acptBttn,			 			new ElmntPos(1, 0, true, true));
 			
+			ui.update();
+			break;
+
+		case RGSTR_SKIER_FINISH:
+			String[] inpFldVals = ui.getInpFieldVals();
+			String[] name = inpFldVals[0].split(" ");
+			String firstName = name[0];
+			String lastName = name.length > 1 ? name[name.length-1] : "";
+			int age = Integer.parseInt(inpFldVals[2]);
+			String gender = inpFldVals[1];
+
+			skierList.addSkiertoList( new Skier( firstName, lastName, gender, age ));
+			System.out.println(firstName+" "+age+" added!"+" It's a "+gender+"!");
+
+		case RGSTR_SKIER_VERIFY:
+			ui.setTitle("Klart?");
+			ui.remove(acptBttn);
+			ui.addButton( "Lägg till fler",	Screen.RGSTR_SKIER_REPEAT, new ElmntPos(0, 0, true));
+
+			break;
+
+		case CREATE_RACE_PICK_GROUP:
+			GuiCallback<String> cbackCrtRace = new GuiCallback<String>() {
+				public void onClick(String label){
+					screenHandler(Screen.CREATE_RACE, new String[] { label });
+				}
+			};
+
+			ui.clrScrn();
+			ui.clrUsrInpField();
+			ui.update();
+
+			List<String> groups = skierList.getUniqueGroupsList();
+
+			int yRelPos=0;
+			ui.setTitle("Var god välj skid-klass");
+			for ( String skiGroup : groups ) {
+				ui.addButton( skiGroup,				cbackCrtRace,	 	new ElmntPos(0, yRelPos, true));
+			}
+
+			ui.addVertSpcr(200);
+			ui.addButton( backBttn,						new ElmntPos(0, 1, false, true));
+			break;
+
+		case CREATE_RACE:
+			chosenGroup = usrReplies[0];
+			System.out.println(chosenGroup + "Was chosen");
+
+			group = new GroupList();
+			group.generateGroupList(skierList, chosenGroup);
+
+			ui.clrScrn();
+			ui.setTitle("Var god välj skid-klass");
+			ui.update();
+
+			Button<Screen> acpt = ui.makeButton( "Fortsätt",	Screen.CREATE_RACE_2);
+			acpt.setEnabled(false);
+
+
+			timeValidator = new FieldValidator(false, Type.STR) {
+				@Override public void onValidFields(String rawFldTxt)   	{ acpt.setEnabled(true);  }
+				@Override public void onInvalidFields(String rawFldTxt)   	{ acpt.setEnabled(false);  }
+
+				@Override
+				protected boolean stringValidator(String rawFldTxt) {
+					return rawFldTxt.matches("([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]");
+				}
+			};
+
+			nmbrValidator = new FieldValidator(false, Type.INT) {
+				@Override public void onValidFields(String rawFldTxt)   	{ acpt.setEnabled(true);  }
+				@Override public void onInvalidFields(String rawFldTxt)   	{ acpt.setEnabled(false);  }
+			};
+
+			ui.addInpField("Ange starttid (Första åktid):", 	timeValidator, new ElmntPos(0,1, false, true));
+			ui.addInpField("Ange startiinterfall:",				timeValidator, new ElmntPos(0,1, false, true));
+			ui.addInpField("Ange första skid-åkares nummer:",	nmbrValidator, new ElmntPos(0,1, false, true));
+
+			ui.addButton( "Avbryt",		Screen.BACK, 	new ElmntPos(0, 1, false, true));
+			ui.addButton( acpt, 						new ElmntPos(1, 0, true, true));
+
 			break;
 
 		case CREATE_RACE_2:
@@ -263,55 +250,40 @@ public class ProgLogic {
 				System.out.println(rep);
 			}
 			
-			int[] parts = new int[3];
+			int[] startTime = new int[3];
 			int i = 0;
 			for ( String part : inpFldVals2[0].split(":") )
-				parts[i++]=Integer.parseInt(part);
+				startTime[i++]=Integer.parseInt(part);
 
-			group.generateGroupListTime(
-					parts, Integer.parseInt(inpFldVals2[1]), Integer.parseInt(inpFldVals2[2]) 
-				);
+			int startInterval = Integer.parseInt(inpFldVals2[1].split(":")[2]);
+			int firstNumber = Integer.parseInt(inpFldVals2[2]);
 			
+			group.generateGroupListTime( startTime, startInterval, firstNumber );
 
 			for ( Skier skr : group.getSkierList() )
 				System.out.println(skr.getFirstName());
+
 			screenHandler(Screen.INTRO);
 			break;
 			
 		case SEE_RACE:
-			GuiCallback chkPntCback = new GuiCallback() {
+			GuiCallback<Integer> chkPntCback = new GuiCallback<Integer>() {
 				@Override
-				public void onClick(int skierNum) { 
-					//otto raden under
+				public void onClick(Integer skierNum) { 
 					group.setSkierCheckpointTimeFromPlayerNumber(skierNum, ui.getCurrTimeInts());
 					int[] arr =  group.getSkierFromPlayerNumber(skierNum).getCheckpointTimeFinish();
-//					ui.updateSkierLinepass(skierNum, GUI.Linetype.CHECKPOINT); 
-//					( (JButton) ui.getTblCmp(skierNum, 0) ).setText(ui.getCurrTime()); //kommenterade denna rad och la till den under //otto
 					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 0) ).setText(String.format("%02d:%02d:%02d", arr[0], arr[1], arr[2]));
 					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 0) ).setEnabled(false);
-
-//					group.getSkier(skierNum).setCheckpointTime(ui.getCurrTimeInts());
-
-//					group.setSkierCheckpointTimeFromPlayerNumber(skierNum, ui.getCurrTimeInts()); /// denna kommenterade otto bort och flyttade upp till rad 254
-
-//					for ( int comp : ui.getCurrTimeInts() )
-//					System.out.println(comp);
 				}
 			};
 
-			GuiCallback fnshCback = new GuiCallback() {
+			GuiCallback<Integer> fnshCback = new GuiCallback<Integer>() {
 				@Override
-				public void onClick(int skierNum) { 
-
+				public void onClick(Integer skierNum) { 
 					group.setSkierGoalTimeFromPlayerNumber(skierNum, ui.getCurrTimeInts());
 					int[] arr =  group.getSkierFromPlayerNumber(skierNum).getGoalTimeFinish();
-//					( (JButton) ui.getTblCmp(skierNum, 1) ).setText(ui.getCurrTime()); //otto kommenterade denna rad och skrev in den under
 					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 1) ).setText(String.format("%02d:%02d:%02d", arr[0], arr[1], arr[2]));
 					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 1) ).setEnabled(false);
-					
-//					group.getSkier(skierNum).setGoalTime(ui.getCurrTimeInts()); //otto kommenterade denna och flyttade upp
-					// TODO
-//					group.getSkier(skierNum).setGoalTime(ui.getCurrTimeInts());
 				}
 			};
 			
@@ -322,26 +294,16 @@ public class ProgLogic {
 			ui.update();
 			
 
-//			ui.addVertSpcr(10, -2, 1, true);
 			ui.addButtonTable( group.getSkierList().length, 0, 1, true );
 			for ( Skier skier : group.getSkierList() ) {
 				System.out.println("adding "+skier.getName() + " " + skier.getPlayerNumber());
 				ui.getButtonTable().addRow(skier.getFirstName(), skier.getPlayerNumber(), chkPntCback, fnshCback);
 			}
 
-			ui.addButton( "Bakåt",					Screen.BACK,	 	0, 3, false);
-			ui.addButton( "Fortsätt",				Screen.LIVE_SCOREBOARD,	1, 3, false);
+			ui.addButton( "Bakåt",					Screen.BACK,	 		new ElmntPos(0, 3, false));
+			ui.addButton( "Fortsätt",				Screen.LIVE_SCOREBOARD,	new ElmntPos(1, 3, false));
 
 			break;
-			
-			// TODO:
-//		case SET_SKIER_FINTIME:
-//			( (JButton) ui.getTblCmp(skierNum, 1) ).setText(ui.getCurrTime());
-//			( (JButton) ui.getTblCmp(skierNum, 0) ).setEnabled(false);
-//			break;
-//			
-//		case SET_SKIER_MIDTIME:
-//			break;
 			
 		case LIVE_SCOREBOARD:
 			ui.clrScrn();
@@ -367,7 +329,7 @@ public class ProgLogic {
 				ui.getTextTable().addTableRow(new String[] { skierNumber, skier.getFirstName(), checkPTime, finishTime }); // , 0, 1, true);
 			}
 			ui.update();
-			ui.addButton( "Bakåt",					Screen.BACK,	 	0, 1, true);
+			ui.addButton( "Bakåt",					Screen.BACK,	 	new ElmntPos(0, 1, false));
 
 			break;
 			
@@ -382,7 +344,6 @@ public class ProgLogic {
 
 			for ( Skier skier : group.getSkierList() ) {
 				System.out.println("adding "+skier.getName() + " " + skier.getPlayerNumber());
-				// TODO:
 				String checkPTime = String.format("%02d:%02d:%02d", 
 						skier.getCheckpointTime()[0] , skier.getCheckpointTime()[1] , skier.getCheckpointTime()[2] );
 				String finishTime = String.format("%02d:%02d:%02d",  
@@ -392,26 +353,8 @@ public class ProgLogic {
 				ui.getTextTable().addTableRow(new String[] { skierNumber, skier.getFirstName(), checkPTime, finishTime }); // , 0, 1, true);
 			}
 			ui.update();
-			ui.addButton( "Bakåt",					Screen.BACK,	 	0, 1, true);
+			ui.addButton( "Bakåt",					Screen.BACK,	 	new ElmntPos(-3, 0, false));
 
-			break;
-
-		case RGSTR_SKIER_FINISH:
-			String[] inpFldVals = ui.getInpFieldVals();
-			String[] name = inpFldVals[0].split(" ");
-			String firstName = name[0];
-			String lastName = name.length > 1 ? name[name.length-1] : "";
-			int age = Integer.parseInt(inpFldVals[2]);
-			String gender = inpFldVals[1];
-
-			skierList.addSkiertoList( new Skier( firstName, lastName, gender, age ));
-			System.out.println(firstName+" "+age+" added!"+" It's a "+gender+"!");
-
-		case RGSTR_SKIER_VERIFY:
-			ui.setTitle("Klart?");
-			
-			ui.addButton( "Lägg till fler",	Screen.RGSTR_SKIER_REPEAT,	 	-3, 0, true);
-			
 			break;
 
 		case PRINT_STRTLIST:

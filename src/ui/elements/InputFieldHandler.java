@@ -23,21 +23,25 @@ public class InputFieldHandler {
 		this.ui = ui;
 	}
 	
-//	public InputField gnrt(String label, InputField.Type type) {
-//		InputField newInpFld = new InputField(label, ui, type, this);
-//		inpFlds.add(newInpFld);
-//
-//		return newInpFld;
-//	}
-
-	public InputField gnrt( String label, FieldValidator fldVldtr ) {
-		InputField newInpFld = new InputField(label, fldVldtr, this);
+	public InputField gnrt(String label) {
+		InputField newInpFld = new InputField(label);
+		addKeyListeners(newInpFld);
 		inpFlds.add(newInpFld);
+
+		return newInpFld;
+	}
+
+	public InputField gnrt( String label, FieldValidator validator ) {
+		InputField newInpFld = new InputField(label, validator);
+		inpFlds.add(newInpFld);
+
+		addKeyListeners(newInpFld);
+		addValidityCheckListeners(newInpFld, validator);
 		
 		return newInpFld;
 	}
 
-	private void addTabEnterListeners(InputField field) {
+	private void addKeyListeners(InputField field) {
 		field.getTxtFld().addKeyListener( (KeyListener) new KeyListener() {
 			public void keyPressed(KeyEvent e) {
 				if ( e.getKeyCode() == KeyEvent.VK_ENTER ){ 
@@ -54,21 +58,20 @@ public class InputFieldHandler {
 		} );
 	}
 	
-	private void addValidityCheckListeners(InputField field, GuiCallback cback) {
+	private void addValidityCheckListeners(InputField field, FieldValidator validator) {
 		field.getTxtFld().addFocusListener( new FocusListener() {
 			@Override public void focusLost(FocusEvent e) {
 				if ( allFieldsAreValid() ) {
-					cback.onValidFields();
+					validator.onValidFields(field.getTxtFld().getText());
 				}
 				else {
-					cback.onInvalidFields();
+					validator.onInvalidFields(field.getTxtFld().getText());
 				}
 			}
 			
 			@Override public void focusGained(FocusEvent e) { }
 		});
 	}
-	
 	
 	private boolean allFieldsAreValid() {
 		for ( InputField fld : inpFlds )
@@ -115,9 +118,9 @@ public class InputFieldHandler {
 
 	public void focusInpFldAtRelativeIdx(int relIdx) {
 		for ( int i=0; i<inpFlds.size(); i++ ) {
-			if ( ! inpFlds.get(i).isFocusOwner() )
+			if ( ! inpFlds.get(i).getTxtFld().isFocusOwner() )
 				continue;
-			if ( i + relIdx >= inpFlds.size() )
+			else if ( i + relIdx >= inpFlds.size() )
 				inpFlds.getFirst().getTxtFld().requestFocus();
 			else if ( i + relIdx < 0 )
 				inpFlds.getLast().getTxtFld().requestFocus();

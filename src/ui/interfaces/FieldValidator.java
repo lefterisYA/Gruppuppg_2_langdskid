@@ -7,20 +7,20 @@ abstract public class FieldValidator {
 	
 	public FieldValidator(boolean allowBlank, Type type) {
 		allowBlank = false;
-		type = Type.STR;
+		this.type = type;
 	}
 	
 	abstract public void onValidFields(String rawFldTxt);
 	abstract public void onInvalidFields(String rawFldTxt);
 
 	public void validate( String rawFldTxt ) {
-		if ( blankChecker( rawFldTxt ) || txtFldValidator( rawFldTxt ) )
+		if ( blankChecker( rawFldTxt ) || getValidity( rawFldTxt ) )
 			onValidFields(rawFldTxt);
 		else 
 			onInvalidFields(rawFldTxt);
 	}
 
-	private boolean txtFldValidator( String rawFldTxt ) {
+	public boolean getValidity( String rawFldTxt ) {
 		switch (type) {
 		case STR:
 			return stringValidator(rawFldTxt);
@@ -37,7 +37,7 @@ abstract public class FieldValidator {
 		return allowBlank || !rawFldTxt.isEmpty();
 	}
 
-	private boolean stringValidator( String rawFldTxt ) {
+	protected boolean stringValidator( String rawFldTxt ) {
 		return rawFldTxt.matches("^[A-za-z ]+$");
 	}
 
