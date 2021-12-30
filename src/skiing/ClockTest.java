@@ -2,6 +2,7 @@ package skiing;
 
 import common.Utils;
 import skiingresult.Finish;
+import timekeeping.Clock;
 
 public class ClockTest {
 	public static void main(String [] args) {

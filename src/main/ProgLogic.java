@@ -14,7 +14,7 @@ import checkpoint.CompareSkierPlacingCheckpoint;
 import skiing.GroupList;
 import skiing.Skier;
 import skiing.SkierList;
-import ui.Clock;
+import ui.Clock_old;
 import ui.GUI;
 import ui.GuiCallback;
 import ui.Screen;
@@ -36,7 +36,7 @@ public class ProgLogic {
 	}
 	
 	private void test() {
-		Clock clk = new Clock();
+		Clock_old clk = new Clock_old();
 //		int[] test = clk.g
 		
 		

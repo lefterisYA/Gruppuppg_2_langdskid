@@ -1,4 +1,4 @@
-package skiing;
+package timekeeping;
 
 import java.util.Calendar;
 
@@ -16,6 +16,23 @@ public class Clock {
 		this.startTime = System.currentTimeMillis();
 	}
 	
+	/**
+	 * 
+	 * @param startTime a starting time.
+	 * @return the time difference between a start time and now.
+	 */
+	public int[] getRunningTime(int[] startTime) {
+		return new int[] { 00, 00, 00 };
+	}
+	
+
+	/**
+	 * Sets the clock time
+	 * @newTime the new time 
+	 */
+	public void setCurrActualTime(int[] newTime) {
+		// TODO
+	}
 	
 	private String getFinishTime() {
 		return finishTime;

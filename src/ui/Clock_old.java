@@ -3,7 +3,7 @@ package ui;
 import java.util.Calendar;
 import java.time.Instant;
 
-public class Clock {
+public class Clock_old {
 	/**
 	 * 
 	 * @param startTime a starting time.
@@ -139,7 +139,7 @@ public class Clock {
 	private Calendar cdr; // = Calendar.getInstance(); // creates a new calendar instance
 	private final StringBuilder sb = new StringBuilder();
 
-	public Clock() {
+	public Clock_old() {
 		cdr = Calendar.getInstance(); // creates a new calendar instance
 	}
 

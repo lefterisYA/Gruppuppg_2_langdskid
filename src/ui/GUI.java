@@ -30,6 +30,8 @@ import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
+import timekeeping.Clock;
+
 import java.util.EventListener;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -229,14 +231,6 @@ public class GUI {
 	public JComponent getTblCmp( int key, int rowIdx ) {
 		return skiersTable.get(key)[rowIdx];
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	// TODO: flytte ut.
 	private Clock clk;
