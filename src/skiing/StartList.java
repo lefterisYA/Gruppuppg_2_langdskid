@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
-import common.Utils;
+import timekeeping.TimeUtils;
 import ui.UI;
 
 public class StartList {

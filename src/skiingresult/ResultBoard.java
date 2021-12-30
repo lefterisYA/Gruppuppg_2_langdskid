@@ -1,8 +1,8 @@
 package skiingresult;
 import skiing.*;
+import timekeeping.TimeUtils;
 import ui.Console;
 import ui.UI;
-import common.Utils;
 import skiing.*;
 
 public class ResultBoard {
@@ -27,7 +27,7 @@ public class ResultBoard {
 			ui.postMsg("Namn: " + skier.getGender());
 			ui.postMsg("Placering: " + (i+1));
 
-			String goalTime = Utils.toString(skier.getGoalTime());
+			String goalTime = TimeUtils.toString(skier.getGoalTime());
 			ui.postMsg("Sluttid: " + goalTime);
 
 			ui.postMsg("===============================");

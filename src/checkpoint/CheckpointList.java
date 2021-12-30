@@ -1,7 +1,7 @@
 package checkpoint;
 
-import common.Utils;
 import skiing.*;
+import timekeeping.TimeUtils;
 import ui.Console;
 import ui.UI;
 

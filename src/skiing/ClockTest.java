@@ -1,8 +1,8 @@
 package skiing;
 
-import common.Utils;
 import skiingresult.Finish;
 import timekeeping.Clock;
+import timekeeping.TimeUtils;
 
 public class ClockTest {
 	public static void main(String [] args) {

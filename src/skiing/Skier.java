@@ -5,8 +5,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-import common.Utils;
 import timekeeping.Clock;
+import timekeeping.TimeUtils;
+import timekeeping.Timekeeper;
 
 	//TODO rensa gamla/oanvända metoder
 
@@ -19,15 +20,15 @@ public class Skier extends Person implements Comparable<Skier> {
 	private int checkpointTimeFinishSeconds;
 	private int[] goalTimeFinish;
 	private int goalTimeFinishSeconds;
-	private Clock clock;
+	private Timekeeper timekeeper;
 	private String skiingGroup;
 	
-//	public void setClock(Clock clock) {
-//		this.clock = clock;
-//	}
-//	public Clock getClock() {
-//		return clock;
-//	}
+	public void setTimekeeper(Timekeeper timekeeper) {
+		this.timekeeper = timekeeper;
+	}
+	public Timekeeper getTimekeeper() {
+		return timekeeper;
+	}
 	
 	
 	String getSkiingGroup() {return skiingGroup;}
@@ -51,14 +52,14 @@ public class Skier extends Person implements Comparable<Skier> {
 	public int[] getCheckpointTime() {return checkpointTime;}
 	public void setCheckpointTime(int[] checkpointTime) {
 		this.checkpointTime = checkpointTime;
-		this.checkpointTimeFinishSeconds=Utils.timeConverter(checkpointTime)-Utils.timeConverter(startingTime);
-		this.checkpointTimeFinish=Utils.timeConverter(checkpointTimeFinishSeconds);
+		this.checkpointTimeFinishSeconds=TimeUtils.timeConverter(checkpointTime)-TimeUtils.timeConverter(startingTime);
+		this.checkpointTimeFinish=TimeUtils.timeConverter(checkpointTimeFinishSeconds);
 	}
 	public int[] getGoalTime() {return goalTime;}
 	public void setGoalTime(int[] goalTime) { 
 		this.goalTime = goalTime;
-		this.goalTimeFinishSeconds=Utils.timeConverter(goalTime)-Utils.timeConverter(startingTime);
-		this.goalTimeFinish = Utils.timeConverter(goalTimeFinishSeconds);
+		this.goalTimeFinishSeconds=TimeUtils.timeConverter(goalTime)-TimeUtils.timeConverter(startingTime);
+		this.goalTimeFinish = TimeUtils.timeConverter(goalTimeFinishSeconds);
 	}
 	
 	
@@ -102,7 +103,7 @@ public class Skier extends Person implements Comparable<Skier> {
 		int result = super.hashCode();
 		result = prime * result + Arrays.hashCode(checkpointTime);
 		result = prime * result + Arrays.hashCode(startingTime);
-		result = prime * result + Objects.hash(clock, goalTime, playerNumber, skiingGroup);
+		result = prime * result + Objects.hash(timekeeper, goalTime, playerNumber, skiingGroup);
 		return result;
 	}
 	@Override
@@ -114,7 +115,7 @@ public class Skier extends Person implements Comparable<Skier> {
 		if (getClass() != obj.getClass())
 			return false;
 		Skier other = (Skier) obj;
-		return Arrays.equals(checkpointTime, other.checkpointTime) && Objects.equals(clock, other.clock)
+		return Arrays.equals(checkpointTime, other.checkpointTime) && Objects.equals(timekeeper, other.timekeeper)
 				&& goalTime == other.goalTime && playerNumber == other.playerNumber
 				&& Objects.equals(skiingGroup, other.skiingGroup) && Arrays.equals(startingTime, other.startingTime);
 	}

@@ -2,8 +2,6 @@ package timekeeping;
 
 import java.util.Calendar;
 
-import common.Utils;
-
 public class Clock {
 	private long startTime;
 	private long checkPointTime;

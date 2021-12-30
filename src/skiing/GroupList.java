@@ -8,8 +8,8 @@ import java.util.Objects;
 import java.util.Scanner;
 
 import checkpoint.CompareSkierPlacingCheckpoint;
-import common.Utils;
 import skiingresult.CompareSkierPlacingGoal;
+import timekeeping.TimeUtils;
 
 public class GroupList extends SkierList {
 	private List<Skier> groupList = new LinkedList<Skier>();
@@ -103,7 +103,7 @@ public class GroupList extends SkierList {
 	}
 	public void setStartingTimes() {
 		for (int i = 0; i < groupList.size(); i++) {
-			groupList.get(i).setStartingTime(Utils.timeAdder(this.firstStart, Utils.timeConverter(this.startInterval * i)));
+			groupList.get(i).setStartingTime(TimeUtils.timeAdder(this.firstStart, TimeUtils.timeConverter(this.startInterval * i)));
 		}
 	}
 	@Override

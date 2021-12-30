@@ -2,8 +2,8 @@ package checkpoint;
 
 import java.util.Scanner;
 
-import common.Utils;
 import skiing.*;
+import timekeeping.TimeUtils;
 import ui.Console;
 import ui.UI;
 
