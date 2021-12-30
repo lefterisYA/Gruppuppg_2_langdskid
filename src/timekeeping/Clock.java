@@ -6,16 +6,41 @@ import common.Utils;
 
 public class Clock {
 	private long startTime;
-	private String checkPointTime;
-	private String finishTime;
-	private int finishTimeMillis;
+	private long checkPointTime;
+	private long finishTime;
 	
-	
-	public Clock() {
-		super();
-		this.startTime = System.currentTimeMillis();
+	public static void main(String[] args) {
+		
 	}
 	
+	private Calendar cdr; // = Calendar.getInstance(); // creates a new calendar instance
+
+	public Clock() {
+		cdr = Calendar.getInstance(); // creates a new calendar instance
+	}
+	
+	/**
+	 * Private, maybe usefull for methods in this class?
+	 * @param uTime a time given in unix time format, a big long
+	 * @return a time given in int[] { hh, mm, ss } format
+	 */
+	private int[] unixToHumanTime(long uTime) {
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param time a time given in int[] { hh, mm, ss } format
+	 */
+	public void setStartTime(int[] time) {
+//		this.startTime = startTime;
+	}
+
+	public long getStartTime() {
+		return startTime;
+	
+	}
+
 	/**
 	 * 
 	 * @param startTime a starting time.
@@ -26,6 +51,8 @@ public class Clock {
 	}
 	
 
+
+	
 	/**
 	 * Sets the clock time
 	 * @newTime the new time 
@@ -33,7 +60,6 @@ public class Clock {
 	public void setCurrActualTime(int[] newTime) {
 		// TODO
 	}
-	
 	private String getFinishTime() {
 		return finishTime;
 	}
@@ -43,10 +69,6 @@ public class Clock {
 	}
 
 	private long getStartTime() {
-		return startTime;
-	}
-	private void setStartTime(int startTime) {
-		this.startTime = startTime;
 	}
 	private String getCheckPointTime() {
 		return checkPointTime;
@@ -82,13 +104,6 @@ public class Clock {
 		this.setFinishTimeMillis(difference);
 		return diffString;
 	}
-	
-	private Calendar cdr; // = Calendar.getInstance(); // creates a new calendar instance
-	private final StringBuilder sb = new StringBuilder();
-
-//	public Clock() {
-//		cdr = Calendar.getInstance(); // creates a new calendar instance
-//	}
 
 	public String getCurrTime() {
 		cdr.setTimeInMillis(System.currentTimeMillis());
@@ -112,22 +127,5 @@ public class Clock {
 				cdr.get(Calendar.SECOND), 
 		};
 	}
-
 	
-	
-	static private int[] getSprtDgts(int num) {
-		int dgtsLen;
-		if ( num < 10 ) // Pad all digits so they are length 2:
-			dgtsLen = 2;
-		else
-			dgtsLen = (int) ( Math.log10(num) + 1 );
-
-		int[] sprtDgts = new int[dgtsLen];
-		for ( int i=0; i<dgtsLen; i++ ) {
-			sprtDgts[dgtsLen-i-1] = (num % 10);
-			num=num/10;
-		}
-		return sprtDgts;
-	}
-
 }
