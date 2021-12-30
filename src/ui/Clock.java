@@ -4,6 +4,55 @@ import java.util.Calendar;
 import java.time.Instant;
 
 public class Clock {
+	/**
+	 * 
+	 * @param startTime a starting time.
+	 * @return the time difference between a start time and now.
+	 */
+	public int[] getRunningTime(int[] startTime) {
+		return new int[] { 00, 00, 00 };
+	}
+	
+
+	/**
+	 * Sets the clock time
+	 * @newTime the new time 
+	 */
+	public void setCurrActualTime(int[] newTime) {
+		// TODO
+	}
+
+	/**
+	 * 
+	 * @return returs the current actual time in string format
+	 */
+	public String getCurrTime() {
+		cdr.setTimeInMillis(System.currentTimeMillis());
+	
+		String time = String.format( 
+					"%02d:%02d:%02d:%02d", 
+					cdr.get(Calendar.HOUR_OF_DAY), 
+					cdr.get(Calendar.MINUTE),
+					cdr.get(Calendar.SECOND),
+					cdr.get(Calendar.MILLISECOND) / 10
+				);
+
+		return time;
+	}
+	
+	/**
+	 * 
+	 * @return returns the actual current time with int[] { HH, MM, SS }
+	 */
+	public int[] getCurrTimeInts() {
+		cdr.setTimeInMillis(System.currentTimeMillis());
+		return new int[] { 
+				cdr.get(Calendar.HOUR_OF_DAY), 
+				cdr.get(Calendar.MINUTE), 
+				cdr.get(Calendar.SECOND), 
+		};
+	}
+
 	final static private String[][] asciiDgts = {
 			{
 				"  ████  " ,
@@ -106,44 +155,6 @@ public class Clock {
 		int hnds = cdr.get(Calendar.MILLISECOND) / 10;
 
 		return gnrtAsciiChars(new int[] {hour, mins, secs, hnds});
-	}
-
-	/**
-	 * Sets the clock time
-	 * @newTime the new time 
-	 */
-	public void setCurrActualTime(int[] newTime) {
-		// TODO
-	}
-	/**
-	 * 
-	 * @return returs the current actual time in string format
-	 */
-	public String getCurrTime() {
-		cdr.setTimeInMillis(System.currentTimeMillis());
-	
-		String time = String.format( 
-					"%02d:%02d:%02d:%02d", 
-					cdr.get(Calendar.HOUR_OF_DAY), 
-					cdr.get(Calendar.MINUTE),
-					cdr.get(Calendar.SECOND),
-					cdr.get(Calendar.MILLISECOND) / 10
-				);
-
-		return time;
-	}
-	
-	/**
-	 * 
-	 * @return returns the actual current time with int[] { HH, MM, SS }
-	 */
-	public int[] getCurrTimeInts() {
-		cdr.setTimeInMillis(System.currentTimeMillis());
-		return new int[] { 
-				cdr.get(Calendar.HOUR_OF_DAY), 
-				cdr.get(Calendar.MINUTE), 
-				cdr.get(Calendar.SECOND), 
-		};
 	}
 
 	private String gnrtAsciiChars(int[] digtGrps) {
