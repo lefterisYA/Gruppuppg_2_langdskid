@@ -11,7 +11,7 @@ import checkpoint.CompareSkierPlacingCheckpoint;
 import common.Utils;
 import skiingresult.CompareSkierPlacingGoal;
 
-public class GroupList extends SkierList {
+public class GroupList {	
 	private List<Skier> groupList = new LinkedList<Skier>();
 	private String skiingGroup;
 	private int[] firstStart = new int[3];
@@ -27,7 +27,9 @@ public class GroupList extends SkierList {
 	public int getFirstPlayerNumber() {return firstPlayerNumber;}
 	public void setFirstPlayerNumber(int firstPlayerNumber) {this.firstPlayerNumber = firstPlayerNumber;}
 	public void setSkiingGroup (String skiingGroup){this.skiingGroup=skiingGroup;}
-	
+	public int getGroupListSize() {
+		return groupList.size();
+	}
 	public int[] getSkierGoalTimeFromPlayerNumber(int playerNumber) {
 		return getSkierFromPlayerNumber(playerNumber).getGoalTime();
 	}
@@ -114,41 +116,20 @@ public class GroupList extends SkierList {
 		}
 		return "This grouplist contains: "+skierString+"And their first start is "+Arrays.toString(firstStart)+", their startinterval is "+startInterval+" and their starting number is "+firstPlayerNumber;
 	}
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + Arrays.hashCode(firstStart);
-		result = prime * result + Objects.hash(groupList, firstPlayerNumber, skiingGroup, startInterval);
-		return result;
-	}
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		GroupList other = (GroupList) obj;
-		return Objects.equals(groupList, other.groupList) && firstPlayerNumber == other.firstPlayerNumber
-				&& Arrays.equals(firstStart, other.firstStart) && Objects.equals(skiingGroup, other.skiingGroup)
-				&& startInterval == other.startInterval;
-	}
 	
-	public void timeConfigInput(GroupList grouplist, int[] firstStart, int startInterval, int firstSkier) {
-		System.out.println("När ska den första starttiden vara? input timme: ");
-				setFirstStart(0, firstStart[0]);
-		System.out.println("input minut: ");
-				setFirstStart(1, firstStart[1]);
-		System.out.println("input sekund: ");
-				setFirstStart(2, firstStart[2]);
-		System.out.println("Ange startinteravll i sekunder: ");
-				setStartInterval(startInterval);
-		System.out.println("Ange första spelarens nummer, resterande spelares nummer kommer baseras på det"
-				+ "här. Så om du väljer t.ex 101, kommer spelare två vara 102, tre 103, osv.");
-				setFirstPlayerNumber(firstSkier);
-	}
+//	public void timeConfigInput(GroupList grouplist, int[] firstStart, int startInterval, int firstSkier) {
+//		System.out.println("När ska den första starttiden vara? input timme: ");
+//				setFirstStart(0, firstStart[0]);
+//		System.out.println("input minut: ");
+//				setFirstStart(1, firstStart[1]);
+//		System.out.println("input sekund: ");
+//				setFirstStart(2, firstStart[2]);
+//		System.out.println("Ange startinteravll i sekunder: ");
+//				setStartInterval(startInterval);
+//		System.out.println("Ange första spelarens nummer, resterande spelares nummer kommer baseras på det"
+//				+ "här. Så om du väljer t.ex 101, kommer spelare två vara 102, tre 103, osv.");
+//				setFirstPlayerNumber(firstSkier);
+//	}
 	public void generateGroupList(SkierList skierlist, String chosenGroup) {
 		setSkiingGroup(chosenGroup);
 		for (int i = 0; i < skierlist.getSkierLinkedListSize(); i++) {
@@ -168,13 +149,11 @@ public class GroupList extends SkierList {
 			setPlayerNumber(firstPlayerNumber+i, i);
 		}
 	}
-	@Override
 	public void setPlayerNumber(int playerNumber, int skierNumber) {
 		Skier skier = getSkier(skierNumber);
 		skier.setPlayerNumber(playerNumber);
 		groupList.set(groupList.indexOf(skier), skier);
 	}
-	@Override
 	/**
 	 * Sorterar listan beroende på deras playernumber
 	 */
@@ -190,7 +169,6 @@ public class GroupList extends SkierList {
 		CompareSkierPlacingCheckpoint compare = new CompareSkierPlacingCheckpoint();
 		Collections.sort(groupList, compare);
 	}
-	@Override
 	public void assignAllPlayerNumbersRandom() {
 		Skier[] skierList = new Skier[groupList.size()];
 		double x = 0;

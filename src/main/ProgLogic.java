@@ -6,6 +6,7 @@ import java.util.List;
 import javax.swing.JButton;
 
 import skiing.GroupList;
+import skiing.ListMethods;
 import skiing.Skier;
 import skiing.SkierList;
 import ui.Clock;
@@ -257,6 +258,7 @@ public class ProgLogic {
 
 			int startInterval = Integer.parseInt(inpFldVals2[1].split(":")[2]);
 			int firstNumber = Integer.parseInt(inpFldVals2[2]);
+
 			
 			group.generateGroupListTime( startTime, startInterval, firstNumber );
 
@@ -268,6 +270,7 @@ public class ProgLogic {
 			
 		case SEE_RACE:
 			GuiCallback<Integer> chkPntCback = new GuiCallback<Integer>() {
+
 				@Override
 				public void onClick(Integer skierNum) { 
 					group.setSkierCheckpointTimeFromPlayerNumber(skierNum, ui.getCurrTimeInts());
@@ -298,6 +301,7 @@ public class ProgLogic {
 			for ( Skier skier : group.getSkierList() ) {
 				System.out.println("adding "+skier.getName() + " " + skier.getPlayerNumber());
 				ui.getButtonTable().addRow(skier.getFirstName(), skier.getPlayerNumber(), chkPntCback, fnshCback);
+
 			}
 
 			ui.addButton( "Bakåt",					Screen.BACK,	 		new ElmntPos(0, 3, false));
