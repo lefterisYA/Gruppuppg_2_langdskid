@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 class GroupListTest {
-		private static GroupList g1;
+		private static Group g1;
 		private static SkierList s1;
 		private static int[] arr = {12, 12, 12};
 		private static int[] arr2 = {12, 30, 00};
@@ -28,7 +28,7 @@ class GroupListTest {
 		s1.addSkiertoList( new Skier( "Asa", "Laft", "dam", 23 ));
 		s1.addSkiertoList( new Skier( "Åsa", "Laft", "dam", 23 ));
 		s1.addSkiertoList( new Skier( "Britt", "Laft", "dam", 23 ));
-		g1 = new GroupList();
+		g1 = new Group();
 		g1.generateGroupList(s1, "H33");
 		g1.generateGroupListTime(arr, 30, 100);
 	}

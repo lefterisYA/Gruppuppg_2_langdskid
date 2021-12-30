@@ -11,7 +11,7 @@ import java.util.List;
 import javax.swing.JButton;
 
 import checkpoint.CompareSkierPlacingCheckpoint;
-import skiing.GroupList;
+import skiing.Group;
 import skiing.Skier;
 import skiing.SkierList;
 import ui.GUI;
@@ -24,7 +24,7 @@ public class ProgLogic {
 	private final GUI ui;
 	String chosenGroup;
 
-	GroupList group;
+	Group group;
 	private final SkierList skierList = new SkierList();
 	private final LinkedList<String> uniqueClasses = new LinkedList<String>();
 	List<String> groups;
@@ -49,7 +49,7 @@ public class ProgLogic {
 		skierList.addSkiertoList( new Skier( "Åsa", "Laft", "dam", 23 ));
 		skierList.addSkiertoList( new Skier( "Britt", "Laft", "dam", 23 ));
 		
-		group = new GroupList();
+		group = new Group();
 		group.generateGroupList(skierList, "H33");
 		group.generateGroupListTime(new int[] {10,00,00}, 30, 100);
 		screenHandler(Screen.INTRO);
@@ -175,7 +175,7 @@ public class ProgLogic {
 				chosenGroup = usrReplies[0];
 				System.out.println(chosenGroup + "Was chosen");
 
-				group = new GroupList();
+				group = new Group();
 				group.generateGroupList(skierList, chosenGroup);
 
 				ui.clrScrn();
