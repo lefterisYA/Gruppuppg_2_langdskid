@@ -9,7 +9,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		Utils utils = Utils.getInstance(); // get singelton instance of class Utils
-		ProgLogic gLogic = new ProgLogic(new GUI());
+		ProgLogic gLogic = new ProgLogic();
 		gLogic.run();
 	}
 

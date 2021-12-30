@@ -108,6 +108,17 @@ public class Clock {
 		return gnrtAsciiChars(new int[] {hour, mins, secs, hnds});
 	}
 
+	/**
+	 * Sets the clock time
+	 * @newTime the new time 
+	 */
+	public void setCurrActualTime(int[] newTime) {
+		// TODO
+	}
+	/**
+	 * 
+	 * @return returs the current actual time in string format
+	 */
 	public String getCurrTime() {
 		cdr.setTimeInMillis(System.currentTimeMillis());
 	
@@ -122,6 +133,10 @@ public class Clock {
 		return time;
 	}
 	
+	/**
+	 * 
+	 * @return returns the actual current time with int[] { HH, MM, SS }
+	 */
 	public int[] getCurrTimeInts() {
 		cdr.setTimeInMillis(System.currentTimeMillis());
 		return new int[] { 

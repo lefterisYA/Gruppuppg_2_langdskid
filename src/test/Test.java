@@ -5,7 +5,7 @@ import ui.*;
 
 public class Test {
 	public static void main(String[] args) {
-		GUI ui1 = new GUI();
+//		GUI ui1 = new GUI();
 //		UI ui2 = new Console();
 
 	}
