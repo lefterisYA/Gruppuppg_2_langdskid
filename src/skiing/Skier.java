@@ -16,14 +16,6 @@ public class Skier extends Person implements Comparable<Skier> {
 	private int[] checkpointTime;
 	private int[] checkpointTimeFinish;
 	private int[] goalTimeFinish;
-	private Clock clock;
-	
-//	public void setClock(Clock clock) {
-//		this.clock = clock;
-//	}
-//	public Clock getClock() {
-//		return clock;
-//	}
 	
 	
 	String getSkiingGroup() {

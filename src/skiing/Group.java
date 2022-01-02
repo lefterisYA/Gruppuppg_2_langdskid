@@ -21,31 +21,6 @@ public class Group {
 	public String getSkiingGroup() {
 		return skiingGroup;
 	}
-
-	public int[] getFirstStart() {
-		return firstStart;
-	}
-
-	public int getStartInterval() {
-		return startInterval;
-	}
-
-	public void setStartInterval(int startInterval) {
-		this.startInterval = startInterval;
-	}
-
-	public int getFirstPlayerNumber() {
-		return firstPlayerNumber;
-	}
-
-	public List<Skier> getGroupList() {
-		return group;
-	}
-
-	public void setGroupList(List<Skier> group) {
-		this.group = group;
-	}
-
 	public Skier getSkierFromPlayerNumber(int playerNumber) {
 		Skier[] skierlist = getSkierList();
 		for (int i = 0; i < skierlist.length; i++) {
@@ -65,27 +40,6 @@ public class Group {
 		CompareSkierPlacingGoal compare2 = new CompareSkierPlacingGoal();
 		Collections.sort(group, compare2);
 	}
-
-	/**
-	 * @param indexnumret på den skidåkaren du vill hämta
-	 * @return skidåkaren som är på det indexnumret
-	 */
-	public Skier getSkier(int skierNumber) {
-		return group.get(skierNumber);
-	}
-
-	/**
-	 * @param skidåkaren  du vill setta
-	 * @param indexnumret på den skidåkaren du vill setta
-	 */
-	public void setSkier(Skier skier, int indexnumber) {
-		group.set(indexnumber, skier);
-	}
-
-	public void setSkierList(Skier[] skierlist) {
-		group = Arrays.asList(skierlist);
-	}
-
 	public Skier[] getSkierList() {
 		Skier[] skierList = new Skier[group.size()];
 		for (int i = 0; i < group.size(); i++) {
@@ -97,12 +51,6 @@ public class Group {
 	public void addToGroup(Skier skier) {
 		if (skier.getSkiingGroup().equals(this.skiingGroup) && (!(group.contains(skier)))) {
 			group.add(skier);
-		}
-	}
-
-	public void setPlayerNumber() {
-		for (int i = 0; i < group.size(); i++) {
-			group.get(i).setPlayerNumber(this.firstPlayerNumber + i);
 		}
 	}
 
@@ -143,14 +91,6 @@ public class Group {
 		Collections.sort(group);
 	}
 
-	/**
-	 * Sorterar listan beroende på deras placering vid checkpoint
-	 */
-	public void sortListPlacingCheckpoint() {
-		CompareSkierPlacingCheckpoint compare = new CompareSkierPlacingCheckpoint();
-		Collections.sort(group, compare);
-	}
-
 	public void assignAllPlayerNumbersRandom() {
 		Skier[] skierList = new Skier[group.size()];
 		double x = 0;
@@ -177,5 +117,27 @@ public class Group {
 		return "This grouplist contains: " + skierString + "And their first start is " + Arrays.toString(firstStart)
 				+ ", their startinterval is " + startInterval + " and their starting number is " + firstPlayerNumber;
 	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(firstStart);
+		result = prime * result + Objects.hash(firstPlayerNumber, group, skiingGroup, startInterval);
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Group other = (Group) obj;
+		return firstPlayerNumber == other.firstPlayerNumber && Arrays.equals(firstStart, other.firstStart)
+				&& Objects.equals(group, other.group) && Objects.equals(skiingGroup, other.skiingGroup)
+				&& startInterval == other.startInterval;
+	}
+	
 
 }
