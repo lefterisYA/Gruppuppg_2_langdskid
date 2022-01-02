@@ -105,8 +105,6 @@ public class ProgLogic {
 		System.out.println( Thread.currentThread().getStackTrace()[1] + ": " + ( scrn != null ? scrn.name() : "null" ));
 		Button<Screen> backBttn = ui.makeButton( "Avbryt", Screen.BACK);
 
-		// set to true when called by GUI. Eventual user processing/verifying/handling happens when its true.
-		boolean isCallback = usrReplies == null ? false : true; 
 		
 		ui.addToScreenStack(scrn);
 		
@@ -189,7 +187,6 @@ public class ProgLogic {
 
 			ui.clrScrn();
 			ui.clrUsrInpField();
-			ui.update();
 
 			ui.setTitle("Var god välj skid-klass");
 			for ( String group : skierList.getUniqueGroupsList() )
@@ -197,6 +194,8 @@ public class ProgLogic {
 
 			ui.addVertSpcr(200);
 			ui.addButton( backBttn,						new ElmntPos(0, 1, false, true));
+
+			ui.update();
 			break;
 
 		case CREATE_RACE:
@@ -208,7 +207,12 @@ public class ProgLogic {
 
 			ui.clrScrn();
 			ui.setTitle("Var god välj skid-klass");
-			ui.update();
+
+//			GuiCallback<> acptCbck = new GuiCallback() {
+//				@Override
+//				public void onClick(Object val) {
+//				}
+//			};
 
 			Button<Screen> acpt = ui.makeButton( "Fortsätt",	Screen.CREATE_RACE_2);
 			acpt.setEnabled(false);
@@ -235,6 +239,7 @@ public class ProgLogic {
 			ui.addButton( "Avbryt",		Screen.BACK, 	new ElmntPos(0, 1, false, true));
 			ui.addButton( acpt, 						new ElmntPos(1, 0, true, true));
 
+			ui.update();
 			break;
 
 		case CREATE_RACE_2:
@@ -286,9 +291,6 @@ public class ProgLogic {
 			ui.setTitle(chosenGroup);
 			ui.setBodyText(chosenGroup);
 			ui.runClock();
-			ui.update();
-			
-
 
 			ui.addButtonTable( group.getSkierList().length, 0, 1, true );
 			for ( Skier skier : group.getSkierList() ) {
@@ -300,6 +302,7 @@ public class ProgLogic {
 			ui.addButton( "Bakåt",					Screen.BACK,	 		new ElmntPos(0, 3, false));
 			ui.addButton( "Fortsätt",				Screen.LIVE_SCOREBOARD,	new ElmntPos(1, 3, false));
 
+			ui.update();
 			break;
 			
 		case LIVE_SCOREBOARD:
@@ -358,11 +361,7 @@ public class ProgLogic {
 			System.exit(0);
 
 		case BACK:
-			if ( !isCallback ) {
-				screenHandler(ui.getLastScreen());
-			} else {
-				screenHandler(Screen.INTRO); // next screen
-			}
+			screenHandler(ui.getLastScreen());
 			break;
 
 		default:
