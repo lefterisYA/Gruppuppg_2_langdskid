@@ -1,9 +1,8 @@
-package placing;
+package old_code;
 import skiing.Skier;
 
 import java.util.Comparator;
 
-import common.Utils;
 
 public class CompareSkierPlacingCheckpoint implements Comparator<Skier>{
 

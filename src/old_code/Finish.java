@@ -1,6 +1,5 @@
-package skiingresult;
+package old_code;
 
-import common.Utils;
 import skiing.*;
 
 public class Finish {

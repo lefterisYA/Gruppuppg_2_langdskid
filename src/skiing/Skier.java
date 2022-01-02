@@ -1,22 +1,11 @@
 package skiing;
 
-import java.util.Arrays;
-
-import common.Utils;
 import timekeeping.TimeHandler;
-
-	//TODO rensa gamla/oanvända metoder
 
 public class Skier extends Person implements Comparable<Skier> {
 	private int playerNumber; // Sparar personens tävlingsnummer
-//	private int[] startingTime = new int[3]; // Starttiden H,M,S
-//	private int[] goalTime;
-//	private int[] checkpointTime;
-//	private int[] checkpointTimeFinish;
-//	private int[] goalTimeFinish;
 	private TimeHandler timeHandler;
 
-	// En constructor som jag använder för att deklarera en array (list) med skidåkare utan några värden.
 	public Skier() {
 		timeHandler = new TimeHandler();
 	}
@@ -41,34 +30,9 @@ public class Skier extends Person implements Comparable<Skier> {
 		return timeHandler;
 	}
 
-	public String getSkiingGroup() {
-		return Character.toUpperCase(getGender().charAt(0)) + Integer.toString(getAge());}
-//	public int[] getStartingTime() {return startingTime;}
-//	public void setStartingTime(int[] startingTime) {this.startingTime = startingTime;}
-//	public int[] getGoalTimeFinish() {return goalTimeFinish;}
-//	public int[] getCheckpointTimeFinish() {return checkpointTimeFinish;}
+	public String getSkiingGroup() { return Character.toUpperCase(getGender().charAt(0)) + Integer.toString(getAge());}
 	public int getPlayerNumber() {return playerNumber;}
 	public void setPlayerNumber(int playerNumber) {this.playerNumber = playerNumber;}
-//	public int[] getCheckpointTime() {return checkpointTime;}
-	/**
-	 * Tar in tiden i array HH/MM/SS och set som checkpointTime, sedan jämför den med
-	 * startingTime och ger mellanskilladen till checkpointTimeFinishSeconds och checkpointTimeFinish
-	 * @param checkpointTime
-	 */
-//	public void setCheckpointTime(int[] checkpointTime) {
-//		this.checkpointTime = checkpointTime;
-//		this.checkpointTimeFinish=Utils.timeConverter(Utils.timeConverter(checkpointTime)-Utils.timeConverter(startingTime));
-//	}
-//	public int[] getGoalTime() {return goalTime;}
-	/**
-	 * Tar in tiden i array HH/MM/SS och set som goalTime, sedan jämför den med
-	 * startingTime och ger mellanskilladen till goalTimeFinishSeconds och goalTimeFinish
-	 * @param checkpointTime
-	 */
-//	public void setGoalTime(int[] goalTime) { 
-//		this.goalTime = goalTime;
-//		this.goalTimeFinish = Utils.timeConverter(Utils.timeConverter(goalTime)-Utils.timeConverter(startingTime));
-//	}
 
 	@Override
 	public int compareTo(Skier o) {
@@ -82,12 +46,6 @@ public class Skier extends Person implements Comparable<Skier> {
 
 	@Override
 	public String toString() {
-//		String xstring = "Skidåkare som heter " + getName()  + ", starttid: " + Arrays.toString(startingTime);
-//		if(Utils.timeConverter(checkpointTimeFinish)>0)
-//			xstring+=", mellantid sekunder: ";
-//		if(Utils.timeConverter(goalTimeFinish)>0)
-//			xstring+=", måltid sekunder: ";
-//		xstring+= ", startnummer: " + getPlayerNumber() + ", kön: " + getGender() + ", ålder :" + getAge() + "]";
 		String xstring = "Skidåkare som heter " + getName()  + ", starttid: " + timeHandler.getStartTime().toString();
 		if( timeHandler.passedCheckpoint() )
 			xstring+=", mellantid sekunder: ";

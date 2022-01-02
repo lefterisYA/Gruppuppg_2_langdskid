@@ -1,8 +1,7 @@
-package skiingresult;
+package old_code;
 import skiing.*;
 import ui.Console;
 import ui.UI;
-import common.Utils;
 import skiing.*;
 
 public class ResultBoard {

@@ -7,9 +7,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
-import placing.CompareSkierPlacingCheckpoint;
-import common.Utils;
-import placing.CompareSkierPlacingGoal;
 import timekeeping.Time;
 
 public class Group {
@@ -33,14 +30,15 @@ public class Group {
 	}
 
 	public void sortSkierListCheckpointTime() {
-		CompareSkierPlacingCheckpoint compare = new CompareSkierPlacingCheckpoint();
-		Collections.sort(group, compare);
+//		CompareSkierPlacingCheckpoint compare = new CompareSkierPlacingCheckpoint();
+//		Collections.sort(group, compare);
 	}
 
 	public void sortSkierListGoalTime() {
-		CompareSkierPlacingGoal compare2 = new CompareSkierPlacingGoal();
-		Collections.sort(group, compare2);
+//		CompareSkierPlacingGoal compare2 = new CompareSkierPlacingGoal();
+//		Collections.sort(group, compare2);
 	}
+
 	public Skier[] getSkierList() {
 		Skier[] skierList = new Skier[group.size()];
 		for (int i = 0; i < group.size(); i++) {
@@ -141,10 +139,4 @@ public class Group {
 				&& Objects.equals(group, other.group) && Objects.equals(skiingGroup, other.skiingGroup)
 				&& startInterval == other.startInterval;
 	}
-	public void setSkierCheckpointTimeFromPlayerNumber(Integer skierNum, int[] currTimeInts) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-
 }
