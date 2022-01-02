@@ -1,8 +1,8 @@
-package skiing;
+package old_code;
 
 import java.util.Calendar;
 
-import common.Utils;
+
 
 public class Clock {
 	private long startTime;

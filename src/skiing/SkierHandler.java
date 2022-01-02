@@ -112,15 +112,6 @@ public class SkierHandler {
 		return "This list contains: " + skierString;
 	}
 
-//	public List<String> getUniqueGroupsList() {
-//		List<String> uniqueGroupsList = new LinkedList<String>(); 
-//		for (int i = 0; i < allSkiers.size(); i++) {
-//			if(uniqueGroupsList.contains(getSkiingGroupAtIndex(i))==false) {
-//				uniqueGroupsList.add(getSkiingGroupAtIndex(i));
-//			}
-//		}
-//		return uniqueGroupsList;
-//	}
 	public List<String> getUniqueGroupsList() {
 		List<String> uniqueGroupsList = new LinkedList<String>();
 		for (int i = 0; i < allSkiers.size(); i++) {

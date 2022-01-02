@@ -1,4 +1,4 @@
-package test;
+package old_code;
 
 import skiing.Skier;
 import ui.*;

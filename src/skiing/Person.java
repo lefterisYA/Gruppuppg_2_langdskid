@@ -9,11 +9,6 @@ public class Person {
 	private String lastName;
 	private String name;
 	private String gender; //TODO enum //Vet inte riktigt hur jag ska göra det och det är lite sent nu
-//	private gender gender;
-//	public enum gender{
-//		HERR, DAM;
-//		
-//	}
 	private int age;
 	
 	public int getAge() {return age;}
@@ -26,19 +21,18 @@ public class Person {
 	public void setName(String name) {this.name = name;}
 	public String getGender() {return gender;}
 	public void setGender(String gender) {this.gender = gender;}
-//	public void setGender(gender gender) {
-//		gender = gender;
-//	}
-	
+
 	@Override
 	public String toString() {
 		return "Person [firstName=" + firstName + ", lastName=" + lastName + ", name=" + name + ", gender=" + gender
 				+ ", age=" + age + "]";
 	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(age, firstName, gender, lastName, name);
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -51,5 +45,4 @@ public class Person {
 		return age == other.age && Objects.equals(firstName, other.firstName) && Objects.equals(gender, other.gender)
 				&& Objects.equals(lastName, other.lastName) && Objects.equals(name, other.name);
 	}
-	
 }

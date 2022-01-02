@@ -2,6 +2,7 @@ package ui.elements;
 
 import java.awt.GridLayout;
 
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import ui.Clock;
-import ui.GuiCallback;
+import ui.interfaces.GuiCallback;
 
 public class ButtonTable extends JPanel { 
 	private static final long serialVersionUID = -3065613945162621665L;

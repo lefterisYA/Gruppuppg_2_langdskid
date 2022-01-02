@@ -1,13 +1,11 @@
-package skiing;
+package old_code;
 
-import common.Utils;
-import skiingresult.Finish;
 
 public class ClockTest {
 	public static void main(String [] args) {
 		Clock testClock = new Clock(); // skapar upp klockan. 
 		
-		Skier skier = new Skier();
+//		Skier skier = new Skier();
 //		skier.setClock(testClock);
 		
 //		skier.getClock().getRunningTimeMillis(); // hur länge har åkaren varit ute o kört

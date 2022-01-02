@@ -5,17 +5,14 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Scanner;
 
-import placing.CompareSkierPlacingCheckpoint;
-import common.Utils;
-import placing.CompareSkierPlacingGoal;
+import timekeeping.Time;
 
 public class Group {
 	private List<Skier> group = new LinkedList<Skier>();
 	private String skiingGroup;
-	private int[] firstStart = new int[3];
-	private int startInterval;
+	private Time firstStart;
+	private Time startInterval;
 	private int firstPlayerNumber;
 
 	public String getSkiingGroup() {
@@ -40,6 +37,7 @@ public class Group {
 		CompareSkierPlacingGoal compare2 = new CompareSkierPlacingGoal();
 		Collections.sort(group, compare2);
 	}
+
 	public Skier[] getSkierList() {
 		Skier[] skierList = new Skier[group.size()];
 		for (int i = 0; i < group.size(); i++) {
@@ -72,14 +70,15 @@ public class Group {
 		}
 	}
 
-	public void generateGroupListTime(int[] firstStartTime, int startInterval, int firstPlayerNumber) {
+	public void generateGroupListTime(Time firstStartTime, Time startInterval, int firstPlayerNumber) {
 		this.firstStart = firstStartTime;
 		this.startInterval = startInterval;
 		this.firstPlayerNumber = firstPlayerNumber;
 		assignAllPlayerNumbersRandom();
 		sortList();
 		for (int i = 0; i < group.size(); i++) {
-			group.get(i).setStartingTime(Utils.timeAdder(this.firstStart, Utils.timeConverter(this.startInterval * i)));
+//			group.get(i).setStartingTime(Utils.timeAdder(this.firstStart, Utils.timeConverter(this.startInterval * i)));
+			group.get(i).getTimeHandler().setStartTime( firstStartTime.addTo( startInterval.productOf(i) ) );
 			group.get(i).setPlayerNumber(firstPlayerNumber + i);
 		}
 	}
@@ -114,14 +113,15 @@ public class Group {
 					+ group.get(i).getAge() + ", gender: " + group.get(i).getGender() + ", playernumber: "
 					+ group.get(i).getPlayerNumber() + "\n";
 		}
-		return "This grouplist contains: " + skierString + "And their first start is " + Arrays.toString(firstStart)
+//		return "This grouplist contains: " + skierString + "And their first start is " + Arrays.toString(firstStart)
+		return "This grouplist contains: " + skierString + "And their first start is " + firstStart.toString() 
 				+ ", their startinterval is " + startInterval + " and their starting number is " + firstPlayerNumber;
 	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + Arrays.hashCode(firstStart);
+		result = prime * result + Arrays.hashCode(firstStart.asHumanTime());
 		result = prime * result + Objects.hash(firstPlayerNumber, group, skiingGroup, startInterval);
 		return result;
 	}
@@ -134,14 +134,8 @@ public class Group {
 		if (getClass() != obj.getClass())
 			return false;
 		Group other = (Group) obj;
-		return firstPlayerNumber == other.firstPlayerNumber && Arrays.equals(firstStart, other.firstStart)
+		return firstPlayerNumber == other.firstPlayerNumber && Arrays.equals(firstStart.asHumanTime(), other.firstStart.asHumanTime())
 				&& Objects.equals(group, other.group) && Objects.equals(skiingGroup, other.skiingGroup)
 				&& startInterval == other.startInterval;
 	}
-	public void setSkierCheckpointTimeFromPlayerNumber(Integer skierNum, int[] currTimeInts) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-
 }

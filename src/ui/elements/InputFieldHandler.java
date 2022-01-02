@@ -11,7 +11,7 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
 import ui.GUI;
-import ui.GuiCallback;
+import ui.interfaces.GuiCallback;
 import ui.interfaces.FieldValidator;
 
 public class InputFieldHandler {
