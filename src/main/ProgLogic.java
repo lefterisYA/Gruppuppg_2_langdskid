@@ -1,20 +1,16 @@
 package main;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JButton;
 
-
-import placing.CompareSkierPlacingCheckpoint;
 import skiing.Group;
 import skiing.Skier;
-import ui.Clock;
-import ui.ElmntPos;
 import skiing.SkierHandler;
 import timekeeping.Time;
+import ui.ElmntPos;
 import ui.GUI;
-import ui.GuiCallback;
+import ui.interfaces.GuiCallback;
 import ui.Screen;
 import ui.elements.Button;
 import ui.interfaces.FieldValidator;
@@ -26,7 +22,6 @@ public class ProgLogic {
 
 	Group group;
 	private final SkierHandler skierList = new SkierHandler();
-	private final LinkedList<String> uniqueClasses = new LinkedList<String>();
 	List<String> groups;
 	
 	public static void main(String[] args) {
@@ -35,16 +30,16 @@ public class ProgLogic {
 	}
 	
 	private void test() {
-		Clock clk = new Clock();
+//		Clock clk = new Clock();
 //		int[] test = clk.g
 		
 		
-//		skierList.addSkiertoList( new Skier( "Left", "Laft", "herr", 33 ));
-//		skierList.addSkiertoList( new Skier( "Otto", "Laft", "herr", 33 ));
 //		skierList.addSkiertoList( new Skier( "Jessica", "Laft", "herr", 33 ));
 //		skierList.addSkiertoList( new Skier( "Joacim", "Laft", "herr", 33 ));
-//		skierList.addSkiertoList( new Skier( "namn2", "Laft", "herr", 33 ));
-//		skierList.addSkiertoList( new Skier( "Namn3", "Laft", "herr", 33 ));
+		skierList.addSkiertoList( new Skier( "Lefte", "Laft", "herr", 30 ));
+		skierList.addSkiertoList( new Skier( "Ottom", "Laft", "herr", 31 ));
+		skierList.addSkiertoList( new Skier( "namn2", "Laft", "herr", 33 ));
+		skierList.addSkiertoList( new Skier( "Namn3", "Laft", "herr", 33 ));
 		skierList.addSkiertoList( new Skier( "Namn5", "Laft", "herr", 33 ));
 		skierList.addSkiertoList( new Skier( "Namn7", "Laft", "herr", 33 ));
 		skierList.addSkiertoList( new Skier( "Namn8", "Laft", "herr", 33 ));
@@ -81,13 +76,13 @@ public class ProgLogic {
 		};
 
 		GUI ui = new GUI(newScrnCback);
-		// TEMP CODE:
-		uniqueClasses.add("D11");
-		uniqueClasses.add("D61");
-		uniqueClasses.add("D13");
-		uniqueClasses.add("H11");
-		uniqueClasses.add("H21");
-		uniqueClasses.add("H13");
+//		// TEMP CODE:
+//		uniqueClasses.add("D11");
+//		uniqueClasses.add("D61");
+//		uniqueClasses.add("D13");
+//		uniqueClasses.add("H11");
+//		uniqueClasses.add("H21");
+//		uniqueClasses.add("H13");
 		this.ui=ui;
 	}
 	
@@ -140,12 +135,8 @@ public class ProgLogic {
 		case RGSTR_SKIER_REPEAT:
 		case RGSTR_SKIER:
 			ui.clrScrn();
-			ui.setTitle(scrn == Screen.CREATE_RACE ? "Ny tävling" : "Registrera tävlande");
+			ui.setTitle("Ny tävling.");
 			ui.addVertSpcr(20);
-
-			GuiCallback<String> onClickCback = new GuiCallback<String>() {
-				@Override public void onClick(java.lang.String val) { screenHandler(Screen.RGSTR_SKIER_FINISH);  }
-			};
 
 			acptBttn = ui.makeButton( "Lägg Till",	Screen.RGSTR_SKIER_FINISH);
 			acptBttn.setEnabled(false);
@@ -200,13 +191,9 @@ public class ProgLogic {
 			ui.clrUsrInpField();
 			ui.update();
 
-			List<String> groups = skierList.getUniqueGroupsList();
-
-			int yRelPos=0;
 			ui.setTitle("Var god välj skid-klass");
-			for ( String skiGroup : groups ) {
-				ui.addButton( skiGroup,				cbackCrtRace,	 	new ElmntPos(0, yRelPos, true));
-			}
+			for ( String group : skierList.getUniqueGroupsList() )
+				ui.addButton( group,				cbackCrtRace,	 	new ElmntPos(0, 1, true));
 
 			ui.addVertSpcr(200);
 			ui.addButton( backBttn,						new ElmntPos(0, 1, false, true));
@@ -225,7 +212,6 @@ public class ProgLogic {
 
 			Button<Screen> acpt = ui.makeButton( "Fortsätt",	Screen.CREATE_RACE_2);
 			acpt.setEnabled(false);
-
 
 			timeValidator = new FieldValidator(false, Type.STR) {
 				@Override public void onValidFields(String rawFldTxt)   	{ acpt.setEnabled(true);  }
@@ -257,16 +243,9 @@ public class ProgLogic {
 				System.out.println(rep);
 			}
 			
-//			int[] startTime = new int[3];
-//			int i = 0;
-//			for ( String part : inpFldVals2[0].split(":") )
-//				startTime[i++]=Integer.parseInt(part);
-//			int startInterval = Integer.parseInt(inpFldVals2[1].split(":")[2]);
-
 			Time startTime = new Time(inpFldVals2[0]);
 			Time startInterval = new Time(inpFldVals2[1]);
 			int firstNumber = Integer.parseInt(inpFldVals2[2]);
-
 			
 			group.generateGroupListTime( startTime, startInterval, firstNumber );
 

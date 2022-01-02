@@ -20,9 +20,6 @@ import javax.swing.Timer;
 import timekeeping.Time;
 
 import java.util.LinkedList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class GUI {
 	private JFrame frame = new JFrame("");
@@ -95,10 +92,6 @@ public class GUI {
 		panel.updateUI();
 	}
 
-//	public void removeLast() {
-//		panel.removeLast();
-//	}
-
 	public void setTitle(String text) {
 		title.setText(text);
 	}
@@ -110,9 +103,8 @@ public class GUI {
 		panel.remove(comp);
 	}
 
-
-	public <T> Button<T> makeButton(String label, GuiCallback<T> cBack) {
-		return new Button<T>( label, cBack );	
+	public Button<String> makeButton(String label, GuiCallback<String> cBack) {
+		return new Button<>( label, cBack );	
 	}
 
 	public <T> Button<Screen> makeButton(String label, Screen nextScrn) {
@@ -128,8 +120,8 @@ public class GUI {
 		panel.add(newButton, pos );
 	}
 
-	public <T> void addButton(String label, GuiCallback<T> cBack, ElmntPos pos) {
-		Button <T> newButton = new Button<T>( label, cBack);
+	public void addButton(String label, GuiCallback<String> cBack, ElmntPos pos) {
+		Button<String> newButton = new Button<>(label, cBack);
 		panel.add(newButton, pos);
 	}
 
@@ -176,24 +168,11 @@ public class GUI {
 	}
 
 	
-
-	
 	// ********************************************
 	// TODO: flytte ut.
 	private Time timeKeeper;
 	public void runClock() {
 		timeKeeper = new Time();
-
-//		clk = new Clock();
-
-//	    ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
-//	    exec.scheduleAtFixedRate(new Runnable() {
-//	    	@Override
-//	    	public void run() {
-////	    		setTitle( "\n" + clk.getCurrTime() );
-//	    		setTitle( "\n" + Time.getCurrTime().toString(true) );
-//	    	}
-//	    }, 0, 20, TimeUnit.MILLISECONDS);
 	    ActionListener taskPerformer = new ActionListener() {
 	    	public void actionPerformed(ActionEvent evt) {
 	    		timeKeeper.setToNow();
@@ -203,13 +182,9 @@ public class GUI {
 	    new Timer(0, taskPerformer).start();
 	}
 
-
-
 	// ********************************************
 	// TODO: RADERA:
-	public void postMsg(String msg) {
-		System.out.println("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
-	}
+	public void postMsg(String msg) { System.out.println("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"); }
 
 	// ***************************************
 
