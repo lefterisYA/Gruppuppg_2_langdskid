@@ -64,6 +64,7 @@ public class SkierHandler {
  * men just nu funkar den i alla fall.
  */
 	public void generateAllGroups() {
+		if(allGroups.isEmpty())
 		allGroups.add(new Group(allSkiers.get(0), getSkiingGroup(allSkiers.get(0))));
 		for (int i = 0; i < allSkiers.size(); i++) {
 			boolean newgroupcheck = false;
@@ -78,10 +79,10 @@ public class SkierHandler {
 				}
 				}
 				
-			if(newgroupcheck==true) {
+			if(newgroupcheck==true && !(allGroups.contains(allSkiers.get(i)))) {
 				allGroups.add(new Group(allSkiers.get(i), getSkiingGroup(allSkiers.get(i))));
 			}
-			else {
+			else if (!(allGroups.contains(allSkiers.get(i)))){
 				allGroups.get(groupatj).addToGroup(allSkiers.get(i));
 			}
 		}
