@@ -1,11 +1,11 @@
 package main;
 
 import common.Utils;
-import skiing.SkierList;
+import skiing.SkierHandler;
 import ui.GUI;
 
 public class Main {
-	SkierList skierList = new SkierList();
+	SkierHandler skierList = new SkierHandler();
 
 	public static void main(String[] args) {
 		Utils utils = Utils.getInstance(); // get singelton instance of class Utils

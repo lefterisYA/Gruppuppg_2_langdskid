@@ -1,4 +1,4 @@
-package skiingresult;
+package placing;
 
 import java.util.Comparator;
 

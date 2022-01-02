@@ -6,7 +6,7 @@ import common.Utils;
 import skiing.*;
 
 public class ResultBoard {
-
+ 
 	static UI ui = new Console();
 
 	public ResultBoard() {

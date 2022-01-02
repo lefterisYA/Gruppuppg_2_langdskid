@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 class SkierListTest {
-	private static SkierList skierlist;
+	private static SkierHandler skierlist;
 	private static Skier skier1;
 	private static Skier skier2;
 	private static Skier skier3;
@@ -19,7 +19,7 @@ class SkierListTest {
 	
 	@BeforeAll
 	static void init() {
-		skierlist = new SkierList();
+		skierlist = new SkierHandler();
 		skier1 = new Skier("Otto", "Kostmann", "Herr", 24);
 		skier2 = new Skier("Otta", "Kastmann", "Herr", 24);
 		skier3 = new Skier("Otta", "Kastmann", "Dam", 25);

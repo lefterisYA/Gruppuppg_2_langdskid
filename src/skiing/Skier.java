@@ -1,9 +1,6 @@
 package skiing;
 
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
 
 import common.Utils;
 
@@ -18,19 +15,11 @@ public class Skier extends Person implements Comparable<Skier> {
 	private int[] goalTimeFinish;
 	
 	
-	
-	public String getSkiingGroup() {
-	return Character.toUpperCase(getGender().charAt(0)) + Integer.toString(getAge());}
-	/**
-	 * Set starttiden till en array HH,MM,SS
-	 * @param int[3] startingTime array
-	 */
-	public void setStartingTime(int[] startingTime) {this.startingTime = startingTime;}
 
-	/**
-	 * Get mellanskillnaden mellan skidåkarens starttid och måltid i en array
-	 * @return
-	 */
+	public String getSkiingGroup() {
+		return Character.toUpperCase(getGender().charAt(0)) + Integer.toString(getAge());}
+	public int[] getStartingTime() {return startingTime;}
+	public void setStartingTime(int[] startingTime) {this.startingTime = startingTime;}
 	public int[] getGoalTimeFinish() {return goalTimeFinish;}
 	public int[] getCheckpointTimeFinish() {return checkpointTimeFinish;}
 	public int getPlayerNumber() {return playerNumber;}
@@ -54,7 +43,6 @@ public class Skier extends Person implements Comparable<Skier> {
 	public void setGoalTime(int[] goalTime) { 
 		this.goalTime = goalTime;
 		this.goalTimeFinish = Utils.timeConverter(Utils.timeConverter(goalTime)-Utils.timeConverter(startingTime));
-		
 	}
 	
 	/**
@@ -90,7 +78,11 @@ public class Skier extends Person implements Comparable<Skier> {
 	@Override
 	public String toString() {
 		String xstring = "Skidåkare som heter " + getName()  + ", starttid: " + Arrays.toString(startingTime);
-		xstring+= ", klass: " + ", startnummer: " + getPlayerNumber() + ", kön: " + getGender() + ", ålder :" + getAge() + "]";
+		if(Utils.timeConverter(checkpointTimeFinish)>0)
+			xstring+=", mellantid sekunder: ";
+		if(Utils.timeConverter(goalTimeFinish)>0)
+			xstring+=", måltid sekunder: ";
+		xstring+= ", startnummer: " + getPlayerNumber() + ", kön: " + getGender() + ", ålder :" + getAge() + "]";
 		return xstring;
 	}
 }

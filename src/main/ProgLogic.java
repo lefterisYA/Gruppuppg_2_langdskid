@@ -5,12 +5,13 @@ import java.util.List;
 
 import javax.swing.JButton;
 
-import skiing.GroupList;
-import skiing.ListMethods;
+
+import placing.CompareSkierPlacingCheckpoint;
+import skiing.Group;
 import skiing.Skier;
-import skiing.SkierList;
 import ui.Clock;
 import ui.ElmntPos;
+import skiing.SkierHandler;
 import ui.GUI;
 import ui.GuiCallback;
 import ui.Screen;
@@ -22,8 +23,8 @@ public class ProgLogic {
 	private final GUI ui;
 	String chosenGroup;
 
-	GroupList group;
-	private final SkierList skierList = new SkierList();
+	Group group;
+	private final SkierHandler skierList = new SkierHandler();
 	private final LinkedList<String> uniqueClasses = new LinkedList<String>();
 	List<String> groups;
 	
@@ -51,8 +52,9 @@ public class ProgLogic {
 //		skierList.addSkiertoList( new Skier( "Åsa", "Laft", "dam", 23 ));
 		skierList.addSkiertoList( new Skier( "Britt", "Laft", "dam", 23 ));
 		
-		group = new GroupList();
-		group.generateGroupList(skierList, "H33");
+		skierList.generateAllGroups();
+		group = skierList.getGroup("H33");
+//		group.generateGroupList(skierList, "H33");
 		group.generateGroupListTime(new int[] {10,00,00}, 30, 100);
 		screenHandler(Screen.INTRO);
 		
@@ -210,7 +212,7 @@ public class ProgLogic {
 			chosenGroup = usrReplies[0];
 			System.out.println(chosenGroup + "Was chosen");
 
-			group = new GroupList();
+			group = new Group(chosenGroup);
 			group.generateGroupList(skierList, chosenGroup);
 
 			ui.clrScrn();
@@ -273,7 +275,7 @@ public class ProgLogic {
 
 				@Override
 				public void onClick(Integer skierNum) { 
-					group.setSkierCheckpointTimeFromPlayerNumber(skierNum, ui.getCurrTimeInts());
+					group.getSkierFromPlayerNumber(skierNum).setCheckpointTime(ui.getCurrTimeInts());
 					int[] arr =  group.getSkierFromPlayerNumber(skierNum).getCheckpointTimeFinish();
 					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 0) ).setText(String.format("%02d:%02d:%02d", arr[0], arr[1], arr[2]));
 					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 0) ).setEnabled(false);
@@ -283,7 +285,7 @@ public class ProgLogic {
 			GuiCallback<Integer> fnshCback = new GuiCallback<Integer>() {
 				@Override
 				public void onClick(Integer skierNum) { 
-					group.setSkierGoalTimeFromPlayerNumber(skierNum, ui.getCurrTimeInts());
+					group.getSkierFromPlayerNumber(skierNum).setGoalTime(ui.getCurrTimeInts());
 					int[] arr =  group.getSkierFromPlayerNumber(skierNum).getGoalTimeFinish();
 					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 1) ).setText(String.format("%02d:%02d:%02d", arr[0], arr[1], arr[2]));
 					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 1) ).setEnabled(false);
@@ -296,6 +298,7 @@ public class ProgLogic {
 			ui.runClock();
 			ui.update();
 			
+
 
 			ui.addButtonTable( group.getSkierList().length, 0, 1, true );
 			for ( Skier skier : group.getSkierList() ) {
