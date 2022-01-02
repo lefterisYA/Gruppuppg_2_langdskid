@@ -72,6 +72,16 @@ public class Time implements Comparable<Time> {
 				);
 	}
 
+	public String toString(boolean includeHund) {
+		return String.format( 
+					"%02d:%02d:%02d.%02d", 
+					cdr.get(Calendar.HOUR_OF_DAY), 
+					cdr.get(Calendar.MINUTE),
+					cdr.get(Calendar.SECOND),
+					cdr.get(Calendar.MILLISECOND)/10
+				);
+	}
+
 	public Time diffTo(Time oTime) {
 		return new Time( this.asUnixTime() - oTime.asUnixTime() );
 	}

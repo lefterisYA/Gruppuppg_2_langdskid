@@ -8,11 +8,16 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
+import javax.swing.Timer;
+
+import timekeeping.Time;
 
 import java.util.LinkedList;
 import java.util.concurrent.Executors;
@@ -174,23 +179,31 @@ public class GUI {
 	
 	// ********************************************
 	// TODO: flytte ut.
-	private Clock clk;
+//	private Clock clk;
 	public void runClock() {
-		clk = new Clock();
+//		clk = new Clock();
 
-	    ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
-	    exec.scheduleAtFixedRate(new Runnable() {
-	    	@Override
-	    	public void run() {
-	    		setTitle( "\n" + clk.getCurrTime() );
+//	    ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+//	    exec.scheduleAtFixedRate(new Runnable() {
+//	    	@Override
+//	    	public void run() {
+////	    		setTitle( "\n" + clk.getCurrTime() );
+//	    		setTitle( "\n" + Time.getCurrTime().toString(true) );
+//	    	}
+//	    }, 0, 20, TimeUnit.MILLISECONDS);
+	    ActionListener taskPerformer = new ActionListener() {
+	    	public void actionPerformed(ActionEvent evt) {
+	    		setTitle( "\n" + Time.getCurrTime().toString(true) );
 	    	}
-	    }, 0, 20, TimeUnit.MILLISECONDS);
+	    };
+	    new Timer(0, taskPerformer).start();
 	}
+
 	public String getCurrTime() {
-		return clk.getCurrTime();
+		return Time.getCurrTime().toString();
 	}
 	public int[] getCurrTimeInts() {
-		return clk.getCurrTimeInts();
+		return Time.getCurrTime().asHumanTime();
 	}
 
 	
