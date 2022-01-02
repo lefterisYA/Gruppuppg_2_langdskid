@@ -40,21 +40,50 @@ public class SkierHandler {
 		}
 		return skierList;
 	}
-
-	public void generateAllGroups() { //jobbar på denna
+	/**
+	 * Skriv in skidåkarklassen (group) så returneras skidåkarklassen i ett Group objekt.
+	 * @param group (skidåkarkklass)
+	 * @return den skidåkarklassen i ett Group objekt.
+	 */
+	public Group getGroup(String group){
+		Group groups = new Group(group);
+		for (int i = 0; i < allGroups.size(); i++) {
+			if(allGroups.get(i).getSkiingGroup().equals(group)) {
+				groups=allGroups.get(i);
+			}
+		}
+		return groups;
+		
+		
+	}
+/**
+ * När detta objekt har skidåkare i sig kan man använda denna metod för att generera alla skidklasser (groups)
+ * som möjligtvis kan finnas baserat på de skidåkare i objektet.
+ * 
+ * Finns en risk att denna metod är lite överkomplicerad... Se getUniqueGroupList om du vill göra om den
+ * men just nu funkar den i alla fall.
+ */
+	public void generateAllGroups() {
+		if(allGroups.isEmpty())
 		allGroups.add(new Group(allSkiers.get(0), getSkiingGroup(allSkiers.get(0))));
 		for (int i = 0; i < allSkiers.size(); i++) {
+			boolean newgroupcheck = false;
+			int groupatj = 0;
 			for (int j = 0; j < allGroups.size(); j++) {
-				System.out.println(getSkiingGroup(allSkiers.get(i)));
-				System.out.println(allGroups.get(j).getSkiingGroup());
-				if (getSkiingGroup(allSkiers.get(i)).equals(allGroups.get(j).getSkiingGroup())) {
-					allGroups.get(j).addToGroup(allSkiers.get(i));
-//						allGroups.add(new Group(allSkiers.get(i), getSkiingGroup(allSkiers.get(i))));
+				if (!(getSkiingGroup(allSkiers.get(i)).equals(allGroups.get(j).getSkiingGroup()))) {
+					newgroupcheck=true;
 				} else {
-					if(getSkiingGroup(allSkiers.get(i))(allGroups.c))
-					allGroups.add(new Group(allSkiers.get(i), getSkiingGroup(allSkiers.get(i))));
+					newgroupcheck=false;
+					groupatj = j;
+					break;
+				}
 				}
 				
+			if(newgroupcheck==true && !(allGroups.contains(allSkiers.get(i)))) {
+				allGroups.add(new Group(allSkiers.get(i), getSkiingGroup(allSkiers.get(i))));
+			}
+			else if (!(allGroups.contains(allSkiers.get(i)))){
+				allGroups.get(groupatj).addToGroup(allSkiers.get(i));
 			}
 		}
 
@@ -104,4 +133,22 @@ public class SkierHandler {
 		}
 		return uniqueGroupsList;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(allGroups, allSkiers);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SkierHandler other = (SkierHandler) obj;
+		return Objects.equals(allGroups, other.allGroups) && Objects.equals(allSkiers, other.allSkiers);
+	}
+	
 }
