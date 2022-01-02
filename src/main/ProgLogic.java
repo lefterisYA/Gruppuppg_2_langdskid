@@ -310,17 +310,19 @@ public class ProgLogic {
 
 			ui.setTitle(chosenGroup);
 			ui.setBodyText(chosenGroup);
-			ui.addTable(new String[] { "Åkarnummer", "Namn", "Mellanmål", "Slutmål" }, 1, 1, true);
+			ui.addTable(new String[] { "Åkarnummer", "Namn", "Starttid", "Mellanmål", "Slutmål", "Total tid" }, 0, 1, true);
 
-			group.sortSkierListCheckpointTime();
-
+			group.sortSkierListGoalTime();
+			
 			for ( Skier skier : group.getSkierList() ) {
 				System.out.println("adding "+skier.getName() + " " + skier.getPlayerNumber());
+				String startingTime = skier.getTimeHandler().getStartTime().toString();
 				String checkPTime = skier.getTimeHandler().getCheckPointTime().toString();
 				String finishTime = skier.getTimeHandler().getFinishTime().toString();
+				String totalTime = skier.getTimeHandler().getRunningTimeToFinish().toString();
 
 				String skierNumber = String.valueOf(skier.getPlayerNumber());
-				ui.getTextTable().addTableRow(new String[] { skierNumber, skier.getFirstName(), checkPTime, finishTime }); // , 0, 1, true);
+				ui.getTextTable().addTableRow(new String[] { skierNumber, skier.getFirstName(), startingTime, checkPTime, finishTime, totalTime }); // , 0, 1, true);
 			}
 			ui.addButton( "Bakåt",					Screen.BACK,	 	new ElmntPos(0, 1, true));
 			ui.addButton( "Huvudmeny",				Screen.INTRO,	 	new ElmntPos(1, 0, true));
