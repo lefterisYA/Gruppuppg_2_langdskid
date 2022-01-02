@@ -1,11 +1,27 @@
 package timekeeping;
 
+import java.util.Calendar;
+
 // Här finns metoder för att sätta starttid, mellantid och sluttid för aktuell åkare, använd timeKeeper till gui
 public class Timekeeper {
 		private Time startTime;
 		private Time checkPointTime;
 		private Time finishTime;
 		
+		public static void main(String[] args) {
+			Time time0 = new Time(16,40,0);
+			Time time1 = new Time(16,40,0);
+			Time extra = new Time(1, Time.Unit.SECONDS);
+			Time res = time1.addTo(extra);
+
+			System.out.println(time1.toString());
+			System.out.println(res.toString());
+//			System.out.println(time1.diffTo(time0));
+//			System.out.println(time1.diffTo(time0).cdr.get(Calendar.YEAR));
+
+			
+		}
+
 		public Timekeeper() {
 			this.startTime = new Time();
 		}

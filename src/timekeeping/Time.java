@@ -4,10 +4,12 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 public class Time implements Comparable<Time> {
-	private Calendar cdr;
+	public enum Unit { HOURS, MINUTES, SECONDS, MILLIS };
+
+	public final Calendar cdr;
 	
 	/**
-	 * Creates a temporary Time object set to the current time so we can call all the non-static formats converters.
+	 * Creates a temporary Time object set to the current time so we can call all the non-static format-converters.
 	 * @return a Time object set to the current system time.
 	 */
 	public static Time getCurrTime() {
@@ -18,17 +20,37 @@ public class Time implements Comparable<Time> {
 	 * Creates a new Time set to the current system time
 	 */
 	public Time() {
-		this(System.currentTimeMillis());
+		// To simplify the calculation of the difference and sum of two times, we set the calendar to January 1st 1970.
+		// Otherwise, creating a 30 second time object would get wonky...
+		// We have to get manually add the offset based on our timezone when we call System.currentTimeMillis.
+		cdr = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+		cdr.setTimeInMillis(System.currentTimeMillis()+TimeZone.getDefault().getRawOffset());
+		cdr.set(0, 0, 0);
 	}
 
-	/**getTimeInMillis
-	 * Creates a new Time set to parameter time in milliseconds since epoch.
+	/**
+	 * Creates a new Time set to parameter @time in milliseconds since epoch.
 	 * @param time the time in milliseconds since epoch.
 	 */
 	public Time(long time) {
-		cdr = Calendar.getInstance();
-		cdr.setTimeZone(TimeZone.getTimeZone("GMT"));
+		cdr = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 		cdr.setTimeInMillis(time);
+	}
+
+	public Time(int time, Unit unit) {
+		cdr = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+		int res=time;
+		switch (unit){
+		case HOURS:
+			res*=60;
+		case MINUTES:
+			res*=60;
+		case SECONDS:
+			res*=1000;
+		case MILLIS:
+		}
+
+		cdr.setTimeInMillis(res);
 	}
 
 	/**
@@ -36,8 +58,16 @@ public class Time implements Comparable<Time> {
 	 * @param time the time in int[] {h, m, s} we wish to set the new time.
 	 */
 	public Time(int[] time) {
-		this(System.currentTimeMillis());
-		cdr.set(cdr.get(Calendar.YEAR), cdr.get(Calendar.MONTH), cdr.get(Calendar.DATE), time[0], time[1], time[2]);
+		this(time[0], time[1], time[2], 0);
+	}
+
+	public Time(int hr, int mn, int sc) {
+		this(hr, mn, sc, 0);
+	}
+	
+	public Time(int hr, int mn, int sc, int ms) {
+		cdr = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+		cdr.setTimeInMillis( (hr * 3600 * 1000) + (mn * 60 * 1000) + (sc * 1000) + ms );
 	}
 
 	/**
