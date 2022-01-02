@@ -1,8 +1,9 @@
 package timekeeping;
 
 import java.util.Calendar;
+import java.util.TimeZone;
 
-public class Time {
+public class Time implements Comparable<Time> {
 	private Calendar cdr;
 	
 	/**
@@ -12,22 +13,21 @@ public class Time {
 	public static Time getCurrTime() {
 		return new Time();
 	}
-
 	
 	/**
 	 * Creates a new Time set to the current system time
 	 */
 	public Time() {
-		cdr = Calendar.getInstance();
-		cdr.setTimeInMillis(System.currentTimeMillis());
+		this(System.currentTimeMillis());
 	}
 
-	/**
+	/**getTimeInMillis
 	 * Creates a new Time set to parameter time in milliseconds since epoch.
 	 * @param time the time in milliseconds since epoch.
 	 */
 	public Time(long time) {
 		cdr = Calendar.getInstance();
+		cdr.setTimeZone(TimeZone.getTimeZone("GMT"));
 		cdr.setTimeInMillis(time);
 	}
 
@@ -36,8 +36,8 @@ public class Time {
 	 * @param time the time in int[] {h, m, s} we wish to set the new time.
 	 */
 	public Time(int[] time) {
-		this();
-		cdr.set(cdr.get(Calendar.YEAR), cdr.get(Calendar.MONTH), cdr.get(Calendar.DAY_OF_MONTH), time[0], time[1], time[2]);
+		this(System.currentTimeMillis());
+		cdr.set(cdr.get(Calendar.YEAR), cdr.get(Calendar.MONTH), cdr.get(Calendar.DATE), time[0], time[1], time[2]);
 	}
 
 	/**
@@ -71,9 +71,19 @@ public class Time {
 					cdr.get(Calendar.SECOND)
 				);
 	}
+
+	public Time diffTo(Time oTime) {
+		return new Time( this.asUnixTime() - oTime.asUnixTime() );
+	}
+	
+	@Override
+	public int compareTo(Time oTime) {
+		return ( (Long) cdr.getTimeInMillis() ).compareTo(oTime.asUnixTime());
+	}
 //		return new int[] { 
 //				cdr.get(Calendar.HOUR_OF_DAY), 
 //				cdr.get(Calendar.MINUTE), 
 //				cdr.get(Calendar.SECOND), 
 //				cdr.get(Calendar.MILLISECOND) / 10
+
 }

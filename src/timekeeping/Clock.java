@@ -10,20 +10,26 @@ public class Clock {
 	public static void main(String[] args) {
 //		Calendar cdr = Calendar.getInstance();
 //		
-		Time testTime1 = new Time();
-		Time testTime2 = new Time();
-		Time testTime3 = new Time(new int[] {13,15,20});
+		Time testTime0 = new Time();
+
+		Time testTime1 = new Time(new int[] {13,16,20});
+		Time testTime2 = new Time(new int[] {13,16,10});
+		System.out.println("0:    "+ testTime0.toString());
+		System.out.println("1:    "+ testTime1.toString());
+		System.out.println("2:    "+ testTime2.toString());
+
+		System.out.println("Diff: "+ testTime1.diffTo(testTime2));
 		
+		System.exit(0);
 		System.out.println(testTime1.toString());
 		System.out.println(testTime2.toString());
-		System.out.println(testTime3.toString());
 
 		System.out.println(testTime2.toString());
 
 		System.out.println(testTime2.asUnixTime());
-		System.out.println(testTime3.asUnixTime());
+		
 
-		System.out.println(Time.getCurrTime().toString());
+//		System.out.println(Time.getCurrTime().toString());
 //		Clock testClock = new Clock();
 //		testClock.setStartTime(new Time(new int[] {10,10,10} ));
 //		testClock.setStartTime(new Time( 15 ));

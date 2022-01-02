@@ -7,7 +7,11 @@ public class Timekeeper {
 		private Time finishTime;
 		
 		public Timekeeper() {
-			//this.startTime = System.currentTimeMillis();
+			this.startTime = new Time();
+		}
+
+		public Timekeeper(Time startTime) {
+			this.startTime = startTime;
 		}
 		
 		public Time getStartTime() {
@@ -33,10 +37,12 @@ public class Timekeeper {
 			this.checkPointTime = checkPointTime;
 		}
 		
-		public Time getRunningTime() {
-			long now = System.currentTimeMillis();
-//			int difference = (int) (now-this.getStartTime())/1000; 
-			return null;
+		public Time getRunningTimeToFinish() {
+			return finishTime.diffTo(startTime);
+		}
+
+		public Time getRunningTimeToCheckpoint() {
+			return checkPointTime.diffTo(startTime);
 		}
 
 //		public void setCheckPointTime() { // denna ska du ropa på Joakim
