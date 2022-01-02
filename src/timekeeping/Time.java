@@ -8,40 +8,10 @@ public class Time implements Comparable<Time> {
 	
 	public enum Unit { HOURS, MINUTES, SECONDS, MILLIS };
 
-	/**
-	 * Creates a temporary Time object set to the current time so we can call all the non-static format-converters.
-	 * @return a Time object set to the current system time.
-	 */
-	public static Time getCurrTime() {
-		return new Time();
-	}
-	
-	private static int[] parseString(String time) {
-		String[] timeStrArr = time.split(":");
-		return new int[] {
-			Integer.parseInt(timeStrArr[0]),
-			Integer.parseInt(timeStrArr[1]),
-			Integer.parseInt(timeStrArr[2])
-		};
-	}
+	///////
+	// Constructors:
 
-	private static String toString(Time time, boolean includeHund) {
-		int hr = time.cdr.get(Calendar.HOUR_OF_DAY);
-		int mn = time.cdr.get(Calendar.MINUTE);
-		int sc = time.cdr.get(Calendar.SECOND);
-
-		if ( includeHund ) {
-			int ms = time.cdr.get(Calendar.MILLISECOND)/10;
-			return String.format("%02d:%02d:%02d.%02d", hr, mn, sc, ms );
-		} else {
-			return String.format("%02d:%02d:%02d", 		hr, mn, sc );
-		}
-	}
-
-
-	/**
-	 * Creates a new Time set to the current system time
-	 */
+	/** New Time set to the current system time */
 	public Time() {
 		// To simplify the calculation of the difference and sum of two times, we set the calendar to January 1st 1970.
 		// Otherwise, creating a 30 second time object would get wonky...
@@ -51,15 +21,13 @@ public class Time implements Comparable<Time> {
 		cdr.set(0, 0, 0);
 	}
 
-	/**
-	 * Creates a new Time set to parameter @time in milliseconds since epoch.
-	 * @param time the time in milliseconds since epoch.
-	 */
+	/** @param time New time set to @time. */
 	public Time(long time) {
 		cdr = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 		cdr.setTimeInMillis(time);
 	}
 
+	/** @param time New time set to @time on unit @unit */
 	public Time(int time, Unit unit) {
 		cdr = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 		int res=time;
@@ -76,31 +44,47 @@ public class Time implements Comparable<Time> {
 		cdr.setTimeInMillis(res);
 	}
 
+	/** @param time New time set to String @time with format "hh:mm:ss" */
 	public Time(String time) {
 		this(parseString(time));
 	}
 
-	/**
-	 * Creates a new Time set to todays date and time given by parameter time in int[] {h, m, s}
-	 * @param time the time in int[] {h, m, s} we wish to set the new time.
-	 */
+	// Helper for constructor above...
+	private static int[] parseString(String time) {
+		String[] tArr = time.split(":");
+		return new int[] { Integer.parseInt(tArr[0]), Integer.parseInt(tArr[1]), Integer.parseInt(tArr[2]) };
+	}
+
+	/** @param time new time set to  int[] {h, m, s}. */
 	public Time(int[] time) {
 		this(time[0], time[1], time[2], 0);
 	}
 
+	/** @param hr @param mn @param sc hours minutes seconds we wish to set the time to.*/
 	public Time(int hr, int mn, int sc) {
 		this(hr, mn, sc, 0);
 	}
 	
+	/** @param hr @param mn @param sc @param ms hours minutes seconds milliseconds we wish to set the time to.*/
 	public Time(int hr, int mn, int sc, int ms) {
 		cdr = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 		cdr.setTimeInMillis( (hr * 3600 * 1000) + (mn * 60 * 1000) + (sc * 1000) + ms );
 	}
+	
 
-	/**
-	 * 
-	 * @return the time given in int[] { hh, mm, ss } format
-	 */
+	///////
+	///////
+	
+	public void setToNow() {
+		cdr.setTimeInMillis(System.currentTimeMillis()+TimeZone.getDefault().getRawOffset());
+		cdr.set(0, 0, 0);
+	}
+	
+	
+	////////////////////
+	// "Getters" in different formats...
+
+	/** @return the time given in int[] { hh, mm, ss } format */
 	public int[] asHumanTime() {
 		return new int[] { 
 				cdr.get(Calendar.HOUR_OF_DAY), 
@@ -109,42 +93,49 @@ public class Time implements Comparable<Time> {
 		};
 	}
 	
-	/**
-	 * 
-	 * @return uTime a time given in unix time format, a big long
-	 */
-	public long asUnixTime() {
+	/** @return the time in milliseconds*/
+	public long inMs() {
 		return cdr.getTimeInMillis();
 	}
 
+	/** @return the time in the format hh:ss:mm */
 	public String toString() {
-		return toString(this, false);
+		return toString(false);
 	}
 
+	/** @return the time in the format hh:ss:mm with an optional .hs (hundreds of a second). */
 	public String toString(boolean withHundrs) {
-		return toString(this, withHundrs);
-	}
+		int[] vals = asHumanTime();
 
+		if ( withHundrs ) {
+			int ms = cdr.get(Calendar.MILLISECOND)/10;
+			return String.format("%02d:%02d:%02d.%02d", vals[0], vals[1], vals[2], ms );
+		} else {
+			return String.format("%02d:%02d:%02d", 		vals[0], vals[1], vals[2] );
+		}
+	}
+	
+
+	////////////////////
+	//"Smart" methods and math methods!
+
+	/** @param oTime second operand, obj being called on is the first. @return returns the result of: this - oTime */
 	public Time diffTo(Time oTime) {
-		return new Time( this.asUnixTime() - oTime.asUnixTime() );
+		return new Time( this.inMs() - oTime.inMs() );
 	}
 	
+	/** @param oTime second operand, obj being called on is the first. @return returns the result of: this + oTime */
 	public Time addTo(Time oTime) {
-		return new Time( this.asUnixTime() + oTime.asUnixTime() );
+		return new Time( this.inMs() + oTime.inMs() );
 	}
 	
+	/** @param factor second operand, obj being called on is the first. @return returns the result of: this * factor */
 	public Time productOf(int factor) {
-		return new Time( this.asUnixTime() * factor );
+		return new Time( this.inMs() * factor );
 	}
 
 	@Override
 	public int compareTo(Time oTime) {
-		return ( (Long) cdr.getTimeInMillis() ).compareTo(oTime.asUnixTime());
+		return ( (Long) cdr.getTimeInMillis() ).compareTo(oTime.inMs());
 	}
-//		return new int[] { 
-//				cdr.get(Calendar.HOUR_OF_DAY), 
-//				cdr.get(Calendar.MINUTE), 
-//				cdr.get(Calendar.SECOND), 
-//				cdr.get(Calendar.MILLISECOND) / 10
-
 }

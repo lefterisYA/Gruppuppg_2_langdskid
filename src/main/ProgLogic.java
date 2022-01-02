@@ -123,7 +123,10 @@ public class ProgLogic {
 			ui.addButton( "Lägg till tävlande",		Screen.RGSTR_SKIER, 				new ElmntPos( 1, 0, true));
 			ui.addButton( "Visa slutresultat",		Screen.PRINT_STRTLIST,	 			new ElmntPos( 1, 0, true));
 			ui.addButton( "Se tävling", 			Screen.SEE_RACE,		 			new ElmntPos( 0, 1, false, true));
-			ui.addButton( "Resultattavla",			Screen.LIVE_SCOREBOARD,				new ElmntPos( 1, 0, true));
+			ui.addButton( "Live-tavla",				Screen.LIVE_SCOREBOARD,				new ElmntPos( 1, 0, true));
+			ui.addButton( "Slut-resultat",			Screen.FINISH_SCOREBOARD,			new ElmntPos( 1, 0, true));
+			ui.addButton( "WIP",		 			Screen.PRINT_STRTLIST,	 			new ElmntPos( 0, 1, false, true));
+			ui.addButton( "WIP",					Screen.PRINT_STRTLIST,	 			new ElmntPos( 1, 0, true));
 			ui.addButton( "WIP",					Screen.PRINT_STRTLIST,	 			new ElmntPos( 1, 0, true));
 			ui.addVertSpcr(400);
 			ui.addButton( "OK",						Screen.ACPT, 						new ElmntPos( 0, 1, false, true));
@@ -337,8 +340,9 @@ public class ProgLogic {
 				String skierNumber = String.valueOf(skier.getPlayerNumber());
 				ui.getTextTable().addTableRow(new String[] { skierNumber, skier.getFirstName(), checkPTime, finishTime }); // , 0, 1, true);
 			}
+			ui.addButton( "Bakåt",					Screen.BACK,	 	new ElmntPos(0, 1, true));
+			ui.addButton( "Huvudmeny",				Screen.INTRO,	 	new ElmntPos(1, 0, true));
 			ui.update();
-			ui.addButton( "Bakåt",					Screen.BACK,	 	new ElmntPos(0, 1, false));
 
 			break;
 			
@@ -352,17 +356,19 @@ public class ProgLogic {
 			group.sortSkierListCheckpointTime();
 
 			for ( Skier skier : group.getSkierList() ) {
-				System.out.println("adding "+skier.getName() + " " + skier.getPlayerNumber());
 //				String checkPTime = String.format("%02d:%02d:%02d", 
 //						skier.getCheckpointTime()[0] , skier.getCheckpointTime()[1] , skier.getCheckpointTime()[2] );
+
+				System.out.println("adding "+skier.getName() + " " + skier.getPlayerNumber());
 				String checkPTime = skier.getTimeHandler().getCheckPointTime().toString();
 				String finishTime = skier.getTimeHandler().getFinishTime().toString();
 				String skierNumber = String.valueOf(skier.getPlayerNumber());
 
 				ui.getTextTable().addTableRow(new String[] { skierNumber, skier.getFirstName(), checkPTime, finishTime }); // , 0, 1, true);
 			}
+			ui.addButton( "Bakåt",					Screen.BACK,	 	new ElmntPos(0, 1, true));
+			ui.addButton( "Huvudmeny",				Screen.INTRO,	 	new ElmntPos(1, 0, true));
 			ui.update();
-			ui.addButton( "Bakåt",					Screen.BACK,	 	new ElmntPos(-3, 0, false));
 
 			break;
 

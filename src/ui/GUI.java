@@ -180,8 +180,10 @@ public class GUI {
 	
 	// ********************************************
 	// TODO: flytte ut.
-//	private Clock clk;
+	private Time timeKeeper;
 	public void runClock() {
+		timeKeeper = new Time();
+
 //		clk = new Clock();
 
 //	    ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
@@ -194,20 +196,13 @@ public class GUI {
 //	    }, 0, 20, TimeUnit.MILLISECONDS);
 	    ActionListener taskPerformer = new ActionListener() {
 	    	public void actionPerformed(ActionEvent evt) {
-	    		setTitle( "\n" + Time.getCurrTime().toString(true) );
+	    		timeKeeper.setToNow();
+	    		setTitle( "\n" + timeKeeper.toString(true) );
 	    	}
 	    };
 	    new Timer(0, taskPerformer).start();
 	}
 
-	public String getCurrTime() {
-		return Time.getCurrTime().toString();
-	}
-	public int[] getCurrTimeInts() {
-		return Time.getCurrTime().asHumanTime();
-	}
-
-	
 
 
 	// ********************************************
