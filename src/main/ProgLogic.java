@@ -10,7 +10,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 
-import checkpoint.CompareSkierPlacingCheckpoint;
+import placing.CompareSkierPlacingCheckpoint;
 import skiing.Group;
 import skiing.Skier;
 import skiing.SkierHandler;

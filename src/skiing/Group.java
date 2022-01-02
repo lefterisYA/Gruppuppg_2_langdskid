@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
-import checkpoint.CompareSkierPlacingCheckpoint;
+import placing.CompareSkierPlacingCheckpoint;
 import common.Utils;
-import skiingresult.CompareSkierPlacingGoal;
+import placing.CompareSkierPlacingGoal;
 
 public class Group {
 	private List<Skier> group = new LinkedList<Skier>();
