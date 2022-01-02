@@ -8,10 +8,25 @@ public class Clock {
 	private long finishTime;
 	
 	public static void main(String[] args) {
+//		Calendar cdr = Calendar.getInstance();
+//		
+		Time testTime1 = new Time();
+		Time testTime2 = new Time();
+		Time testTime3 = new Time(new int[] {13,15,20});
 		
-		Clock testClock = new Clock();
-		testClock.setStartTime(new Time(new int[] {10,10,10} ));
-		testClock.setStartTime(new Time( 15 ));
+		System.out.println(testTime1.toString());
+		System.out.println(testTime2.toString());
+		System.out.println(testTime3.toString());
+
+		System.out.println(testTime2.toString());
+
+		System.out.println(testTime2.asUnixTime());
+		System.out.println(testTime3.asUnixTime());
+
+		System.out.println(Time.getCurrTime().toString());
+//		Clock testClock = new Clock();
+//		testClock.setStartTime(new Time(new int[] {10,10,10} ));
+//		testClock.setStartTime(new Time( 15 ));
 	}
 	
 
@@ -101,23 +116,23 @@ public class Clock {
 //	}
 	
 
-	private String setCheckPoint() { // denna ska du ropa på Joakim
-		long now = System.currentTimeMillis(); // tiden nu i millisekunder		
+//	private String setCheckPoint() { // denna ska du ropa på Joakim
+//		long now = System.currentTimeMillis(); // tiden nu i millisekunder		
 //		int difference = (int) (now-this.getStartTime())/1000; // tar skillnaden mellan aktuell start tid och nu tid
 //		String diffString = Utils.toString(Utils.getInstance().timeConverter(difference)); // gör om det till timmar minuter sekunder
 //		this.setCheckPointTime(diffString); // mellantiden som åkaren fick lagrar vi fast i variablen checkPointTime, varje åkare kommer på sin klocka ha en lagrad mellantid
 //		return diffString;
-		return null;
-	}
-	private String setFinish() { // Sätter sluttid
-		long now = System.currentTimeMillis(); // tiden nu i millisekunder
+//		return null;
+//	}
+//	private String setFinish() { // Sätter sluttid
+//		long now = System.currentTimeMillis(); // tiden nu i millisekunder
 //		int difference = (int) (now-this.getStartTime())/1000; // tar skillnaden mellan aktuell start tid och nu tid
 //		String diffString = Utils.toString(Utils.getInstance().timeConverter(difference)); // gör om det till timmar minuter sekunder
 //		this.setFinishTime(diffString);
 //		this.setFinishTimeMillis(difference);
 //		return diffString;
-		return null;
-	}
+//		return null;
+//	}
 
 	
 }
