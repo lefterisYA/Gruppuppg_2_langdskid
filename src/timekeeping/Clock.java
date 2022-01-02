@@ -55,7 +55,30 @@ public class Clock {
 	
 
 
+	public String getCurrTime() {
+		Calendar cdr = Calendar.getInstance();
+		cdr.setTimeInMillis(System.currentTimeMillis());
 	
+		String time = String.format( 
+					"%02d:%02d:%02d:%02d", 
+					cdr.get(Calendar.HOUR_OF_DAY), 
+					cdr.get(Calendar.MINUTE),
+					cdr.get(Calendar.SECOND),
+					cdr.get(Calendar.MILLISECOND) / 10
+				);
+
+		return time;
+	}
+	
+	public int[] getCurrTimeInts() {
+		Calendar cdr = Calendar.getInstance();
+		cdr.setTimeInMillis(System.currentTimeMillis());
+		return new int[] { 
+				cdr.get(Calendar.HOUR_OF_DAY), 
+				cdr.get(Calendar.MINUTE), 
+				cdr.get(Calendar.SECOND), 
+		};
+	}
 //	private String getFinishTime() {
 //		return finishTime;
 //	}
