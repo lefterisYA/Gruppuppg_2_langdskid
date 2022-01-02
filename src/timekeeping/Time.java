@@ -4,10 +4,10 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 public class Time implements Comparable<Time> {
-	public enum Unit { HOURS, MINUTES, SECONDS, MILLIS };
-
 	public final Calendar cdr;
 	
+	public enum Unit { HOURS, MINUTES, SECONDS, MILLIS };
+
 	/**
 	 * Creates a temporary Time object set to the current time so we can call all the non-static format-converters.
 	 * @return a Time object set to the current system time.
@@ -16,6 +16,29 @@ public class Time implements Comparable<Time> {
 		return new Time();
 	}
 	
+	private static int[] parseString(String time) {
+		String[] timeStrArr = time.split(":");
+		return new int[] {
+			Integer.parseInt(timeStrArr[0]),
+			Integer.parseInt(timeStrArr[1]),
+			Integer.parseInt(timeStrArr[2])
+		};
+	}
+
+	private static String toString(Time time, boolean includeHund) {
+		int hr = time.cdr.get(Calendar.HOUR_OF_DAY);
+		int mn = time.cdr.get(Calendar.MINUTE);
+		int sc = time.cdr.get(Calendar.SECOND);
+
+		if ( includeHund ) {
+			int ms = time.cdr.get(Calendar.MILLISECOND)/10;
+			return String.format("%02d:%02d:%02d.%02d", hr, mn, sc, ms );
+		} else {
+			return String.format("%02d:%02d:%02d", 		hr, mn, sc );
+		}
+	}
+
+
 	/**
 	 * Creates a new Time set to the current system time
 	 */
@@ -51,6 +74,10 @@ public class Time implements Comparable<Time> {
 		}
 
 		cdr.setTimeInMillis(res);
+	}
+
+	public Time(String time) {
+		this(parseString(time));
 	}
 
 	/**
@@ -90,26 +117,12 @@ public class Time implements Comparable<Time> {
 		return cdr.getTimeInMillis();
 	}
 
-	/**
-	 * 
-	 */
 	public String toString() {
-		return String.format( 
-					"%02d:%02d:%02d", 
-					cdr.get(Calendar.HOUR_OF_DAY), 
-					cdr.get(Calendar.MINUTE),
-					cdr.get(Calendar.SECOND)
-				);
+		return toString(this, false);
 	}
 
-	public String toString(boolean includeHund) {
-		return String.format( 
-					"%02d:%02d:%02d.%02d", 
-					cdr.get(Calendar.HOUR_OF_DAY), 
-					cdr.get(Calendar.MINUTE),
-					cdr.get(Calendar.SECOND),
-					cdr.get(Calendar.MILLISECOND)/10
-				);
+	public String toString(boolean withHundrs) {
+		return toString(this, withHundrs);
 	}
 
 	public Time diffTo(Time oTime) {
@@ -120,6 +133,10 @@ public class Time implements Comparable<Time> {
 		return new Time( this.asUnixTime() + oTime.asUnixTime() );
 	}
 	
+	public Time productOf(int factor) {
+		return new Time( this.asUnixTime() * factor );
+	}
+
 	@Override
 	public int compareTo(Time oTime) {
 		return ( (Long) cdr.getTimeInMillis() ).compareTo(oTime.asUnixTime());
