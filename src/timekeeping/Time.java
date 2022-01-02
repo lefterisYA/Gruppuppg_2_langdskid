@@ -86,6 +86,10 @@ public class Time implements Comparable<Time> {
 		return new Time( this.asUnixTime() - oTime.asUnixTime() );
 	}
 	
+	public Time addTo(Time oTime) {
+		return new Time( this.asUnixTime() + oTime.asUnixTime() );
+	}
+	
 	@Override
 	public int compareTo(Time oTime) {
 		return ( (Long) cdr.getTimeInMillis() ).compareTo(oTime.asUnixTime());
