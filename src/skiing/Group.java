@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Scanner;
 
 import timekeeping.Time;
 
@@ -30,13 +29,13 @@ public class Group {
 	}
 
 	public void sortSkierListCheckpointTime() {
-//		CompareSkierPlacingCheckpoint compare = new CompareSkierPlacingCheckpoint();
-//		Collections.sort(group, compare);
+		CompareSkierPlacingCheckpoint compare = new CompareSkierPlacingCheckpoint();
+		Collections.sort(group, compare);
 	}
 
 	public void sortSkierListGoalTime() {
-//		CompareSkierPlacingGoal compare2 = new CompareSkierPlacingGoal();
-//		Collections.sort(group, compare2);
+		CompareSkierPlacingGoal compare2 = new CompareSkierPlacingGoal();
+		Collections.sort(group, compare2);
 	}
 
 	public Skier[] getSkierList() {
