@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-//TODO rensa gamla/oanvända metoder
 
 public class SkierHandler {
 
