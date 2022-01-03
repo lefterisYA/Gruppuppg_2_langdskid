@@ -21,7 +21,6 @@ public class Skier extends Person implements Comparable<Skier> {
 		this();
 		super.setFirstName(firstName);
 		super.setLastName(lastName);
-		super.setName(firstName+lastName);
 		super.setGender(gender);
 		super.setAge(age);
 	}
