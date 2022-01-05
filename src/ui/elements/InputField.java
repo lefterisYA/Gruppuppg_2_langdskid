@@ -1,5 +1,6 @@
 package ui.elements;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 
@@ -22,6 +23,7 @@ public class InputField extends JPanel {
 		txtFld = new JTextField();
 
 		txtFld.setPreferredSize(new Dimension(300, 20));
+//		this.setBackground(new Color(0,255,0));
 		txtFld.setFocusTraversalKeysEnabled(false); // So we can handle VK_TAB keyevent.
 		
 		add(new JLabel(title));

@@ -27,6 +27,7 @@ public class GUI {
 
 	private LinkedList<Screen> screenStack = new LinkedList<Screen>();
 	private InputFieldHandler inpFldHandler;
+	private DropdownHandler dropdownHandler;
 	private JLabel title;
 	private JTextArea body;
 	private String bodyText = "";
@@ -52,6 +53,7 @@ public class GUI {
 		body = new TextArea(bodyFont);
 		
 		inpFldHandler = new InputFieldHandler(this);
+		dropdownHandler = new DropdownHandler(this);
 	}
 	
 	// Handles remembering the screen navigation so we can go back to the previous Screen.
@@ -141,6 +143,21 @@ public class GUI {
 		InputField inpFld = inpFldHandler.gnrt(title, validityCback);
 		panel.add(inpFld, pos);
 		return inpFld;
+	}
+	public void addDropdownField(String title, String[] options, ElmntPos pos, int sizeX, int sizeY) {
+		Dropdown dropdown = dropdownHandler.gnrt(title, options, sizeX, sizeY);
+		panel.add(dropdown, pos);
+		
+	}
+	public void addDropdownFieldTriple(String title, String[] options, String[] options2, ElmntPos pos, int sizeX, int sizeY) {
+		Dropdown dropdown = dropdownHandler.gnrttriple(title, options, options2, sizeX, sizeY);
+		panel.add(dropdown, pos);
+	}
+	public String[] getDropdownChoice() {
+		return dropdownHandler.getDropdownVals();
+	}
+	public String[] getDropdownChoiceTime() {
+		return dropdownHandler.getDropdownValsTime();
 	}
 
 	public String[] getInpFieldVals() {
