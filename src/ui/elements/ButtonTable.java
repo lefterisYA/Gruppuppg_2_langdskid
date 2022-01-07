@@ -27,9 +27,9 @@ public class ButtonTable extends JPanel {
 		super(new GridLayout(height,4));
 	}
 	
-	public void addRow(String skierName, int skierNum, GuiCallback chckPntCback, GuiCallback fnshCback) {
-		Button checkpointButton = new Button("Checkpoint", chckPntCback, skierNum);
-		Button finishlineButton = new Button("Slutlinje", fnshCback, skierNum);
+	public void addRow(String skierName, int skierNum, GuiCallback<Integer> chckPntCback, GuiCallback<Integer> fnshCback) {
+		Button checkpointButton = new <Integer> Button("Checkpoint", chckPntCback, skierNum);
+		Button finishlineButton = new <Integer> Button("Slutlinje", fnshCback, skierNum);
 
 		JPanel iPanel = new JPanel(new GridLayout(1,4));
 		iPanel.add(new JLabel(skierName));

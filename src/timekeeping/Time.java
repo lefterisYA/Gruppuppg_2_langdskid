@@ -60,6 +60,11 @@ public class Time implements Comparable<Time> {
 		this(time[0], time[1], time[2], 0);
 	}
 
+	/** @param time new time set to  int[] {h, m, s}. */
+	public Time(String[] time) {
+		this(Integer.parseInt(time[0]), Integer.parseInt(time[1]), Integer.parseInt(time[2]), 0);
+	}
+
 	/** @param hr @param mn @param sc hours minutes seconds we wish to set the time to.*/
 	public Time(int hr, int mn, int sc) {
 		this(hr, mn, sc, 0);

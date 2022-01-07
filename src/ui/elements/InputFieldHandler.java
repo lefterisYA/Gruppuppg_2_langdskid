@@ -1,76 +1,37 @@
 package ui.elements;
 
-import java.awt.Component;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.LinkedList;
 
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
-
 import ui.GUI;
-import ui.interfaces.GuiCallback;
 import ui.interfaces.FieldValidator;
 
 public class InputFieldHandler {
 	private final LinkedList<InputField> inpFlds;
-	private final GUI ui;
+//	private final GUI ui;
 			
 	public InputFieldHandler(GUI ui) {
 		inpFlds = new LinkedList<>();
-		this.ui = ui;
+//		this.ui = ui;
 	}
 	
 	public InputField gnrt(String label) {
 		InputField newInpFld = new InputField(label);
-		addKeyListeners(newInpFld);
 		inpFlds.add(newInpFld);
 
 		return newInpFld;
 	}
 
 	public InputField gnrt( String label, FieldValidator validator ) {
-		InputField newInpFld = new InputField(label, validator);
+		InputField newInpFld = new InputField(label, validator, this);
 		inpFlds.add(newInpFld);
-
-		addKeyListeners(newInpFld);
-		addValidityCheckListeners(newInpFld, validator);
-		
 		return newInpFld;
 	}
 
-	private void addKeyListeners(InputField field) {
-		field.getTxtFld().addKeyListener( (KeyListener) new KeyListener() {
-			public void keyPressed(KeyEvent e) {
-				if ( e.getKeyCode() == KeyEvent.VK_ENTER ){ 
-//					ui.txtFldCbck(); // TODO
-				} else if ( e.getKeyCode() == KeyEvent.VK_TAB  ){ 
-					focusInpFldAtRelativeIdx(e.isShiftDown() ? -1 : 1);
-				}
-			}
-
-			@Override public void keyReleased(KeyEvent e) { }
-
-			@Override public void keyTyped(KeyEvent e) { }
-			
-		} );
-	}
-	
-	private void addValidityCheckListeners(InputField field, FieldValidator validator) {
-		field.getTxtFld().addFocusListener( new FocusListener() {
-			@Override public void focusLost(FocusEvent e) {
-				if ( allFieldsAreValid() ) {
-					validator.onValidFields(field.getTxtFld().getText());
-				}
-				else {
-					validator.onInvalidFields(field.getTxtFld().getText());
-				}
-			}
-			
-			@Override public void focusGained(FocusEvent e) { }
-		});
+	public void fldValidityChangedCB(InputField caller) {
+		if ( allFieldsAreValid() )
+			caller.getValidator().onValidFields(caller.getTxtFld().getText());
+		else
+			caller.getValidator().onInvalidFields(caller.getTxtFld().getText());
 	}
 	
 	private boolean allFieldsAreValid() {
@@ -93,29 +54,6 @@ public class InputFieldHandler {
 		inpFlds.clear();
 	}
 
-	public LinkedList<InputField> getTextFields() {
-		LinkedList<InputField> retVal = new LinkedList<InputField>();
-		for ( InputField fld : inpFlds ) {
-			retVal.add(fld);
-		}
-		return retVal;
-	}
-
-	public LinkedList<String> getTextFieldVals() {
-		LinkedList<String> retVal = new LinkedList<String>();
-		for ( InputField fld : inpFlds ) {
-			retVal.add(fld.getText());
-		}
-//		for ( Component comp : getComponents() ) {
-//			if ( comp instanceof InputField ) {
-//				retVal.add(((InputField) comp).getText());
-//			} else if ( comp instanceof Panel ) {
-//				retVal.addAll( ( (Panel) comp ).getTextFieldVals() );
-//			}
-//		}
-		return retVal;
-	}
-
 	public void focusInpFldAtRelativeIdx(int relIdx) {
 		for ( int i=0; i<inpFlds.size(); i++ ) {
 			if ( ! inpFlds.get(i).getTxtFld().isFocusOwner() )
@@ -130,3 +68,58 @@ public class InputFieldHandler {
 		}
 	}
 }
+//	private void addKeyListeners(InputField field) {
+//		field.getTxtFld().addKeyListener( (KeyListener) new KeyListener() {
+//			public void keyPressed(KeyEvent e) {
+//				if ( e.getKeyCode() == KeyEvent.VK_ENTER ){ 
+////					ui.txtFldCbck(); // TODO
+//				} else if ( e.getKeyCode() == KeyEvent.VK_TAB  ){ 
+//					focusInpFldAtRelativeIdx(e.isShiftDown() ? -1 : 1);
+//				}
+//			}
+//
+//			@Override public void keyReleased(KeyEvent e) { }
+//
+//			@Override public void keyTyped(KeyEvent e) { }
+//			
+//		} );
+//	}
+	
+//	private void addValidityCheckListeners(InputField field, FieldValidator validator) {
+//		field.getTxtFld().addFocusListener( new FocusListener() {
+//			@Override public void focusLost(FocusEvent e) {
+//				if ( allFieldsAreValid() ) {
+//					validator.onValidFields(field.getTxtFld().getText());
+//				}
+//				else {
+//					validator.onInvalidFields(field.getTxtFld().getText());
+//				}
+//			}
+//			
+//			@Override public void focusGained(FocusEvent e) { }
+//		});
+//	}
+	
+
+//	public LinkedList<InputField> getTextFields() {
+//		LinkedList<InputField> retVal = new LinkedList<InputField>();
+//		for ( InputField fld : inpFlds ) {
+//			retVal.add(fld);
+//		}
+//		return retVal;
+//	}
+
+//	public LinkedList<String> getTextFieldVals() {
+//		LinkedList<String> retVal = new LinkedList<String>();
+//		for ( InputField fld : inpFlds ) {
+//			retVal.add(fld.getText());
+//		}
+////		for ( Component comp : getComponents() ) {
+////			if ( comp instanceof InputField ) {
+////				retVal.add(((InputField) comp).getText());
+////			} else if ( comp instanceof Panel ) {
+////				retVal.addAll( ( (Panel) comp ).getTextFieldVals() );
+////			}
+////		}
+//		return retVal;
+//	}

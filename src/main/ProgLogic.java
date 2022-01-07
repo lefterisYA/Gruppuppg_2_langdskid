@@ -1,6 +1,8 @@
 package main;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.swing.JButton;
 
@@ -98,12 +100,13 @@ public class ProgLogic {
 	FieldValidator nmbrValidator;
 	FieldValidator textValidator;
 	FieldValidator timeValidator;
-	Button<Screen> acptBttn = null;
-	Button<Screen> backBttn = null;
+	Button acptBttn = null;
+	Button backBttn = null;
+	String[][] usrInp;
 
 	private void screenHandler(Screen scrn, String[] usrReplies) {
 		System.out.println( Thread.currentThread().getStackTrace()[1] + ": " + ( scrn != null ? scrn.name() : "null" ));
-		Button<Screen> backBttn = ui.makeButton( "Avbryt", Screen.BACK);
+		Button backBttn = ui.makeButton( "Avbryt", Screen.BACK);
 
 		
 		ui.addToScreenStack(scrn);
@@ -152,8 +155,8 @@ public class ProgLogic {
 			ui.addInpField("Namn på tävlande:", textValidator, new ElmntPos(0, 1, 3, false, true));
 //			ui.addInpField("Kön:", 				textValidator, new ElmntPos(0, 1, 3, false, true));
 //			
-			String[] genders = {"Herr", "Dam"};
-			ui.addDropdownField("Kön:", genders, new ElmntPos(0, 1, 3, false, true), 300, 30);
+			String[][] genders = {{"Herr", "Dam"}};
+			ui.addDropdown("Kön:", genders, new ElmntPos(0, 1, 3, false, true), 300, 30);
 //			
 			ui.addInpField("Ålder:", 			nmbrValidator, new ElmntPos(0, 1, 3, false, true));
 			ui.addVertSpcr(200);
@@ -165,16 +168,17 @@ public class ProgLogic {
 			break;
 
 		case RGSTR_SKIER_FINISH:
-			String[] inpFldVals = ui.getInpFieldVals();
-			String[] dropdownVals = ui.getDropdownChoice();
-			String[] name = inpFldVals[0].split(" ");
+			usrInp = ui.getUsrInp(); // usrInp[1] => textfields // usrInp[0] => dropdown fields
+
+			String sex = usrInp[0][0];
+
+			String[] name = usrInp[1][0].split(" ");
 			String firstName = name[0];
 			String lastName = name.length > 1 ? name[name.length-1] : "";
-			int age = Integer.parseInt(inpFldVals[1]);
-			String gender = dropdownVals[0];
 
-			skierList.addSkiertoList( new Skier( firstName, lastName, gender, age ));
-			System.out.println(firstName+" "+age+" added!"+" It's a "+gender+"!");
+			int age = Integer.parseInt(usrInp[1][1]);
+			skierList.addSkiertoList( new Skier( firstName, lastName, sex, age ));
+			System.out.println(firstName+" "+age+" added!"+" It's a "+sex+"!");
 
 		case RGSTR_SKIER_VERIFY:
 			ui.setTitle("Klart?");
@@ -219,7 +223,7 @@ public class ProgLogic {
 //				}
 //			};
 
-			Button<Screen> acpt = ui.makeButton( "Fortsätt",	Screen.CREATE_RACE_2);
+			Button acpt = ui.makeButton( "Fortsätt",	Screen.CREATE_RACE_2);
 			acpt.setEnabled(false);
 
 			timeValidator = new FieldValidator(false, Type.STR) {
@@ -236,21 +240,16 @@ public class ProgLogic {
 				@Override public void onValidFields(String rawFldTxt)   	{ acpt.setEnabled(true);  }
 				@Override public void onInvalidFields(String rawFldTxt)   	{ acpt.setEnabled(false);  }
 			};
-			String[] sixty = new String[60];
-			for (int i = 0; i < sixty.length; i++) {
-				sixty[i]=Integer.toString(i);
-			}
-			String[] twentyfour = new String[24];
-			for(int i=0;i<twentyfour.length;i++){
-				twentyfour[i]=Integer.toString(i);
-			}
-//			ui.addInpField("Ange starttid (Första åktid):", 	timeValidator, new ElmntPos(0,1, false, true));
 			
-			ui.addDropdownFieldTriple("Ange starttid (Första åktid):", twentyfour, sixty, new ElmntPos(0,1, false, true), 350, 30);
-			
+			List<String> nums = IntStream.range(0, 60).boxed().map(x -> String.format("%02d", x)).collect(Collectors.toList());
+			String[] sixty = nums.toArray(new String[nums.size()]);
+			String[] twentyfour = nums.subList(0, 24).toArray(new String[23]);
+			String[][] usrChoices = new String[][] { twentyfour, sixty, sixty }	;
+
+			ui.addDropdown("Ange starttid (Första åktid):", usrChoices, new ElmntPos(0,1, false, true), 350, 30);
+			ui.addDropdown("Ange startintervall:", usrChoices, new ElmntPos(0,1, false, true), 300, 30);
+
 //			ui.addInpField("Ange startiinterfall:",				timeValidator, new ElmntPos(0,1, false, true));
-			
-			ui.addDropdownFieldTriple("Ange startintervall:", twentyfour, sixty, new ElmntPos(0,1, false, true), 300, 30);
 //			ui.addDropdownField(":", sixty, new ElmntPos(1,0, true, true), 75, 30);
 			
 			ui.addInpField("Ange första skid-åkares nummer:",	nmbrValidator, new ElmntPos(0,1, false, true));
@@ -262,17 +261,11 @@ public class ProgLogic {
 			break;
 
 		case CREATE_RACE_2:
-			String[] inpFldVals2 = ui.getInpFieldVals();
-			for ( String rep : inpFldVals2 ){
-				System.out.println(rep);
-			}
-			String[] dropdownValsTime = ui.getDropdownChoiceTime();
-			for (String wtf : dropdownValsTime) {
-				System.out.println(wtf);
-			}
-			Time startTime = new Time(dropdownValsTime[0]);
-			Time startInterval = new Time(dropdownValsTime[1]);
-			int firstNumber = Integer.parseInt(inpFldVals2[0]);
+//			String[] inpFldVals2 = ui.getInpFieldVals();
+			usrInp = ui.getUsrInp();
+			Time startTime = new Time( usrInp[0] );
+			Time startInterval = new Time( usrInp[1] );
+			int firstNumber = Integer.parseInt(usrInp[2][0]);
 			
 			group.generateGroupListTime( startTime, startInterval, firstNumber );
 

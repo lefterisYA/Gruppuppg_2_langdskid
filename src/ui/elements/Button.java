@@ -1,7 +1,6 @@
 package ui.elements;
 
 import java.awt.Color;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -9,12 +8,13 @@ import javax.swing.JButton;
 import javax.swing.border.EmptyBorder;
 
 import ui.GUI;
+import ui.ThemedComponent;
 import ui.interfaces.GuiCallback;
 
 /*
  * Addition to the JButton cllass so that action listeners are added at creatinong o fobjects.
  */
-public class Button<T> extends JButton {
+public class Button extends JButton { 
 	private static final long serialVersionUID = 1849303325697245859L;
 	GUI ui;
 	
@@ -27,7 +27,7 @@ public class Button<T> extends JButton {
 		});
 	}
 
-	public Button(String label, GuiCallback<T> callback, T cBackVal) {
+	public <T> Button(String label, GuiCallback<T> callback, T cBackVal) {
 		super(label);
 		setCommonProps();
 
