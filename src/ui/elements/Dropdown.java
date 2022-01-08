@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 
 import javax.swing.BoxLayout;
@@ -26,7 +27,8 @@ public class Dropdown extends JPanel implements UsrInp {
 	private static final long serialVersionUID = 8944226329210546780L;
 
 	public Dropdown(String[][] usrChoices, String title, String seperator, int x, int y) {
-		super(new GridLayout(1,2));
+		super(new GridBagLayout());
+//		super(new GridLayout(1,2));
 		JPanel titleP = new JPanel(new BorderLayout());
 		JPanel valueP = new JPanel();
 		valueP.setLayout(new BoxLayout(valueP, BoxLayout.X_AXIS));
@@ -36,13 +38,11 @@ public class Dropdown extends JPanel implements UsrInp {
 			dropDowns[i] = new DdItem(usrChoices[i]);
 		}
 
-		this.setPreferredSize(new Dimension(600, 20));
 //		titleP.setBackground(new Color(0,255,0));
-//		valueP.setBackground(new Color(255,0,0));
+//		valueP.setBackground(Color.GREEN);
 
 		titleP.add(new JLabel(title), BorderLayout.WEST);
 
-		add(titleP);
 		dropDowns[0] = new DdItem(usrChoices[0]);
 //		dropDowns[0].setBackground(new Color(0,0,0,0));
 		valueP.add(dropDowns[0]);
@@ -51,6 +51,10 @@ public class Dropdown extends JPanel implements UsrInp {
 			dropDowns[i] = new DdItem(usrChoices[i]);
 			valueP.add(dropDowns[i]);
 		}
+		this.setPreferredSize(new Dimension(600, 20));
+		titleP.setSize(new Dimension(200, 20));
+		valueP.setSize(new Dimension(400, 20));
+		add(titleP);
 		add(valueP);
 	}
 

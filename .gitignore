@@ -1,3 +1,5 @@
 bin/
 sources.txt
 build.xml
+.settings
+/target/
