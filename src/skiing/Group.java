@@ -29,13 +29,11 @@ public class Group {
 	}
 
 	public void sortSkierListCheckpointTime() {
-		CompareSkierPlacingCheckpoint compare = new CompareSkierPlacingCheckpoint();
-		Collections.sort(group, compare);
+		Collections.sort(group, new CompareSkierPlacingCheckpoint());
 	}
 
 	public void sortSkierListGoalTime() {
-		CompareSkierPlacingGoal compare2 = new CompareSkierPlacingGoal();
-		Collections.sort(group, compare2);
+		Collections.sort(group, new CompareSkierPlacingGoal());
 	}
 
     public void sortSkierListStartTime() {

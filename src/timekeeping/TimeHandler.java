@@ -8,10 +8,12 @@ public class TimeHandler {
 	public Time getStartTime() 							{ return startTime; }
 	public void setStartTime(Time startTime) 			{ this.startTime = startTime; }
 
+    public boolean hasFinished() 						{ return finishTime != null; }
 	public Time getFinishTime() 						{ return finishTime; }
 	public void setFinishTime(Time finishTime) 			{ this.finishTime = finishTime; }
 	public void setFinishTime() 						{ this.finishTime = new Time(); }
 
+    public boolean hasPassedCheckpont() 				{ return checkPointTime != null; }
 	public Time getCheckPointTime() 					{ return checkPointTime; }
 	public void setCheckPointTime() 					{ this.checkPointTime = new Time(); }
 	public void setCheckPointTime(Time checkPointTime) 	{ this.checkPointTime = checkPointTime; }

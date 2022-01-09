@@ -1,6 +1,7 @@
 package main;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -103,12 +104,11 @@ public class ProgLogic {
     Button reptBttn = null;
 	Button acptBttn = null;
 	Button backBttn = null;
-	String[][] usrInp;
+	Map<GUI.UsrInpTypes, String[][]> usrInp;
 
 	private void screenHandler(Screen scrn, String[] usrReplies) {
 		System.out.println( Thread.currentThread().getStackTrace()[1] + ": " + ( scrn != null ? scrn.name() : "null" ));
 		Button backBttn = ui.makeButton( "Avbryt", Screen.BACK);
-
 
 		ui.addToScreenStack(scrn);
 
@@ -116,12 +116,14 @@ public class ProgLogic {
 		case INTRO:
 			ui.clrScrn();
 			ui.setTitle( "Välkommen" );
+            ui.clearBackHist();
+
 			ui.addButton( "Skapa tävling", 			Screen.CREATE_RACE_PICK_GROUP, 		new ElmntPos( 0, 1, true));
 			ui.addButton( "Lägg till tävlande",		Screen.RGSTR_SKIER, 				new ElmntPos( 1, 0, true));
-			ui.addButton( "Visa slutresultat",		Screen.PRINT_STRTLIST,	 			new ElmntPos( 1, 0, true));
+			ui.addButton( "Visa slutresultat",		Screen.FINISH_SCOREBOARD, 			new ElmntPos( 1, 0, true));
 			ui.addButton( "Se tävling", 			Screen.SEE_RACE,		 			new ElmntPos( 0, 1, false, true));
 			ui.addButton( "Live-tavla",				Screen.LIVE_SCOREBOARD,				new ElmntPos( 1, 0, true));
-			ui.addButton( "Slut-resultat",			Screen.FINISH_SCOREBOARD,			new ElmntPos( 1, 0, true));
+			ui.addButton( "Visa skidåkare",    		Screen.SHOW_SKIER_INPUT,   			new ElmntPos( 1, 0, true));
 			ui.addButton( "Visa startlista",		Screen.PRINT_STRTLIST,	 			new ElmntPos( 0, 1, false, true));
 			ui.addButton( "WIP",					Screen.PRINT_STRTLIST,	 			new ElmntPos( 1, 0, true));
 			ui.addButton( "WIP",					Screen.PRINT_STRTLIST,	 			new ElmntPos( 1, 0, true));
@@ -178,13 +180,13 @@ public class ProgLogic {
 		case RGSTR_SKIER_FINISH:
 			usrInp = ui.getUsrInp();
 
-			String sex = usrInp[0][0];
+			String sex = usrInp.get(GUI.UsrInpTypes.dropDown)[0][0];
 
-			String[] name = usrInp[1][0].split(" ");
+			String[] name = usrInp.get(GUI.UsrInpTypes.inputFld)[0][0].split(" ");
 			String firstName = name[0];
 			String lastName = name.length > 1 ? name[name.length-1] : "";
 
-			int age = Integer.parseInt(usrInp[1][1]);
+            int age = Integer.parseInt( usrInp.get(GUI.UsrInpTypes.inputFld)[0][1] );
 			skierList.addSkiertoList( new Skier( firstName, lastName, sex, age ));
 			System.out.println(firstName+" "+age+" added!"+" It's a "+sex+"!");
 
@@ -200,18 +202,11 @@ public class ProgLogic {
 			break;
 
 		case CREATE_RACE_PICK_GROUP:
-			GuiCallback<String> cbackCrtRace = new GuiCallback<String>() {
-				public void onClick(String label){
-					screenHandler(Screen.CREATE_RACE, new String[] { label });
-				}
-			};
-
 			ui.clrScrn();
-			ui.clrUsrInpField();
 
 			ui.setTitle("Var god välj skid-klass");
 			for ( String group : skierList.getUniqueGroupsList() )
-				ui.addButton( group,				cbackCrtRace,	 	new ElmntPos(0, 1, true));
+				ui.addButton( group,				Screen.CREATE_RACE,	 	new ElmntPos(0, 1, true));
 
 			ui.addVertSpcr(200);
 			ui.addButton( backBttn,						new ElmntPos(0, 1, false, true));
@@ -219,8 +214,55 @@ public class ProgLogic {
 			ui.update();
 			break;
 
+        case SHOW_SKIER_INPUT:
+            ui.clrScrn();
+            nmbrValidator = new FieldValidator(false, Type.INT) {
+                @Override public void onValidFields(String rawFldTxt)   	{ acptBttn.setEnabled(true);  }
+                @Override public void onInvalidFields(String rawFldTxt)   	{ acptBttn.setEnabled(false);  }
+                };
+
+            acptBttn = ui.makeButton( "Fortsätt",	Screen.SHOW_SKIER);
+            acptBttn.setEnabled(false);
+
+            ui.setTitle("Visa skidåkare");
+            ui.addInpField("Skidåkar-nummer", nmbrValidator, new ui.ElmntPos(0, 1, false, true));
+            ui.addVertSpcr(200);
+            ui.addButton( backBttn,						new ElmntPos(0, 1, false, true));
+            ui.addButton( acptBttn,						new ElmntPos(1, 0, true, true));
+
+            ui.update();
+            break;
+
+        case SHOW_SKIER:
+            usrInp = ui.getUsrInp();
+            ui.clrScrn();
+
+            int skiNmbr = Integer.parseInt(usrInp.get(GUI.UsrInpTypes.inputFld)[0][0]);
+            Skier matchedSkier = null;
+            for ( Skier skier : skierList.getSkierList() ){
+                if ( skier.getPlayerNumber() == skiNmbr )
+                    matchedSkier = skier;
+            }
+            // Skier chosenSkier = skierList.getSkier(skiNmbr);
+
+            String timeInfo = "";
+            if ( matchedSkier.getTimeHandler().hasFinished() && matchedSkier.getTimeHandler().hasFinished() ){
+                timeInfo =  "Starttid:" + matchedSkier.getTimeHandler().getStartTime() + "\n"
+                            + "Sluttid:" + matchedSkier.getTimeHandler().getFinishTime() + "\n"
+                        + "Total tid:" + matchedSkier.getTimeHandler().getRunningTimeToFinish() + "\n";
+            }
+
+            ui.setBodyText( "Namn:" + matchedSkier.getName() + "\n" + timeInfo);
+
+            ui.addVertSpcr(200);
+            ui.addButton( backBttn,						new ElmntPos(0, 1, false, true));
+
+            ui.update();
+            break;
+
 		case CREATE_RACE:
-			chosenGroup = usrReplies[0];
+			// chosenGroup = ui.butt
+            chosenGroup = ui.getUsrInp().get(GUI.UsrInpTypes.bttnPrsd)[0][0];
 			System.out.println(chosenGroup + "Was chosen");
 
 			group = new Group(chosenGroup);
@@ -266,9 +308,9 @@ public class ProgLogic {
 		case CREATE_RACE_2:
 //			String[] inpFldVals2 = ui.getInpFieldVals();
 			usrInp = ui.getUsrInp();
-			Time startTime = new Time( usrInp[0] );
-			Time startInterval = new Time( usrInp[1] );
-			int firstNumber = Integer.parseInt(usrInp[2][0]);
+			Time startTime = new Time( usrInp.get(GUI.UsrInpTypes.dropDown)[0] );
+            Time startInterval = new Time( usrInp.get(GUI.UsrInpTypes.dropDown)[1] );
+			int firstNumber = Integer.parseInt(usrInp.get(GUI.UsrInpTypes.inputFld)[0][0]);
 
 			group.generateGroupListTime( startTime, startInterval, firstNumber );
 
@@ -285,8 +327,9 @@ public class ProgLogic {
 				public void onClick(Integer skierNum) {
 					Skier skier = group.getSkierFromPlayerNumber(skierNum);
 					skier.getTimeHandler().setCheckPointTime();
-					Time chkpntTime = skier.getTimeHandler().getCheckPointTime();
-					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 0) ).setText(chkpntTime.toString());
+					// Time chkpntTime = skier.getTimeHandler().getCheckPointTime();
+                    Time runningTime = skier.getTimeHandler().getRunningTimeToCheckpoint();
+					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 0) ).setText(runningTime.toString());
 					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 0) ).setEnabled(false);
 				}
 			};
@@ -299,8 +342,9 @@ public class ProgLogic {
 //					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 1) ).setText(String.format("%02d:%02d:%02d", arr[0], arr[1], arr[2]));
 					Skier skier = group.getSkierFromPlayerNumber(skierNum);
 					skier.getTimeHandler().setFinishTime();
-					Time finishTime = skier.getTimeHandler().getFinishTime();
-					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 1) ).setText(finishTime.toString());
+					// Time finishTime = skier.getTimeHandler().getFinishTime();
+                    Time runningTime = skier.getTimeHandler().getRunningTimeToFinish();
+					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 1) ).setText(runningTime.toString());
 					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 1) ).setEnabled(false);
 				}
 			};
@@ -351,9 +395,9 @@ public class ProgLogic {
 		case FINISH_SCOREBOARD:
 			ui.clrScrn();
 
-			ui.setTitle(chosenGroup);
+			ui.setTitle("Slut-resultat:");
 			ui.setBodyText(chosenGroup);
-			ui.addTable(new String[] { "Åkarnummer", "Namn", "Mellanmål", "Slutmål" }, 1, 1, true);
+			ui.addTable(new String[] { "Åkarnummer", "Namn", "Mellanmål", "Slutmål", "Total tid" }, 1, 1, true);
 
 			group.sortSkierListCheckpointTime();
 
@@ -365,8 +409,9 @@ public class ProgLogic {
 				String checkPTime = skier.getTimeHandler().getCheckPointTime().toString();
 				String finishTime = skier.getTimeHandler().getFinishTime().toString();
 				String skierNumber = String.valueOf(skier.getPlayerNumber());
+                String runningTime = skier.getTimeHandler().getRunningTimeToFinish().toString();
 
-				ui.getTextTable().addTableRow(new String[] { skierNumber, skier.getFirstName(), checkPTime, finishTime }); // , 0, 1, true);
+				ui.getTextTable().addTableRow(new String[] { skierNumber, skier.getFirstName(), checkPTime, finishTime, runningTime }); // , 0, 1, true);
 			}
 			ui.addButton( "Bakåt",					Screen.BACK,	 	new ElmntPos(0, 1, true));
 			ui.addButton( "Huvudmeny",				Screen.INTRO,	 	new ElmntPos(1, 0, true));
@@ -395,12 +440,12 @@ public class ProgLogic {
             ui.update();
 			break;
 
+        case BACK:
+            screenHandler(ui.getLastScreen());
+            break;
+
 		case EXIT:
 			System.exit(0);
-
-		case BACK:
-			screenHandler(ui.getLastScreen());
-			break;
 
 		default:
 			break;
