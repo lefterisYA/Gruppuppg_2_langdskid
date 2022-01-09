@@ -34,13 +34,20 @@ public class GUI {
 	private JTextArea body;
 	private TextTable textTable;
 	private ButtonTable buttonTable;
-
 	private GuiCallback<Screen> newScrnCallback;
+    private GUI oneGui;
+
+    private ActionListener taskPerformer = new ActionListener() {
+    	public void actionPerformed(ActionEvent evt) {
+    		timeKeeper.setToNow();
+    		setTitle( "\n" + timeKeeper.toString(true) );
+    	}
+    };
+	private Time timeKeeper = new Time();
+    private Timer clockTimer = new Timer(0, taskPerformer);
 
 	private Font bodyFont = new Font(Font.MONOSPACED, Font.PLAIN, 16);
 	private Font titleFont = new Font(Font.SANS_SERIF, Font.PLAIN, 44);
-
-    private GUI oneGui;
 
 	public GUI(GuiCallback<Screen> newScrnCallback) {
 		this.newScrnCallback = newScrnCallback;
@@ -58,12 +65,10 @@ public class GUI {
 		inpFldHandler = new InputFieldHandler(this);
 	}
 
-    // public GUI getInstance() {
-    //     if ( oneGui == null )
-    //         oneGui = new
-    // }
-
-	// Handles remembering the screen navigation so we can go back to the previous Screen.
+	/**
+	 * Keep a record every time we change screen so we can go back!
+	 * @param scrn
+	 */
 	public void addToScreenStack(Screen scrn) {
 		if ( scrn.isVirt )
 			return;
@@ -204,18 +209,6 @@ public class GUI {
 		return buttonTable;
 	}
 
-
-	// ********************************************
-	// TODO: flytte ut.
-	private Time timeKeeper = new Time();
-    private ActionListener taskPerformer = new ActionListener() {
-	    	public void actionPerformed(ActionEvent evt) {
-	    		timeKeeper.setToNow();
-	    		setTitle( "\n" + timeKeeper.toString(true) );
-	    	}
-	    };
-    // private Timer clockTimer;
-    private Timer clockTimer = new Timer(0, taskPerformer);
 
 	public void runClock() {
         clockTimer.start();

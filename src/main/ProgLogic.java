@@ -49,6 +49,13 @@ public class ProgLogic {
 		screenHandler(Screen.INTRO); // next screen
 	}
 
+	/**
+	 * A way too large method that handles all the different screens.
+	 * 
+	 * This method decides which and where components are to be drawn. It also creates all the callback methods which
+	 * in turn call this same method so it can decide the next step.
+	 * @param the next Screen to be drawn.
+	 */
 	private void screenHandler(Screen scrn) {
 		Button backBttn = ui.makeButton( "Avbryt", Screen.BACK);
 
@@ -273,16 +280,26 @@ public class ProgLogic {
 			acptBttn = ui.makeButton( "Fortsätt",	Screen.CREATE_RACE_2);
 			acptBttn.setEnabled(false);
 
-			timeValidator = new FieldValidator(false, Type.STR) {
-				@Override public void onValidFields(String rawFldTxt)   	{ acptBttn.setEnabled(true);  }
-				@Override public void onInvalidFields(String rawFldTxt)   	{ acptBttn.setEnabled(false);  }
+			/*
+			 * This validator is called by the JTextField created later. It makes sure that the field only contain 
+			 * numbers matching a time.
+			 * 
+			 * REPLACED BY DROPDOWN BOXES
+			 */
+//			timeValidator = new FieldValidator(false, Type.STR) {
+//				@Override public void onValidFields(String rawFldTxt)   	{ acptBttn.setEnabled(true);  }
+//				@Override public void onInvalidFields(String rawFldTxt)   	{ acptBttn.setEnabled(false);  }
+//
+//				@Override
+//				protected boolean stringValidator(String rawFldTxt) {
+//					return rawFldTxt.matches("([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]");
+//				}
+//			};
 
-				@Override
-				protected boolean stringValidator(String rawFldTxt) {
-					return rawFldTxt.matches("([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]");
-				}
-			};
-
+			/*
+			 * This validator is called by the JTextField created later. It makes sure that the field only contain 
+			 * numbers.
+			 */
 			nmbrValidator = new FieldValidator(false, Type.INT) {
 				@Override public void onValidFields(String rawFldTxt)   	{ acptBttn.setEnabled(true);  }
 				@Override public void onInvalidFields(String rawFldTxt)   	{ acptBttn.setEnabled(false);  }
@@ -416,6 +433,10 @@ public class ProgLogic {
 		}
 	}
 
+	/** 
+	 * Just make sure that a race exists so we don't get any errors.
+	 * @return
+	 */
     private boolean checkRaceExists() {
         if (group == null) {
             ui.setTitle("Ingen tävling har skapats.");
@@ -427,9 +448,15 @@ public class ProgLogic {
         return true;
     }
     
+    /**
+     * Used by SEE_RACE screen to disable a button and replace the label with the skiers running time. 
+     * @param skierNum
+     * @param bttnNum each table row has two buttons, this is the index of the button we want to disable and set
+     * the text as a running time.
+     * @param runningTime
+     */
     private void disableTableButton(int skierNum, int bttnNum, Time runningTime) {
 		( (JButton) ui.getButtonTable().getTblCmp(skierNum, bttnNum) ).setText(runningTime.toString());
 		( (JButton) ui.getButtonTable().getTblCmp(skierNum, bttnNum) ).setEnabled(false);
-
     }
 }
