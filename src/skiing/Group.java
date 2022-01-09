@@ -15,6 +15,15 @@ public class Group {
 	private Time startInterval;
 	private int firstPlayerNumber;
 
+    public Group(String skiingGroup) {
+        this.skiingGroup = skiingGroup;
+    }
+
+    public Group(Skier skier, String skiingGroup) {
+        group.add(skier);
+        this.skiingGroup = skiingGroup;
+    }
+
 	public String getSkiingGroup() {
 		return skiingGroup;
 	}
@@ -48,19 +57,18 @@ public class Group {
 		return skierList;
 	}
 
+    public Time getFirstStart() {
+        return firstStart;
+    }
+
+    public Time getStartInterval() {
+        return startInterval;
+    }
+
 	public void addToGroup(Skier skier) {
 		if (skier.getSkiingGroup().equals(this.skiingGroup) && (!(group.contains(skier)))) {
 			group.add(skier);
 		}
-	}
-
-	public Group(String skiingGroup) {
-		this.skiingGroup = skiingGroup;
-	}
-
-	public Group(Skier skier, String skiingGroup) {
-		group.add(skier);
-		this.skiingGroup = skiingGroup;
 	}
 
 	public void generateGroupList(SkierHandler skierlist, String chosenGroup) {
@@ -79,7 +87,7 @@ public class Group {
 		assignAllPlayerNumbersRandom();
 		sortList();
 		for (int i = 0; i < group.size(); i++) {
-//			group.get(i).setStartingTime(Utils.timeAdder(this.firstStart, Utils.timeConverter(this.startInterval * i)));
+            group.get(i).getTimeHandler().zeroTimes();
 			group.get(i).getTimeHandler().setStartTime( firstStartTime.addTo( startInterval.productOf(i) ) );
 			group.get(i).setPlayerNumber(firstPlayerNumber + i);
 		}

@@ -20,6 +20,8 @@ public enum Screen {
     SHOW_SKIER(false),
 	LIVE_SCOREBOARD(false),
 	FINISH_SCOREBOARD(false),
+    FILL_FAKE_DATA_SKIERS(false),
+    FILL_FAKE_DATA_RACE(false),
 	ACPT(true),
 	BACK(true),
 	EXIT(true);

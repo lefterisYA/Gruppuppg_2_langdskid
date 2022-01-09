@@ -37,7 +37,7 @@ public class GUI {
 
 	private GuiCallback<Screen> newScrnCallback;
 
-	private Font bodyFont = new Font(Font.SANS_SERIF, Font.PLAIN, 16);
+	private Font bodyFont = new Font(Font.MONOSPACED, Font.PLAIN, 16);
 	private Font titleFont = new Font(Font.SANS_SERIF, Font.PLAIN, 44);
 
     private GUI oneGui;

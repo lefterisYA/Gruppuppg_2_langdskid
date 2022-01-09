@@ -18,9 +18,15 @@ public class TimeHandler {
 	public void setCheckPointTime() 					{ this.checkPointTime = new Time(); }
 	public void setCheckPointTime(Time checkPointTime) 	{ this.checkPointTime = checkPointTime; }
 
-	public Time getRunningTimeToFinish() 				{ return finishTime.diffTo(startTime); }
-	public Time getRunningTimeToCheckpoint() 			{ return checkPointTime.diffTo(startTime); }
+	public Time getRunningTimeToFinish() 				{ return finishTime == null ? null : finishTime.diffTo(startTime); }
+	public Time getRunningTimeToCheckpoint() 			{ return checkPointTime == null ? null : checkPointTime.diffTo(startTime); }
 
 	public boolean passedCheckpoint() 					{ return checkPointTime != null; }
 	public boolean passedFinishline() 					{ return finishTime != null; }
+
+    public void zeroTimes() {
+        startTime = null;
+        checkPointTime = null;
+        finishTime = null;
+    }
 }
