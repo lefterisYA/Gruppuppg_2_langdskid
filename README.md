@@ -16,6 +16,3 @@
 * (KLART) Kunna skriva ut resultatlista 
 * (KLART) resultatlistan ska innehålla åkarnummer, namn, starttid, mellanmål, slutmål & totaltid. 
 * Anm: live-tavlan och sluttavlan är detsamma, men information om båda framgår i denna!
-
-
-https://drive.google.com/drive/folders/1WrqLs2ZyEIFojVMYXArb84mSSDgSrpA7?usp=sharing
