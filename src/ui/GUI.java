@@ -118,23 +118,6 @@ public class GUI {
 		panel.remove(comp);
 	}
 
-    // TODO: Must be done in Panel....
-    public void swap(JComponent compToRem, JComponent compToAdd) {
-        // int x = compToRem.getX
-        // int y = compToRem.getY();
-            // compToRem.
-
-        // System.out.println(x + "," + y);
-
-        panel.remove(compToRem);
-        panel.add(compToAdd);
-        // panel.remove(comp);
-        // for ( Component comp : panel.getComponents() ) {
-        //     if (comp.equals(compToRem)) {
-        //     }
-        // }
-    }
-
 	public Button makeButton(String label, GuiCallback<String> cBack) {
 		return new Button( this, label, cBack );
 	}
@@ -209,7 +192,6 @@ public class GUI {
 	}
 
 	public TextTable getTextTable() {
-		System.out.println("ffs");
 		return textTable;
 	}
 
@@ -242,11 +224,5 @@ public class GUI {
     public void stopClock() {
         clockTimer.stop();
     }
-
-	// ********************************************
-	// TODO: RADERA:
-	public void postMsg(String msg) { System.out.println("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"); }
-
-	// ***************************************
 
 }

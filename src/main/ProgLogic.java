@@ -50,7 +50,6 @@ public class ProgLogic {
 	}
 
 	private void screenHandler(Screen scrn) {
-		System.out.println( Thread.currentThread().getStackTrace()[1] + ": " + ( scrn != null ? scrn.name() : "null" ));
 		Button backBttn = ui.makeButton( "Avbryt", Screen.BACK);
 
 		ui.addToScreenStack(scrn);
@@ -129,7 +128,6 @@ public class ProgLogic {
 
             int age = Integer.parseInt( usrInp.get(GUI.UsrInpTypes.inputFld)[0][1] );
 			skierHandler.addSkiertoList( new Skier( firstName, lastName, sex, age ));
-			System.out.println(firstName+" "+age+" added!"+" It's a "+sex+"!");
 
         // FALLTHROUGH!
 		case RGSTR_SKIER_VERIFY:
@@ -212,18 +210,12 @@ public class ProgLogic {
             skierHandler.generateAllGroups();
 
             String info = "";
-            System.out.println("Med SkierList skierHandler.getSkierList():");
             for ( Skier skier : skierHandler.getSkierList() ) {
                 info += String.format("%-30s %-10s %-10s\n", skier.getName(), skier.getAge(), skier.getGender());
             }
 
             ui.setBodyText(info);
             ui.addButton("Tillbaka", Screen.INTRO, new ElmntPos(0, 1, false, true));
-
-            // System.out.println("Med Grouplist group.getSkierList():");
-            // for ( Skier skier : group.getSkierList() ) {
-            //     System.out.println(skier.getPlayerNumber() + " " + skier.getFirstName() + "\t" + skier.getTimeHandler().getStartTime() );
-            // }
 
             ui.update();
             break;
@@ -270,7 +262,6 @@ public class ProgLogic {
 
 		case CREATE_RACE:
             chosenGroup = ui.getUsrInp().get(GUI.UsrInpTypes.bttnPrsd)[0][0];
-			System.out.println(chosenGroup + "Was chosen");
 
             skierHandler.generateAllGroups();
 			group = new Group(chosenGroup);
@@ -321,9 +312,6 @@ public class ProgLogic {
 
 			group.generateGroupListTime( startTime, startInterval, firstNumber );
 
-			for ( Skier skr : group.getSkierList() )
-				System.out.println(skr.getFirstName());
-
 			screenHandler(Screen.INTRO);
 			break;
 
@@ -340,8 +328,7 @@ public class ProgLogic {
 					Skier skier = group.getSkierFromPlayerNumber(skierNum);
 					skier.getTimeHandler().setCheckPointTime();
                     Time runningTime = skier.getTimeHandler().getRunningTimeToCheckpoint();
-					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 0) ).setText(runningTime.toString());
-					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 0) ).setEnabled(false);
+                    disableTableButton(skier.getPlayerNumber(), 0, runningTime);
 				}
 			};
 
@@ -351,20 +338,18 @@ public class ProgLogic {
 					Skier skier = group.getSkierFromPlayerNumber(skierNum);
 					skier.getTimeHandler().setFinishTime();
                     Time runningTime = skier.getTimeHandler().getRunningTimeToFinish();
-					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 1) ).setText(runningTime.toString());
-					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 1) ).setEnabled(false);
+                    disableTableButton(skier.getPlayerNumber(), 1, runningTime);
 				}
 			};
 
 			ui.addButtonTable( group.getSkierList().length, 0, 1, true );
 			for ( Skier skier : group.getSkierList() ) {
-				System.out.println("adding "+skier.getName() + " " + skier.getPlayerNumber());
 				ui.getButtonTable().addRow(skier.getFirstName(), skier.getPlayerNumber(), chkPntCback, fnshCback);
 
                 if ( skier.getTimeHandler().hasPassedCheckpont() )
-                    chkPntCback.onClick(skier.getPlayerNumber());
+                    disableTableButton(skier.getPlayerNumber(), 0, skier.getTimeHandler().getCheckPointTime());
                 if ( skier.getTimeHandler().hasFinished() )
-                    fnshCback.onClick(skier.getPlayerNumber());
+                    disableTableButton(skier.getPlayerNumber(), 1, skier.getTimeHandler().getFinishTime());
 			}
 
 			ui.addButton( "Bakåt",					Screen.BACK,	 		new ElmntPos(0, 3, false));
@@ -399,33 +384,6 @@ public class ProgLogic {
 
 			break;
 
-// 		case FINISH_SCOREBOARD:
-// 			ui.clrScrn();
-//             if (!checkRaceExists()) break;
-// 			ui.setTitle("Slut-resultat:");
-// 			ui.setBodyText(chosenGroup);
-// 			ui.addTable(new String[] { "Åkarnummer", "Namn", "Mellanmål", "Slutmål", "Total tid" }, 1, 1, true);
-//
-// 			group.sortSkierListCheckpointTime();
-//
-// 			for ( Skier skier : group.getSkierList() ) {
-// //				String checkPTime = String.format("%02d:%02d:%02d",
-// //						skier.getCheckpointTime()[0] , skier.getCheckpointTime()[1] , skier.getCheckpointTime()[2] );
-//
-// 				System.out.println("adding "+skier.getName() + " " + skier.getPlayerNumber());
-// 				String checkPTime = skier.getTimeHandler().getCheckPointTime().toString();
-// 				String finishTime = skier.getTimeHandler().getFinishTime().toString();
-// 				String skierNumber = String.valueOf(skier.getPlayerNumber());
-//                 String runningTime = skier.getTimeHandler().getRunningTimeToFinish().toString();
-//
-// 				ui.getTextTable().addTableRow(new String[] { skierNumber, skier.getFirstName(), checkPTime, finishTime, runningTime }); // , 0, 1, true);
-// 			}
-// 			ui.addButton( "Bakåt",					Screen.BACK,	 	new ElmntPos(0, 1, true));
-// 			ui.addButton( "Huvudmeny",				Screen.INTRO,	 	new ElmntPos(1, 0, true));
-// 			ui.update();
-//
-// 			break;
-
 		case PRINT_STRTLIST:
             ui.clrScrn();
             if (!checkRaceExists()) break;
@@ -436,7 +394,6 @@ public class ProgLogic {
             group.sortSkierListStartTime();
 
             for ( Skier skier : group.getSkierList() ) {
-                System.out.println("adding "+skier.getName() + " " + skier.getPlayerNumber());
                 String skierNumber = String.valueOf(skier.getPlayerNumber());
                 String skierStTime = skier.getTimeHandler().getStartTime().toString();
 
@@ -468,5 +425,11 @@ public class ProgLogic {
             return false;
         }
         return true;
+    }
+    
+    private void disableTableButton(int skierNum, int bttnNum, Time runningTime) {
+		( (JButton) ui.getButtonTable().getTblCmp(skierNum, bttnNum) ).setText(runningTime.toString());
+		( (JButton) ui.getButtonTable().getTblCmp(skierNum, bttnNum) ).setEnabled(false);
+
     }
 }
