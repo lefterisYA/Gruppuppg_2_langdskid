@@ -38,6 +38,10 @@ public class Group {
 		Collections.sort(group, compare2);
 	}
 
+    public void sortSkierListStartTime() {
+        Collections.sort(group, new CompareSkierPlacingStarttime());
+    }
+
 	public Skier[] getSkierList() {
 		Skier[] skierList = new Skier[group.size()];
 		for (int i = 0; i < group.size(); i++) {
@@ -114,7 +118,7 @@ public class Group {
 					+ group.get(i).getPlayerNumber() + "\n";
 		}
 //		return "This grouplist contains: " + skierString + "And their first start is " + Arrays.toString(firstStart)
-		return "This grouplist contains: " + skierString + "And their first start is " + firstStart.toString() 
+		return "This grouplist contains: " + skierString + "And their first start is " + firstStart.toString()
 				+ ", their startinterval is " + startInterval + " and their starting number is " + firstPlayerNumber;
 	}
 	@Override

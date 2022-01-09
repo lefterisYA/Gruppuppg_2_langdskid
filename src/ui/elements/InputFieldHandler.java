@@ -8,12 +8,12 @@ import ui.interfaces.FieldValidator;
 public class InputFieldHandler {
 	private final LinkedList<InputField> inpFlds;
 //	private final GUI ui;
-			
+
 	public InputFieldHandler(GUI ui) {
 		inpFlds = new LinkedList<>();
 //		this.ui = ui;
 	}
-	
+
 	public InputField gnrt(String label) {
 		InputField newInpFld = new InputField(label);
 		inpFlds.add(newInpFld);
@@ -33,7 +33,7 @@ public class InputFieldHandler {
 		else
 			caller.getValidator().onInvalidFields(caller.getTxtFld().getText());
 	}
-	
+
 	private boolean allFieldsAreValid() {
 		for ( InputField fld : inpFlds )
 			if ( ! fld.hasValidValue() ) {
@@ -41,7 +41,7 @@ public class InputFieldHandler {
 			}
 		return true;
 	}
-	
+
 	public String[] getInpFldVals() {
 		String[] ret = new String[inpFlds.size()];
 		int i=0;
@@ -49,10 +49,23 @@ public class InputFieldHandler {
 			ret[i++] = fld.getText();
 		return ret;
 	}
-	
+
+    public void dltInpFlds() {
+        inpFlds.clear();
+    }
+
 	public void clrInpFlds() {
-		inpFlds.clear();
+        for (InputField fld : inpFlds) {
+            fld.getTxtFld().setText("");
+            fld.getTxtFld().setEnabled(true);
+        }
 	}
+
+    public void disableInpFlds() {
+        for (InputField fld : inpFlds) {
+            fld.getTxtFld().setEnabled(false);
+        }
+    }
 
 	public void focusInpFldAtRelativeIdx(int relIdx) {
 		for ( int i=0; i<inpFlds.size(); i++ ) {
@@ -71,9 +84,9 @@ public class InputFieldHandler {
 //	private void addKeyListeners(InputField field) {
 //		field.getTxtFld().addKeyListener( (KeyListener) new KeyListener() {
 //			public void keyPressed(KeyEvent e) {
-//				if ( e.getKeyCode() == KeyEvent.VK_ENTER ){ 
+//				if ( e.getKeyCode() == KeyEvent.VK_ENTER ){
 ////					ui.txtFldCbck(); // TODO
-//				} else if ( e.getKeyCode() == KeyEvent.VK_TAB  ){ 
+//				} else if ( e.getKeyCode() == KeyEvent.VK_TAB  ){
 //					focusInpFldAtRelativeIdx(e.isShiftDown() ? -1 : 1);
 //				}
 //			}
@@ -81,10 +94,10 @@ public class InputFieldHandler {
 //			@Override public void keyReleased(KeyEvent e) { }
 //
 //			@Override public void keyTyped(KeyEvent e) { }
-//			
+//
 //		} );
 //	}
-	
+
 //	private void addValidityCheckListeners(InputField field, FieldValidator validator) {
 //		field.getTxtFld().addFocusListener( new FocusListener() {
 //			@Override public void focusLost(FocusEvent e) {
@@ -95,11 +108,11 @@ public class InputFieldHandler {
 //					validator.onInvalidFields(field.getTxtFld().getText());
 //				}
 //			}
-//			
+//
 //			@Override public void focusGained(FocusEvent e) { }
 //		});
 //	}
-	
+
 
 //	public LinkedList<InputField> getTextFields() {
 //		LinkedList<InputField> retVal = new LinkedList<InputField>();

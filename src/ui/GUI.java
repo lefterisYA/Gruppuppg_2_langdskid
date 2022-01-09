@@ -16,8 +16,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.Timer;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import timekeeping.Time;
 
@@ -79,13 +77,17 @@ public class GUI {
 		setBodyText("");
 		panel.add(title, 0, 0, 3);
 		panel.add(body, 0, 1, 3);
-		clrUsrInpField();
+        inpFldHandler.dltInpFlds();
 		dropDowns.clear();
 	}
 
 	public void clrUsrInpField() {
 		inpFldHandler.clrInpFlds();
 	}
+
+    public InputFieldHandler getInputFieldHandler() {
+        return inpFldHandler;
+    }
 
 	public void update() {
 		panel.updateUI();
@@ -102,6 +104,23 @@ public class GUI {
 	public void remove(JComponent comp) {
 		panel.remove(comp);
 	}
+
+    // TODO: Must be done in Panel....
+    public void swap(JComponent compToRem, JComponent compToAdd) {
+        // int x = compToRem.getX
+        // int y = compToRem.getY();
+            // compToRem.
+
+        // System.out.println(x + "," + y);
+
+        panel.remove(compToRem);
+        panel.add(compToAdd);
+        // panel.remove(comp);
+        // for ( Component comp : panel.getComponents() ) {
+        //     if (comp.equals(compToRem)) {
+        //     }
+        // }
+    }
 
 	public Button makeButton(String label, GuiCallback<String> cBack) {
 		return new Button( label, cBack );

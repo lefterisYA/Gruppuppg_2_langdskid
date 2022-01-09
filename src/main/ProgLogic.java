@@ -100,6 +100,7 @@ public class ProgLogic {
 	FieldValidator nmbrValidator;
 	FieldValidator textValidator;
 	FieldValidator timeValidator;
+    Button reptBttn = null;
 	Button acptBttn = null;
 	Button backBttn = null;
 	String[][] usrInp;
@@ -121,7 +122,7 @@ public class ProgLogic {
 			ui.addButton( "Se tävling", 			Screen.SEE_RACE,		 			new ElmntPos( 0, 1, false, true));
 			ui.addButton( "Live-tavla",				Screen.LIVE_SCOREBOARD,				new ElmntPos( 1, 0, true));
 			ui.addButton( "Slut-resultat",			Screen.FINISH_SCOREBOARD,			new ElmntPos( 1, 0, true));
-			ui.addButton( "WIP",		 			Screen.PRINT_STRTLIST,	 			new ElmntPos( 0, 1, false, true));
+			ui.addButton( "Visa startlista",		Screen.PRINT_STRTLIST,	 			new ElmntPos( 0, 1, false, true));
 			ui.addButton( "WIP",					Screen.PRINT_STRTLIST,	 			new ElmntPos( 1, 0, true));
 			ui.addButton( "WIP",					Screen.PRINT_STRTLIST,	 			new ElmntPos( 1, 0, true));
 			ui.addVertSpcr(400);
@@ -133,13 +134,13 @@ public class ProgLogic {
 			ui.update();
 			break;
 
-		case RGSTR_SKIER_REPEAT:
 		case RGSTR_SKIER:
 			ui.clrScrn();
-			ui.setTitle("Ny tävling.");
+			ui.setTitle("Lägg till skid-åkare.");
 			ui.addVertSpcr(20);
 
 			acptBttn = ui.makeButton( "Lägg Till",	Screen.RGSTR_SKIER_FINISH);
+            reptBttn = ui.makeButton( "Lägg till fler", Screen.RGSTR_SKIER_REPEAT);
 			acptBttn.setEnabled(false);
 
 			textValidator = new FieldValidator(false, Type.STR) {
@@ -153,11 +154,10 @@ public class ProgLogic {
 			};
 
 			ui.addInpField("Namn på tävlande:", textValidator, new ElmntPos(0, 1, 3, false, true));
-//			ui.addInpField("Kön:", 				textValidator, new ElmntPos(0, 1, 3, false, true));
-//
+
 			String[][] genders = {{"Herr", "Dam"}};
 			ui.addDropdown("Kön:", genders, new ElmntPos(0, 1, 3, false, true), 300, 30);
-//
+
 			ui.addInpField("Ålder:", 			nmbrValidator, new ElmntPos(0, 1, 3, false, true));
 			ui.addVertSpcr(200);
 
@@ -167,8 +167,16 @@ public class ProgLogic {
 			ui.update();
 			break;
 
+        case RGSTR_SKIER_REPEAT:
+            ui.setTitle("Lägg till skid-åkare.");
+            ui.remove(reptBttn);
+            ui.addButton( acptBttn,			 			new ElmntPos(0, 0, true));
+            ui.getInputFieldHandler().clrInpFlds();
+            ui.update();
+            break;
+
 		case RGSTR_SKIER_FINISH:
-			usrInp = ui.getUsrInp(); // usrInp[1] => textfields // usrInp[0] => dropdown fields
+			usrInp = ui.getUsrInp();
 
 			String sex = usrInp[0][0];
 
@@ -180,10 +188,14 @@ public class ProgLogic {
 			skierList.addSkiertoList( new Skier( firstName, lastName, sex, age ));
 			System.out.println(firstName+" "+age+" added!"+" It's a "+sex+"!");
 
+        // FALLTHROUGH!
 		case RGSTR_SKIER_VERIFY:
-			ui.setTitle("Klart?");
+			ui.setTitle("Tillagd! Lägg till fler?");
 			ui.remove(acptBttn);
-			ui.addButton( "Lägg till fler",	Screen.RGSTR_SKIER_REPEAT, new ElmntPos(0, 0, true));
+			ui.addButton( reptBttn, new ElmntPos(0, 0, true));
+            // ui.swap(acptBttn, reptBttn);
+            ui.getInputFieldHandler().disableInpFlds();
+            ui.update();
 
 			break;
 
@@ -215,20 +227,14 @@ public class ProgLogic {
 			group.generateGroupList(skierList, chosenGroup);
 
 			ui.clrScrn();
-			ui.setTitle("Var god välj skid-klass");
+            ui.setTitle("Var god fyll i");
 
-//			GuiCallback<> acptCbck = new GuiCallback() {
-//				@Override
-//				public void onClick(Object val) {
-//				}
-//			};
-
-			Button acpt = ui.makeButton( "Fortsätt",	Screen.CREATE_RACE_2);
-			acpt.setEnabled(false);
+			acptBttn = ui.makeButton( "Fortsätt",	Screen.CREATE_RACE_2);
+			acptBttn.setEnabled(false);
 
 			timeValidator = new FieldValidator(false, Type.STR) {
-				@Override public void onValidFields(String rawFldTxt)   	{ acpt.setEnabled(true);  }
-				@Override public void onInvalidFields(String rawFldTxt)   	{ acpt.setEnabled(false);  }
+				@Override public void onValidFields(String rawFldTxt)   	{ acptBttn.setEnabled(true);  }
+				@Override public void onInvalidFields(String rawFldTxt)   	{ acptBttn.setEnabled(false);  }
 
 				@Override
 				protected boolean stringValidator(String rawFldTxt) {
@@ -237,8 +243,8 @@ public class ProgLogic {
 			};
 
 			nmbrValidator = new FieldValidator(false, Type.INT) {
-				@Override public void onValidFields(String rawFldTxt)   	{ acpt.setEnabled(true);  }
-				@Override public void onInvalidFields(String rawFldTxt)   	{ acpt.setEnabled(false);  }
+				@Override public void onValidFields(String rawFldTxt)   	{ acptBttn.setEnabled(true);  }
+				@Override public void onInvalidFields(String rawFldTxt)   	{ acptBttn.setEnabled(false);  }
 			};
 
 			List<String> nums = IntStream.range(0, 60).boxed().map(x -> String.format("%02d", x)).collect(Collectors.toList());
@@ -249,13 +255,10 @@ public class ProgLogic {
 			ui.addDropdown("Ange starttid (Första åktid):", usrChoices, new ElmntPos(0,1, false, true), 350, 30);
 			ui.addDropdown("Ange startintervall:", usrChoices, new ElmntPos(0,1, false, true), 300, 30);
 
-//			ui.addInpField("Ange startiinterfall:",				timeValidator, new ElmntPos(0,1, false, true));
-//			ui.addDropdownField(":", sixty, new ElmntPos(1,0, true, true), 75, 30);
-
 			ui.addInpField("Ange första skid-åkares nummer:",	nmbrValidator, new ElmntPos(0,1, false, true));
 
 			ui.addButton( "Avbryt",		Screen.BACK, 	new ElmntPos(0, 1, false, true));
-			ui.addButton( acpt, 						new ElmntPos(1, 0, true, true));
+			ui.addButton( acptBttn, 					new ElmntPos(1, 0, true, true));
 
 			ui.update();
 			break;
@@ -372,6 +375,24 @@ public class ProgLogic {
 			break;
 
 		case PRINT_STRTLIST:
+            ui.clrScrn();
+
+            ui.setTitle("Start-lista");
+            // ui.setBodyText(chosenGroup);
+            ui.addTable(new String[] { "Åkarnummer", "Namn", "Starttid", }, 1, 1, true);
+
+            group.sortSkierListStartTime();
+
+            for ( Skier skier : group.getSkierList() ) {
+                System.out.println("adding "+skier.getName() + " " + skier.getPlayerNumber());
+                String skierNumber = String.valueOf(skier.getPlayerNumber());
+                String skierStTime = skier.getTimeHandler().getStartTime().toString();
+
+                ui.getTextTable().addTableRow(new String[] { skierNumber, skier.getName(), skierStTime }); // , 0, 1, true);
+            }
+            ui.addButton( "Bakåt",					Screen.BACK,	 	new ElmntPos(0, 1, true));
+            ui.addButton( "Huvudmeny",				Screen.INTRO,	 	new ElmntPos(1, 0, true));
+            ui.update();
 			break;
 
 		case EXIT:
