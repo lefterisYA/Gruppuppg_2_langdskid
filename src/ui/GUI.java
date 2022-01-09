@@ -37,7 +37,7 @@ public class GUI {
 	private ButtonTable buttonTable;
 
 	private GuiCallback<Screen> newScrnCallback;
-	
+
 	private Font bodyFont = new Font(Font.SANS_SERIF, Font.PLAIN, 16);
 	private Font titleFont = new Font(Font.SANS_SERIF, Font.PLAIN, 44);
 
@@ -50,13 +50,13 @@ public class GUI {
 		frame.getContentPane().add(panel);
 		frame.pack(); // resize frame to panel
 		frame.setVisible(true);
-		
+
 		title = new Label(titleFont);
 		body = new TextArea(bodyFont);
-		
+
 		inpFldHandler = new InputFieldHandler(this);
 	}
-	
+
 	// Handles remembering the screen navigation so we can go back to the previous Screen.
 	public void addToScreenStack(Screen scrn) {
 		if ( scrn.isVirt )
@@ -65,7 +65,7 @@ public class GUI {
 			screenStack.remove(scrn);
 		screenStack.addFirst(scrn);
 	}
-	
+
 	public Screen getLastScreen() {
 		screenStack.pop();
 		if ( screenStack.size() > 0 )
@@ -73,7 +73,7 @@ public class GUI {
 		else
 			return Screen.INTRO;
 	}
-	
+
 	public void clrScrn() {
 		panel.removeAll();
 		setBodyText("");
@@ -104,7 +104,7 @@ public class GUI {
 	}
 
 	public Button makeButton(String label, GuiCallback<String> cBack) {
-		return new Button( label, cBack );	
+		return new Button( label, cBack );
 	}
 
 	public <T> Button makeButton(String label, Screen nextScrn) {
@@ -114,7 +114,7 @@ public class GUI {
 	public <T> void addButton(Button newButton, ElmntPos pos) {
 		panel.add(newButton, pos );
 	}
-	
+
 	public void addButton(String label, Screen nextScrn, ElmntPos pos) {
 		Button newButton = new Button( label, newScrnCallback, nextScrn);
 		panel.add(newButton, pos );
@@ -153,10 +153,10 @@ public class GUI {
 		for ( Dropdown dropDown : dropDowns ) {
 			ret[i++] = dropDown.getUsrInp();
 		}
-		ret[i] = inpFldHandler.getInpFldVals(); 
+		ret[i] = inpFldHandler.getInpFldVals();
 		return ret;
 	}
-	
+
 	public void addTable(String[] colTitles, int x, int y, boolean absPos ) {
 		textTable = new TextTable(colTitles);
 		panel.add(textTable, x, y, 3, absPos);
@@ -177,7 +177,7 @@ public class GUI {
 		return buttonTable;
 	}
 
-	
+
 	// ********************************************
 	// TODO: flytte ut.
 	private Time timeKeeper;

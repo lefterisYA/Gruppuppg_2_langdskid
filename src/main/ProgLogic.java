@@ -25,17 +25,17 @@ public class ProgLogic {
 	Group group;
 	private final SkierHandler skierList = new SkierHandler();
 	List<String> groups;
-	
+
 	public static void main(String[] args) {
 		ProgLogic gLogic = new ProgLogic();
 		gLogic.test();
 	}
-	
+
 	private void test() {
 //		Clock clk = new Clock();
 //		int[] test = clk.g
-		
-		
+
+
 //		skierList.addSkiertoList( new Skier( "Jessica", "Laft", "herr", 33 ));
 //		skierList.addSkiertoList( new Skier( "Joacim", "Laft", "herr", 33 ));
 		skierList.addSkiertoList( new Skier( "Lefte", "Laft", "herr", 30 ));
@@ -49,13 +49,13 @@ public class ProgLogic {
 //		skierList.addSkiertoList( new Skier( "Asa", "Laft", "dam", 23 ));
 //		skierList.addSkiertoList( new Skier( "Åsa", "Laft", "dam", 23 ));
 		skierList.addSkiertoList( new Skier( "Britt", "Laft", "dam", 23 ));
-		
+
 		skierList.generateAllGroups();
 		group = skierList.getGroup("H33");
 //		group.generateGroupList(skierList, "H33");
 		group.generateGroupListTime(new Time(10,0,0), new Time(30, Time.Unit.SECONDS), 100);
 		screenHandler(Screen.INTRO);
-		
+
 		System.out.println("skierList.getUniqueGroupsList():");
 		for ( String group : skierList.getUniqueGroupsList() )
 			System.out.println(group);
@@ -87,14 +87,14 @@ public class ProgLogic {
 //		uniqueClasses.add("H13");
 		this.ui=ui;
 	}
-	
+
 	public void run() {
 		screenHandler(Screen.INTRO); // next screen
 	}
-	
+
 	// outgoing, show new screen
-	public void screenHandler(Screen currScrn) { 
-		screenHandler(currScrn, null); 
+	public void screenHandler(Screen currScrn) {
+		screenHandler(currScrn, null);
 	}
 
 	FieldValidator nmbrValidator;
@@ -108,9 +108,9 @@ public class ProgLogic {
 		System.out.println( Thread.currentThread().getStackTrace()[1] + ": " + ( scrn != null ? scrn.name() : "null" ));
 		Button backBttn = ui.makeButton( "Avbryt", Screen.BACK);
 
-		
+
 		ui.addToScreenStack(scrn);
-		
+
 		switch (scrn) {
 		case INTRO:
 			ui.clrScrn();
@@ -154,16 +154,16 @@ public class ProgLogic {
 
 			ui.addInpField("Namn på tävlande:", textValidator, new ElmntPos(0, 1, 3, false, true));
 //			ui.addInpField("Kön:", 				textValidator, new ElmntPos(0, 1, 3, false, true));
-//			
+//
 			String[][] genders = {{"Herr", "Dam"}};
 			ui.addDropdown("Kön:", genders, new ElmntPos(0, 1, 3, false, true), 300, 30);
-//			
+//
 			ui.addInpField("Ålder:", 			nmbrValidator, new ElmntPos(0, 1, 3, false, true));
 			ui.addVertSpcr(200);
 
 			ui.addButton( backBttn,						new ElmntPos(1, 1, false, true));
 			ui.addButton( acptBttn,			 			new ElmntPos(1, 0, true, true));
-			
+
 			ui.update();
 			break;
 
@@ -240,7 +240,7 @@ public class ProgLogic {
 				@Override public void onValidFields(String rawFldTxt)   	{ acpt.setEnabled(true);  }
 				@Override public void onInvalidFields(String rawFldTxt)   	{ acpt.setEnabled(false);  }
 			};
-			
+
 			List<String> nums = IntStream.range(0, 60).boxed().map(x -> String.format("%02d", x)).collect(Collectors.toList());
 			String[] sixty = nums.toArray(new String[nums.size()]);
 			String[] twentyfour = nums.subList(0, 24).toArray(new String[23]);
@@ -251,7 +251,7 @@ public class ProgLogic {
 
 //			ui.addInpField("Ange startiinterfall:",				timeValidator, new ElmntPos(0,1, false, true));
 //			ui.addDropdownField(":", sixty, new ElmntPos(1,0, true, true), 75, 30);
-			
+
 			ui.addInpField("Ange första skid-åkares nummer:",	nmbrValidator, new ElmntPos(0,1, false, true));
 
 			ui.addButton( "Avbryt",		Screen.BACK, 	new ElmntPos(0, 1, false, true));
@@ -266,7 +266,7 @@ public class ProgLogic {
 			Time startTime = new Time( usrInp[0] );
 			Time startInterval = new Time( usrInp[1] );
 			int firstNumber = Integer.parseInt(usrInp[2][0]);
-			
+
 			group.generateGroupListTime( startTime, startInterval, firstNumber );
 
 			for ( Skier skr : group.getSkierList() )
@@ -274,12 +274,12 @@ public class ProgLogic {
 
 			screenHandler(Screen.INTRO);
 			break;
-			
+
 		case SEE_RACE:
 			GuiCallback<Integer> chkPntCback = new GuiCallback<Integer>() {
 
 				@Override
-				public void onClick(Integer skierNum) { 
+				public void onClick(Integer skierNum) {
 					Skier skier = group.getSkierFromPlayerNumber(skierNum);
 					skier.getTimeHandler().setCheckPointTime();
 					Time chkpntTime = skier.getTimeHandler().getCheckPointTime();
@@ -290,7 +290,7 @@ public class ProgLogic {
 
 			GuiCallback<Integer> fnshCback = new GuiCallback<Integer>() {
 				@Override
-				public void onClick(Integer skierNum) { 
+				public void onClick(Integer skierNum) {
 //					group.getSkierFromPlayerNumber(skierNum).setGoalTime(ui.getCurrTimeInts());
 //					int[] arr =  group.getSkierFromPlayerNumber(skierNum).getGoalTimeFinish();
 //					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 1) ).setText(String.format("%02d:%02d:%02d", arr[0], arr[1], arr[2]));
@@ -301,7 +301,7 @@ public class ProgLogic {
 					( (JButton) ui.getButtonTable().getTblCmp(skierNum, 1) ).setEnabled(false);
 				}
 			};
-			
+
 			ui.clrScrn();
 			ui.setTitle(chosenGroup);
 			ui.setBodyText(chosenGroup);
@@ -319,7 +319,7 @@ public class ProgLogic {
 
 			ui.update();
 			break;
-			
+
 		case LIVE_SCOREBOARD:
 			ui.clrScrn();
 
@@ -328,7 +328,7 @@ public class ProgLogic {
 			ui.addTable(new String[] { "Åkarnummer", "Namn", "Starttid", "Mellanmål", "Slutmål", "Total tid" }, 0, 1, true);
 
 			group.sortSkierListGoalTime();
-			
+
 			for ( Skier skier : group.getSkierList() ) {
 				System.out.println("adding "+skier.getName() + " " + skier.getPlayerNumber());
 				String startingTime = skier.getTimeHandler().getStartTime().toString();
@@ -344,7 +344,7 @@ public class ProgLogic {
 			ui.update();
 
 			break;
-			
+
 		case FINISH_SCOREBOARD:
 			ui.clrScrn();
 
@@ -355,7 +355,7 @@ public class ProgLogic {
 			group.sortSkierListCheckpointTime();
 
 			for ( Skier skier : group.getSkierList() ) {
-//				String checkPTime = String.format("%02d:%02d:%02d", 
+//				String checkPTime = String.format("%02d:%02d:%02d",
 //						skier.getCheckpointTime()[0] , skier.getCheckpointTime()[1] , skier.getCheckpointTime()[2] );
 
 				System.out.println("adding "+skier.getName() + " " + skier.getPlayerNumber());
@@ -373,7 +373,7 @@ public class ProgLogic {
 
 		case PRINT_STRTLIST:
 			break;
-		
+
 		case EXIT:
 			System.exit(0);
 
