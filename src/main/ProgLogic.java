@@ -23,8 +23,15 @@ import ui.interfaces.FieldValidator.Type;
 public class ProgLogic {
 	private final GUI ui;
 	String chosenGroup;
-
+	FieldValidator nmbrValidator;
+	FieldValidator textValidator;
+	FieldValidator timeValidator;
+    Button reptBttn = null;
+	Button acptBttn = null;
+	Button backBttn = null;
+	Map<GUI.UsrInpTypes, String[][]> usrInp;
 	Group group;
+
 	private final SkierHandler skierHandler = new SkierHandler();
 	List<String> groups;
 
@@ -41,14 +48,6 @@ public class ProgLogic {
 	public void run() {
 		screenHandler(Screen.INTRO); // next screen
 	}
-
-	FieldValidator nmbrValidator;
-	FieldValidator textValidator;
-	FieldValidator timeValidator;
-    Button reptBttn = null;
-	Button acptBttn = null;
-	Button backBttn = null;
-	Map<GUI.UsrInpTypes, String[][]> usrInp;
 
 	private void screenHandler(Screen scrn) {
 		System.out.println( Thread.currentThread().getStackTrace()[1] + ": " + ( scrn != null ? scrn.name() : "null" ));
