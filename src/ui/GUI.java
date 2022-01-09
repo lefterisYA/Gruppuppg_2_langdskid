@@ -18,26 +18,29 @@ import javax.swing.JTextArea;
 import javax.swing.Timer;
 
 import timekeeping.Time;
-
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class GUI {
 	private JFrame frame = new JFrame("");
 	private Panel panel = new Panel(new GridBagLayout(), new GridBagConstraints());
 
-	private LinkedList<Screen> screenStack = new LinkedList<Screen>();
-	private InputFieldHandler inpFldHandler;
-	private DropdownHandler dropdownHandler;
+	private final LinkedList<Screen> screenStack = new LinkedList<Screen>();
+	private final LinkedList<Dropdown> dropDowns = new LinkedList<>();
+	private final InputFieldHandler inpFldHandler;
 	private JLabel title;
 	private JTextArea body;
-	private String bodyText = "";
 	private TextTable textTable;
 	private ButtonTable buttonTable;
 
 	private GuiCallback<Screen> newScrnCallback;
-	
+
 	private Font bodyFont = new Font(Font.SANS_SERIF, Font.PLAIN, 16);
 	private Font titleFont = new Font(Font.SANS_SERIF, Font.PLAIN, 44);
+
+    private GUI oneGui;
 
 	public GUI(GuiCallback<Screen> newScrnCallback) {
 		this.newScrnCallback = newScrnCallback;
@@ -48,14 +51,18 @@ public class GUI {
 		frame.getContentPane().add(panel);
 		frame.pack(); // resize frame to panel
 		frame.setVisible(true);
-		
+
 		title = new Label(titleFont);
 		body = new TextArea(bodyFont);
-		
+
 		inpFldHandler = new InputFieldHandler(this);
-		dropdownHandler = new DropdownHandler(this);
 	}
-	
+
+    // public GUI getInstance() {
+    //     if ( oneGui == null )
+    //         oneGui = new
+    // }
+
 	// Handles remembering the screen navigation so we can go back to the previous Screen.
 	public void addToScreenStack(Screen scrn) {
 		if ( scrn.isVirt )
@@ -64,7 +71,7 @@ public class GUI {
 			screenStack.remove(scrn);
 		screenStack.addFirst(scrn);
 	}
-	
+
 	public Screen getLastScreen() {
 		screenStack.pop();
 		if ( screenStack.size() > 0 )
@@ -72,23 +79,28 @@ public class GUI {
 		else
 			return Screen.INTRO;
 	}
-	
+
+    public void clearBackHist() {
+        screenStack.clear();
+    }
+
 	public void clrScrn() {
 		panel.removeAll();
-		clrBody();
+		setBodyText("");
 		panel.add(title, 0, 0, 3);
 		panel.add(body, 0, 1, 3);
-		clrUsrInpField();
-	}
-
-	public void clrBody() {
-		bodyText = "";
-		setBodyText(bodyText);
+        inpFldHandler.dltInpFlds();
+		dropDowns.clear();
+        clockTimer.stop();
 	}
 
 	public void clrUsrInpField() {
 		inpFldHandler.clrInpFlds();
 	}
+
+    public InputFieldHandler getInputFieldHandler() {
+        return inpFldHandler;
+    }
 
 	public void update() {
 		panel.updateUI();
@@ -97,33 +109,51 @@ public class GUI {
 	public void setTitle(String text) {
 		title.setText(text);
 	}
+
 	public void setBodyText(String text) {
-		body.setText(text); //    	   textArea.setBackground(new Color(0,0,0,0));
+		body.setText(text);
 	}
 
 	public void remove(JComponent comp) {
 		panel.remove(comp);
 	}
 
-	public Button<String> makeButton(String label, GuiCallback<String> cBack) {
-		return new Button<>( label, cBack );	
+    // TODO: Must be done in Panel....
+    public void swap(JComponent compToRem, JComponent compToAdd) {
+        // int x = compToRem.getX
+        // int y = compToRem.getY();
+            // compToRem.
+
+        // System.out.println(x + "," + y);
+
+        panel.remove(compToRem);
+        panel.add(compToAdd);
+        // panel.remove(comp);
+        // for ( Component comp : panel.getComponents() ) {
+        //     if (comp.equals(compToRem)) {
+        //     }
+        // }
+    }
+
+	public Button makeButton(String label, GuiCallback<String> cBack) {
+		return new Button( this, label, cBack );
 	}
 
-	public <T> Button<Screen> makeButton(String label, Screen nextScrn) {
-		return new Button<Screen>( label, newScrnCallback, nextScrn);
+	public <T> Button makeButton(String label, Screen nextScrn) {
+		return new Button( this, label, newScrnCallback, nextScrn);
 	}
 
-	public <T> void addButton(Button<T> newButton, ElmntPos pos) {
+	public <T> void addButton(Button newButton, ElmntPos pos) {
 		panel.add(newButton, pos );
 	}
-	
+
 	public void addButton(String label, Screen nextScrn, ElmntPos pos) {
-		Button<Screen> newButton = new Button<Screen>( label, newScrnCallback, nextScrn);
+		Button newButton = new Button( this, label, newScrnCallback, nextScrn);
 		panel.add(newButton, pos );
 	}
 
 	public void addButton(String label, GuiCallback<String> cBack, ElmntPos pos) {
-		Button<String> newButton = new Button<>(label, cBack);
+		Button newButton = new Button( this, label, cBack);
 		panel.add(newButton, pos);
 	}
 
@@ -139,31 +169,39 @@ public class GUI {
 		panel.addVertSpcr(hght, x, y, absPos);
 	}
 
-	public InputField addInpField ( String title, FieldValidator validityCback, ElmntPos pos ) {
+	public void addInpField ( String title, FieldValidator validityCback, ElmntPos pos ) {
 		InputField inpFld = inpFldHandler.gnrt(title, validityCback);
 		panel.add(inpFld, pos);
-		return inpFld;
-	}
-	public void addDropdownField(String title, String[] options, ElmntPos pos, int sizeX, int sizeY) {
-		Dropdown dropdown = dropdownHandler.gnrt(title, options, sizeX, sizeY);
-		panel.add(dropdown, pos);
-		
-	}
-	public void addDropdownFieldTriple(String title, String[] options, String[] options2, ElmntPos pos, int sizeX, int sizeY) {
-		Dropdown dropdown = dropdownHandler.gnrttriple(title, options, options2, sizeX, sizeY);
-		panel.add(dropdown, pos);
-	}
-	public String[] getDropdownChoice() {
-		return dropdownHandler.getDropdownVals();
-	}
-	public String[] getDropdownChoiceTime() {
-		return dropdownHandler.getDropdownValsTime();
 	}
 
-	public String[] getInpFieldVals() {
-		return inpFldHandler.getInpFldVals(); 
+	public void addDropdown(String title, String[][] usrChoices, ElmntPos pos, int sizeX, int sizeY) {
+		dropDowns.add(new Dropdown( usrChoices, title, ":", sizeX, sizeY));
+		panel.add(dropDowns.getLast(), pos);
 	}
-	
+
+    String lastButtonPressed;
+    public void setBttnPressed(String label) {
+        lastButtonPressed = label;
+    }
+
+    public enum UsrInpTypes { dropDown, inputFld, bttnPrsd };
+    public Map<UsrInpTypes, String[][]> getUsrInp() {
+		// String[][] ret = new String[dropDowns.size()+1][];
+        Map<UsrInpTypes, String[][]> ret = new HashMap<>();
+        ret.put(UsrInpTypes.dropDown, new String[dropDowns.size()][]);
+        ret.put(UsrInpTypes.inputFld, new String[1][1]);
+        ret.put(UsrInpTypes.bttnPrsd, new String[1][1]);
+
+		int i=0;
+		for ( Dropdown dropDown : dropDowns ) {
+			ret.get(UsrInpTypes.dropDown)[i++] = dropDown.getUsrInp();
+		}
+		ret.get(UsrInpTypes.inputFld)[0] = inpFldHandler.getInpFldVals();
+        ret.get(UsrInpTypes.bttnPrsd)[0] = new String[]{ lastButtonPressed };
+
+		return ret;
+	}
+
 	public void addTable(String[] colTitles, int x, int y, boolean absPos ) {
 		textTable = new TextTable(colTitles);
 		panel.add(textTable, x, y, 3, absPos);
@@ -176,7 +214,7 @@ public class GUI {
 	}
 
 	public void addButtonTable(int height, int x, int y, boolean absPos ) {
-		buttonTable = new ButtonTable(height);
+		buttonTable = new ButtonTable(this, height);
 		panel.add( buttonTable, x, y, absPos );
 	}
 
@@ -184,20 +222,26 @@ public class GUI {
 		return buttonTable;
 	}
 
-	
+
 	// ********************************************
 	// TODO: flytte ut.
-	private Time timeKeeper;
-	public void runClock() {
-		timeKeeper = new Time();
-	    ActionListener taskPerformer = new ActionListener() {
+	private Time timeKeeper = new Time();
+    private ActionListener taskPerformer = new ActionListener() {
 	    	public void actionPerformed(ActionEvent evt) {
 	    		timeKeeper.setToNow();
 	    		setTitle( "\n" + timeKeeper.toString(true) );
 	    	}
 	    };
-	    new Timer(0, taskPerformer).start();
+    // private Timer clockTimer;
+    private Timer clockTimer = new Timer(0, taskPerformer);
+
+	public void runClock() {
+        clockTimer.start();
 	}
+
+    public void stopClock() {
+        clockTimer.stop();
+    }
 
 	// ********************************************
 	// TODO: RADERA:

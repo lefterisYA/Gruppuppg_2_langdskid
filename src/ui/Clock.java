@@ -86,7 +86,7 @@ public class Clock {
 //	final static private int dgtWdth = asciiDgts[0][0].length();
 	final static private int dgtHght = asciiDgts[0].length;
 //	final static private int colWdth = asciiDgts[10][0].length();
-	
+
 	private Calendar cdr; // = Calendar.getInstance(); // creates a new calendar instance
 	private final StringBuilder sb = new StringBuilder();
 
@@ -97,7 +97,7 @@ public class Clock {
 	public String getInAscii(int hour, int mins, int secs) {
 		return gnrtAsciiChars(new int[] {hour, mins, secs});
 	}
-	
+
 	public String getCurrTimeInAscii() {
 		cdr.setTimeInMillis(System.currentTimeMillis());
 		int hour = cdr.get(Calendar.HOUR_OF_DAY);
@@ -110,21 +110,21 @@ public class Clock {
 
 	/**
 	 * Sets the clock time
-	 * @newTime the new time 
+	 * @newTime the new time
 	 */
 	public void setCurrActualTime(int[] newTime) {
 		// TODO
 	}
 	/**
-	 * 
+	 *
 	 * @return returs the current actual time in string format
 	 */
 	public String getCurrTime() {
 		cdr.setTimeInMillis(System.currentTimeMillis());
-	
-		String time = String.format( 
-					"%02d:%02d:%02d:%02d", 
-					cdr.get(Calendar.HOUR_OF_DAY), 
+
+		String time = String.format(
+					"%02d:%02d:%02d:%02d",
+					cdr.get(Calendar.HOUR_OF_DAY),
 					cdr.get(Calendar.MINUTE),
 					cdr.get(Calendar.SECOND),
 					cdr.get(Calendar.MILLISECOND) / 10
@@ -132,17 +132,17 @@ public class Clock {
 
 		return time;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @return returns the actual current time with int[] { HH, MM, SS }
 	 */
 	public int[] getCurrTimeInts() {
 		cdr.setTimeInMillis(System.currentTimeMillis());
-		return new int[] { 
-				cdr.get(Calendar.HOUR_OF_DAY), 
-				cdr.get(Calendar.MINUTE), 
-				cdr.get(Calendar.SECOND), 
+		return new int[] {
+				cdr.get(Calendar.HOUR_OF_DAY),
+				cdr.get(Calendar.MINUTE),
+				cdr.get(Calendar.SECOND),
 		};
 	}
 
@@ -161,14 +161,14 @@ public class Clock {
 		}
 		return sb.toString();
 	}
-	
+
 	private void appendAsciiForRow(int digt, int row) {
 		int[] dgts = getSprtDgts(digt); // Split digit into an array of digits
 		for ( int i=0; i<dgts.length; i++ ) {
 			sb.append( asciiDgts[dgts[i]][row] );
 		}
 	}
-	
+
 	static private int[] getSprtDgts(int num) {
 		int dgtsLen;
 		if ( num < 10 ) // Pad all digits so they are length 2:

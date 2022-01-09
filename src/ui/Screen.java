@@ -16,6 +16,8 @@ public enum Screen {
 	RGSTR_SKIER_REPEAT(true),
 	RGSTR_SKIER_VERIFY(true),
 	RGSTR_SKIER_FINISH(true),
+    SHOW_SKIER_INPUT(false),
+    SHOW_SKIER(false),
 	LIVE_SCOREBOARD(false),
 	FINISH_SCOREBOARD(false),
 	ACPT(true),

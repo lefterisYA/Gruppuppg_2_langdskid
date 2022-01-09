@@ -12,10 +12,12 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import ui.Clock;
+import ui.GUI;
 import ui.interfaces.GuiCallback;
 
-public class ButtonTable extends JPanel { 
+public class ButtonTable extends JPanel {
 	private static final long serialVersionUID = -3065613945162621665L;
+    private GUI ui;
 
 	public enum Linetype { CHECKPOINT, FINISHLINE };
 
@@ -23,13 +25,15 @@ public class ButtonTable extends JPanel {
 
 	Clock clk = new Clock(); // TODO REMOVE
 
-	public ButtonTable(int height) {
+	public ButtonTable(GUI ui, int height) {
 		super(new GridLayout(height,4));
+        this.ui = ui;
 	}
-	
-	public void addRow(String skierName, int skierNum, GuiCallback chckPntCback, GuiCallback fnshCback) {
-		Button checkpointButton = new Button("Checkpoint", chckPntCback, skierNum);
-		Button finishlineButton = new Button("Slutlinje", fnshCback, skierNum);
+
+	public void addRow(String skierName, int skierNum, GuiCallback<Integer> chckPntCback, GuiCallback<Integer> fnshCback) {
+		Button checkpointButton = new <Integer> Button(ui, "Checkpoint", chckPntCback, skierNum);
+		Button finishlineButton = new <Integer> Button(ui, "Slutlinje", fnshCback, skierNum);
+
 
 		JPanel iPanel = new JPanel(new GridLayout(1,4));
 		iPanel.add(new JLabel(skierName));
@@ -38,7 +42,7 @@ public class ButtonTable extends JPanel {
 		iPanel.add(finishlineButton);
 		iPanel.setBorder(new EmptyBorder(5, 0, 5, 0));
 
-	
+
 		add(iPanel);
 
 		buttonTable.put(skierNum, new Button[] {checkpointButton, finishlineButton});
@@ -49,12 +53,12 @@ public class ButtonTable extends JPanel {
 		buttonTable.get(skierNum)[bttnIndx].setEnabled(false);
 		buttonTable.get(skierNum)[bttnIndx].setText(clk.getCurrTime());
 	}
-	
+
 	public void disableTableComponent( int key, int btnIdx ) {
 		buttonTable.get(key)[btnIdx].setEnabled(false);
 		buttonTable.get(key)[btnIdx].setText(clk.getCurrTime());
 	}
-	
+
 	public JComponent getTblCmp( int key, int rowIdx ) {
 		return buttonTable.get(key)[rowIdx];
 	}

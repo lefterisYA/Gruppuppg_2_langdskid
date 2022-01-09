@@ -1,22 +1,20 @@
 package skiing;
 
-//TODO: Sätt javadoc kommentarer med /** på mina metoder
-
 import java.util.Objects;
 
 public class Person {
-	private String firstName; //TODO ta bort firstname/lastname?
+	private String firstName;
 	private String lastName;
-	private String gender; //TODO enum //Vet inte riktigt hur jag ska göra det och det är lite sent nu
+	private String gender;
 	private int age;
-	
+
 	public int getAge() {return age;}
 	public void setAge(int age) {this.age = age;}
 	public String getFirstName() {return firstName;}
 	public void setFirstName(String firstName) {this.firstName = firstName;}
 	public String getLastName() {return lastName;}
 	public void setLastName(String lastName) {this.lastName = lastName;}
-	public String getName() {return firstName+lastName;}
+	public String getName() {return firstName+" "+lastName;}
 	public String getGender() {return gender;}
 	public void setGender(String gender) {this.gender = gender;}
 
