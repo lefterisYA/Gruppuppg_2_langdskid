@@ -65,7 +65,7 @@ public class Panel extends JPanel {
 	public void add(JComponent element, int x, int y) {
 		add(element, x, y, 1, false);
 	}
-	
+
 	public void add(JComponent element, ElmntPos pos) {
 		int newX = pos.xIsRelative ? cnst.gridx+pos.x : pos.x;
 		int newY = pos.yIsRelative ? cnst.gridy+pos.y : pos.y;
@@ -87,10 +87,10 @@ public class Panel extends JPanel {
 		cnst.gridy++;
 		add(spacer, cnst);
 	}
-	
+
 	public boolean removeLast() {
 		remove(getComponents().length-1);
 		return true;
 	}
-	
+
 }

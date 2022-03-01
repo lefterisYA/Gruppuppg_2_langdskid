@@ -5,7 +5,7 @@ import java.util.TimeZone;
 
 public class Time implements Comparable<Time> {
 	public final Calendar cdr;
-	
+
 	public enum Unit { HOURS, MINUTES, SECONDS, MILLIS };
 
 	///////
@@ -69,35 +69,35 @@ public class Time implements Comparable<Time> {
 	public Time(int hr, int mn, int sc) {
 		this(hr, mn, sc, 0);
 	}
-	
+
 	/** @param hr @param mn @param sc @param ms hours minutes seconds milliseconds we wish to set the time to.*/
 	public Time(int hr, int mn, int sc, int ms) {
 		cdr = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 		cdr.setTimeInMillis( (hr * 3600 * 1000) + (mn * 60 * 1000) + (sc * 1000) + ms );
 	}
-	
+
 
 	///////
 	///////
-	
+
 	public void setToNow() {
 		cdr.setTimeInMillis(System.currentTimeMillis()+TimeZone.getDefault().getRawOffset());
 		cdr.set(0, 0, 0);
 	}
-	
-	
+
+
 	////////////////////
 	// "Getters" in different formats...
 
 	/** @return the time given in int[] { hh, mm, ss } format */
 	public int[] asHumanTime() {
-		return new int[] { 
-				cdr.get(Calendar.HOUR_OF_DAY), 
-				cdr.get(Calendar.MINUTE), 
-				cdr.get(Calendar.SECOND), 
+		return new int[] {
+				cdr.get(Calendar.HOUR_OF_DAY),
+				cdr.get(Calendar.MINUTE),
+				cdr.get(Calendar.SECOND),
 		};
 	}
-	
+
 	/** @return the time in milliseconds*/
 	public long inMs() {
 		return cdr.getTimeInMillis();
@@ -119,7 +119,7 @@ public class Time implements Comparable<Time> {
 			return String.format("%02d:%02d:%02d", 		vals[0], vals[1], vals[2] );
 		}
 	}
-	
+
 
 	////////////////////
 	//"Smart" methods and math methods!
@@ -128,12 +128,12 @@ public class Time implements Comparable<Time> {
 	public Time diffTo(Time oTime) {
 		return new Time( this.inMs() - oTime.inMs() );
 	}
-	
+
 	/** @param oTime second operand, obj being called on is the first. @return returns the result of: this + oTime */
 	public Time addTo(Time oTime) {
 		return new Time( this.inMs() + oTime.inMs() );
 	}
-	
+
 	/** @param factor second operand, obj being called on is the first. @return returns the result of: this * factor */
 	public Time productOf(int factor) {
 		return new Time( this.inMs() * factor );
